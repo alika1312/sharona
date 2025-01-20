@@ -1,4 +1,6 @@
 {
+  "homepage": "/myapp",
+
   "name": "sharona",
   "private": true,
   "version": "0.0.0",

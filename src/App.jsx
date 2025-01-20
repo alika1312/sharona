@@ -8,7 +8,7 @@ import WorkshopsPage from "./Pages/WorkshopPage";
 
 function App() {
   return (
-    <Routes>
+    <Routes basename="/myapp">
       <Route path="/" element={<Navigate replace to="/Home" />} />
       <Route path="/Home" element={<HomePage />} />
       <Route path="/workshop" element={<WorkshopsPage />} />
