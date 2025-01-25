@@ -1,43 +1,25 @@
 import React from "react";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
+
 import { aboutInformation } from "../information/information";
-import { ContactInfo } from "../components/ContactInfo";
+
+import ShowcaseAboutme from "../components/showcaseAboutme";
+import { useNavigate } from "react-router";
 
 function AboutPage() {
+  const handleContactClick = () => {
+    navigate("/home", { replace: false });
+    setTimeout(() => {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }, 100); // Allow time for the navigation to complete
+  };
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex flex-col font-sans bg-palette-brite text-gray-800 zoom-80">
       <main className="flex-1">
-        {/* Hero Section */}
-
-        <section className="relative h-80 bg-palette-softPeach text-palette-darkBrown flex items-center justify-center shadow-lg overflow-hidden">
-          {/* Hero Content */}
-          <div className="text-center animate-fade-in-down z-10">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">
-              קצת עליי
-            </h1>
-            <p className="text-lg  md:text-xl font-light text-center mx-96">
-              בעלת ניסיון רב שנים בטיפול ביחידים, זוגות, הורים ומשפחות. בתפיסתי
-              הטיפולית אני שמה דגש על התאמה רגישה של מאפייני הטיפול לצרכיו
-              הייחודיים של האדם שמולי, תוך שיתוף בתהליך כולו. במסגרת הקליניקה
-              אני משלבת מספר גישות טיפוליות, לשם פתרון מורכבויות מן הבסיס, תוך
-              מתן ייעוץ וכלים פרקטיים להתמודדות יעילה ביומיום
-            </p>
-          </div>
-          <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 md:left-auto md:right-12 mb-28 ">
-            <img
-              src="/sharona.jpeg"
-              alt="Person"
-              className="w-32 h-40 md:w-48 md:h-56 rounded-full border-4 border-palette-darkBrown shadow-lg"
-            />
-          </div>
-
-          {/* Full-Screen Wave */}
-          <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none"></div>
-        </section>
+        <ShowcaseAboutme />
 
         {/* Content Sections */}
-        <section className="container mx-auto px-6 py-12" dir="rtl">
+        <section className="container mx-auto px-6 py-12 " dir="rtl">
           <div className="flex flex-col md:flex-row gap-12">
             {/* Left Section */}
             <div className="md:w-1/2 bg-white shadow-md rounded-lg p-8">
@@ -55,10 +37,16 @@ function AboutPage() {
                   הכשרות נוספות:
                 </li>
                 <li>
-                  דמיון מודרך ככלי טיפולי, אקסס בארס, היפנותרפיה -בדגש על טיפול
-                  בטראומה', טיפול בטראומה בדינמיקה זוגית, ריפוי הילד הפנימי,
+                  דמיון מודרך ככלי טיפולי, אקסס בארס, 'היפנותרפיה -בדגש על טיפול
+                  בטראומה', 'טיפול בטראומה בדינמיקה זוגית', ריפוי הילד הפנימי,
                   זיכרונות ילדות
                 </li>
+                <p>
+                  <strong className="text-gray-800">שנות ותק:</strong> 20
+                </p>
+                <p>
+                  <strong className="text-gray-800">שפות:</strong> עברית ואנגלית
+                </p>
               </ul>
             </div>
 
@@ -67,44 +55,37 @@ function AboutPage() {
               <h2 className="text-3xl font-bold text-palette-darkBrown mb-6">
                 פרטים מקצועיים
               </h2>
-              <div className="flex gap-12 text-gray-700">
-                <div className="flex-1 space-y-4">
-                  <p>
-                    <strong className="text-gray-800">מקצוע:</strong> מטפלת
-                    זוגית ומשפחתית
-                  </p>
-                  <p>
-                    <strong className="text-gray-800">שנות ותק:</strong> 15
-                  </p>
-                  <p>
-                    <strong className="text-gray-800">מטופלים עד כה:</strong>{" "}
-                    300
-                  </p>
-                  <p>
-                    <strong className="text-gray-800">שעות פעילות:</strong>{" "}
-                    בוקר/צהרים/ערב בתיאום מראש
-                  </p>{" "}
-                  <p>
-                    <strong className="text-gray-800">שפות:</strong> עברית
-                    אנגלית
-                  </p>
-                </div>
-                <div className="flex-1 space-y-4">
-                  <p>
-                    <strong className="text-gray-800">כתובת הקליניקה:</strong>{" "}
-                    צור הדסה אפשרי לשלב עם מפגשים אונליין / בזום
-                  </p>
-                  <p>
-                    <strong className="text-gray-800">אזור הטיפול:</strong>{" "}
-                    אונליין / בזום באזור ירושלים / הרי ירושלים / מבשרת ציון /
-                    צור הדסה
-                  </p>
-                  <p>
-                    <strong className="text-gray-800">פרטים נוספים:</strong>{" "}
-                    חניה צמודה סמוך לתחבורה ציבורית
-                  </p>
-                </div>
+
+              <div className="flex-1 space-y-4">
+                <p>
+                  <strong className="text-gray-800">שעות פעילות:</strong>{" "}
+                  בוקר/צהרים/ערב - בתיאום מראש
+                </p>{" "}
+                <p>
+                  <strong className="text-gray-800">אזור הטיפול:</strong> אזור
+                  ירושלים / הרי ירושלים / מבשרת ציון / צור הדסה / בית שמש / גוש
+                  הציון
+                </p>
+                <p>
+                  <strong className="text-gray-800">זום / מפגש דיגיטלי:</strong>{" "}
+                  בעלת ניסיון בטיפולים בזום/ אונליין מרחבי הארץ ומחוץ לישראל
+                </p>
+                <p>
+                  <strong className="text-gray-800">כתובת הקליניקה:</strong> צור
+                  הדסה (אפשרי לשלב עם מפגשים אונליין / בזום)
+                </p>
+                <p> </p>
+                <p>
+                  <strong className="text-gray-800 ">פרטים נוספים:</strong> חניה
+                  צמודה / סמוך לתחבורה ציבורית
+                </p>
               </div>
+              <button
+                onClick={handleContactClick}
+                className="bg-palette-brown hover:bg-palette-lightPink text-white font-semibold py-2.5 px-6 sm:py-3 sm:px-8 rounded-lg shadow-lg hover:shadow-xl transition-all mt-11 duration-300"
+              >
+                ליצירת קשר
+              </button>
             </div>
           </div>
         </section>

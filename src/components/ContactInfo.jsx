@@ -8,13 +8,13 @@ const contacts = [
   },
   {
     icon: "/phone.png",
-    link: "tel:+972533402284",
-    text: "Phone: +972533402284",
+    link: "tel:+972587250990",
+    text: "Phone: +972587250990",
   },
   {
     icon: "/mail.png",
-    link: "https://mail.google.com/mail/?view=cm&fs=1&to=nirkis.al@gmail.com",
-    text: "Email: nirkis.al@gmail.com",
+    link: "https://mail.google.com/mail/?view=cm&fs=1&to=sharonabar5@gmail.com",
+    text: "Email: sharonabar5@gmail.com",
   },
 ];
 

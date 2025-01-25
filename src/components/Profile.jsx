@@ -21,7 +21,7 @@ const Profile = () => {
 
   useEffect(() => {
     const img = new Image();
-    img.src = "/showcase.png"; // Replace with your image path
+    img.src = "/showcase1.png"; // Replace with your image path
     img.onload = () => {
       setImageDimensions({ width: img.width, height: img.height });
     };
@@ -32,7 +32,7 @@ const Profile = () => {
       {isPhoneSize ? (
         <section className="relative mx-auto w-full max-w-screen-lg flex items-center justify-center overflow-hidden rounded-lg shadow-md">
           <img
-            src="shaona.png"
+            src="shronaPhone1.png"
             alt="Showcase"
             className="w-full h-auto object-cover"
           />
@@ -44,7 +44,7 @@ const Profile = () => {
           style={{
             width: `${imageDimensions.width}px`,
             height: `${imageDimensions.height}px`,
-            backgroundImage: "url('/showcase.png')",
+            backgroundImage: "url('/showcase1.png')",
             backgroundSize: "contain", // Ensures the entire image is visible
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",

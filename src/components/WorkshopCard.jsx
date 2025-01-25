@@ -14,7 +14,7 @@ const WorkshopCard = ({ title, image, description }) => {
         <img
           src={image}
           alt={title}
-          className="w-full h-36 object-cover rounded-md mb-3"
+          className="w-full h-full object-cover rounded-md mb-3"
         />
       )}
       <h3 className="text-xl font-bold mb-2 text-gray-800">{title}</h3>
@@ -30,7 +30,7 @@ const WorkshopCard = ({ title, image, description }) => {
         onClick={handleToggle}
         className="self-start bg-palette-brown hover:bg-palette-lightPink text-white text-sm px-3 py-1 rounded-lg  transition"
       >
-        {isExpanded ? "קרא פחות" : "קרא עוד"}
+        {isExpanded ? "קרא/י פחות" : "קרא/י עוד"}
       </button>
     </div>
   );

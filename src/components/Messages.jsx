@@ -1,5 +1,7 @@
 import React from "react";
 import emailjs from "emailjs-com";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const sendEmail = (e) => {
   e.preventDefault(); // Prevents the default form submission behavior
@@ -13,10 +15,10 @@ const sendEmail = (e) => {
     )
     .then(
       (result) => {
-        alert("ההודעה נשלחה בהצלחה!");
+        toast.success("ההודעה נשלחה בהצלחה!");
       },
       (error) => {
-        alert("חלה שגיאה בשליחת ההודעה. נסה שוב מאוחר יותר.");
+        toast.error("חלה שגיאה בשליחת ההודעה. נסה שוב מאוחר יותר.");
       }
     );
   e.target.reset(); // Reset the form after submission
@@ -37,13 +39,12 @@ export const Messages = () => {
       <div className="relative container mx-auto px-6 text-right text-white z-10">
         {/* Title */}
         <h3 className="text-2xl sm:text-3xl font-bold mb-4 flex items-center justify-end text-palette-darkBrown">
-          <span>שלח הודעה לשרונה קדושאי בר-נס</span>
-          <span className="ml-2">📧</span>
+          <span>שלח/י הודעה לשרונה קדושאי בר-נס</span>
         </h3>
 
         {/* Subtitle */}
         <p className="mb-6 text-palette-darkBrown">
-          ליצירת קשר אנא מלאו פרטים והמטפל יחזור אליכם בהקדם.
+          ליצירת קשר אנא מלאו פרטים ואחזור אליכם בהקדם
         </p>
 
         {/* Contact Form */}
@@ -58,6 +59,7 @@ export const Messages = () => {
               required
             />
             <input
+              dir="rtl"
               type="tel"
               name="phone" // Name attribute required by EmailJS
               placeholder="* טלפון"
@@ -84,10 +86,23 @@ export const Messages = () => {
             type="submit"
             className="bg-white text-palette-brown font-bold py-2 px-8 rounded hover:bg-palette-beige transition duration-300"
           >
-            שלח
+            שלח/י
           </button>
         </form>
       </div>
+
+      {/* Toast Container */}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </section>
   );
 };

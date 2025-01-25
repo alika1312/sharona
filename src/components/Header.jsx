@@ -1,7 +1,25 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router";
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // Scroll to bottom for "יצירת קשר"
+  const handleContactClick = () => {
+    navigate("/home", { replace: false });
+    setTimeout(() => {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }, 100); // Allow time for navigation to complete
+  };
+
+  // Scroll to top for other links
+  const handleNavigateToTop = (path) => {
+    navigate(path, { replace: false });
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 100); // Allow time for navigation to complete
+  };
 
   return (
     <header className="bg-palette-brite shadow-md sticky top-0 z-50 zoom-80">
@@ -38,47 +56,54 @@ export const Header = () => {
             menuOpen ? "block" : "hidden"
           } md:block absolute md:static top-full left-0 w-full md:w-auto bg-palette-brite md:bg-transparent shadow-md md:shadow-none`}
         >
-          <ul className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6  items-center p-4 md:p-0">
+          <ul className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 items-center p-4 md:p-0">
             <li>
-              <a
-                href="/about"
+              <button
+                onClick={handleContactClick}
                 className="text-palette-darkBrown hover:text-palette-lightPink"
               >
-                קצת עליי
-              </a>
+                יצירת קשר
+              </button>
             </li>
-
             <li>
-              <a
-                href="/articals"
+              <button
+                onClick={() => handleNavigateToTop("/articals")}
                 className="text-palette-darkBrown hover:text-palette-lightPink"
               >
                 מאמרים
-              </a>
+              </button>
             </li>
             <li>
-              <a
-                href="/workshop"
+              <button
+                onClick={() => handleNavigateToTop("/workshop")}
                 className="text-palette-darkBrown hover:text-palette-lightPink"
               >
-                סדנאות שלי
-              </a>
+                סדנאות
+              </button>
             </li>
             <li>
-              <a
-                href="/experiences"
+              <button
+                onClick={() => handleNavigateToTop("/experiences")}
                 className="text-palette-darkBrown hover:text-palette-lightPink"
               >
                 תחומי המומחיות שלי
-              </a>
+              </button>
             </li>
             <li>
-              <a
-                href="/Home"
+              <button
+                onClick={() => handleNavigateToTop("/about")}
+                className="text-palette-darkBrown hover:text-palette-lightPink"
+              >
+                קצת עליי
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => handleNavigateToTop("/home")}
                 className="text-palette-darkBrown hover:text-palette-lightPink"
               >
                 בית
-              </a>
+              </button>
             </li>
           </ul>
         </nav>

@@ -22,18 +22,18 @@ export const ArticlesPage = () => {
                 <img
                   src={article.image}
                   alt={article.title}
-                  className="w-full h-56 object-cover"
+                  className="w-full h-80 object-cover"
                 />
                 <div className="p-6">
                   <h3 className="text-2xl font-semibold text-palette-darkBrown mb-4">
                     {article.title}
                   </h3>
-                  <p className="text-gray-700 mb-4">{article.description}</p>
+
                   <Link
                     to={`/article/${article.id}`}
                     className="self-start bg-palette-brown hover:bg-palette-lightPink text-white text-sm px-3 py-1 rounded-lg  transition"
                   >
-                    קרא עוד
+                    קרא/י עוד
                   </Link>
                 </div>
               </div>
