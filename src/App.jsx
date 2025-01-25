@@ -9,7 +9,7 @@ import WorkshopsPage from "./Pages/WorkshopPage";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate replace to="/about" />} />
+      <Route path="/" element={<Navigate replace to="/home" />} />
       <Route path="/Home" element={<HomePage />} />
       <Route path="/workshop" element={<WorkshopsPage />} />
       <Route path="/about" element={<AboutPage />} />
