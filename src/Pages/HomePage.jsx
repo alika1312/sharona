@@ -291,7 +291,7 @@ function HomePage() {
             <div data-reveal style={kicker}>המרחב הטיפולי</div>
             <h2 data-reveal data-reveal-delay="120" className="org-h2" style={{ ...h2, maxWidth: "22ch", margin: "0 auto" }}>מקום שנעים לחזור אליו</h2>
           </div>
-          <div className="org-services-grid" style={{ display: "flex", gap: 22, alignItems: "flex-start" }}>
+          <div className="org-gallery" style={{ display: "flex", gap: 22, alignItems: "flex-start" }}>
             {[
               { h: 340, r: 30, top: 0, grad: "linear-gradient(140deg,var(--color-accent-2-300),var(--color-accent-2-200))" },
               { h: 400, r: "44% 56% 52% 48%/48% 44% 56% 52%", top: 44, grad: "linear-gradient(140deg,var(--color-accent-300),var(--color-accent-200))" },

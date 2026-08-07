@@ -193,6 +193,9 @@ select:focus-visible,
   .org-hide-mobile { display: none !important; }
   .org-services-grid { grid-template-columns: 1fr !important; }
   .org-voices-grid { grid-template-columns: 1fr !important; }
+  /* gallery is a flex row on desktop — stack it so tiles don't squish */
+  .org-gallery { flex-direction: column !important; }
+  .org-gallery > div { margin-top: 0 !important; }
   .org-steps { flex-direction: column !important; gap: 34px !important; }
   .org-steps-line { display: none !important; }
   .org-section { padding-left: 22px !important; padding-right: 22px !important; }
