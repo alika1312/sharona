@@ -29,6 +29,17 @@ export default [
       ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
       'react/jsx-no-target-blank': 'off',
+      // This app doesn't use PropTypes (no runtime type layer) — the rule only
+      // produces false positives here.
+      'react/prop-types': 'off',
+      // React 18.3's react-dom expects the lowercase `fetchpriority` attribute
+      // (camelCase triggers a runtime "unknown prop" warning), so allow it.
+      'react/no-unknown-property': ['error', { ignore: ['fetchpriority'] }],
+      // Hebrew content strings legitimately contain non-breaking spaces (U+00A0).
+      'no-irregular-whitespace': [
+        'error',
+        { skipStrings: true, skipTemplates: true, skipComments: true, skipJSXText: true },
+      ],
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },

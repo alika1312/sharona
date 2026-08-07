@@ -1,6 +1,5 @@
-import { Navigate } from "react-router-dom";
-import { Head } from "vite-react-ssg";
 import Layout from "./components/Layout";
+import Redirect from "./components/Redirect";
 import HomePage from "./Pages/HomePage";
 import AboutPage from "./Pages/AboutPage";
 import { ArticlesPage } from "./Pages/ArticlesPage";
@@ -9,19 +8,6 @@ import { ArticlePage } from "./Pages/ArticalPage";
 import WorkshopsPage from "./Pages/WorkshopPage";
 import AccessibilityPage from "./Pages/AccessibilityPage";
 import { articles } from "./information/articles";
-
-// Client redirect from the old (typo'd) paths. Marked noindex so the redirect
-// stubs don't compete as duplicate content — the real pages are canonical.
-function Redirect({ to }) {
-  return (
-    <>
-      <Head>
-        <meta name="robots" content="noindex" />
-      </Head>
-      <Navigate to={to} replace />
-    </>
-  );
-}
 
 // react-router data routes, consumed by vite-react-ssg for static generation.
 export const routes = [

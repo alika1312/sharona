@@ -70,7 +70,7 @@ function AboutPage() {
         >
           <div style={{ flex: 0.9, display: "flex", justifyContent: "center" }}>
             <div data-reveal className="org-portrait" style={{ width: 400, height: 480, borderRadius: "52% 48% 46% 54%/58% 56% 44% 42%", overflow: "hidden", boxShadow: "var(--shadow-lg)", animation: "floaty 10s ease-in-out infinite" }}>
-              <img src="/sharona.jpeg" alt="שרונה קדושאי בר-נס, יועצת ומטפלת רגשית" width="400" height="480" fetchPriority="high" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src="/sharona.jpeg" alt="שרונה קדושאי בר-נס, יועצת ומטפלת רגשית" width="400" height="480" fetchpriority="high" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
           </div>
           <div style={{ flex: 1.1 }}>
