@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, useParams } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 import { articles } from "../information/articles";
@@ -62,7 +61,7 @@ export const ArticlePage = () => {
       <section className="org-section" style={{ position: "relative", padding: "0 54px", background: "var(--color-bg)" }}>
         <div style={{ position: "relative", maxWidth: 980, margin: "0 auto" }}>
           <div style={{ position: "relative", height: 380, borderRadius: "0 0 34px 34px", overflow: "hidden", boxShadow: "var(--shadow-md)" }}>
-            <img src={image} alt={title} fetchpriority="high" decoding="async" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img src={image} alt={title} fetchPriority="high" decoding="async" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(39,46,27,.82),rgba(39,46,27,.12))" }} />
             <div style={{ position: "absolute", insetInlineStart: 0, insetInlineEnd: 0, bottom: 0, padding: "34px 40px" }}>
               {article.readTime && (

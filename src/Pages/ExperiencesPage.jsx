@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 import { experiences } from "../information/experiences";

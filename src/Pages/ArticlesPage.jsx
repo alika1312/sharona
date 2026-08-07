@@ -1,9 +1,8 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 import { articles } from "../information/articles";
 import { useReveal } from "../hooks/useReveal";
-import { kicker, h2, muted } from "../design/ui";
+import { kicker, muted } from "../design/ui";
 
 const preview = (article) => {
   const first = article.content?.[0]?.sectionFirstText || "";

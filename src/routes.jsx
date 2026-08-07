@@ -1,4 +1,3 @@
-import React from "react";
 import { Navigate } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 import Layout from "./components/Layout";

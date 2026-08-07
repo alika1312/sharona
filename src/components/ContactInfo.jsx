@@ -1,4 +1,3 @@
-import React from "react";
 
 // Always-visible floating quick-contact: WhatsApp (primary) + one-tap call.
 const WHATSAPP =

@@ -1,4 +1,3 @@
-import React from "react";
 import { Head } from "vite-react-ssg";
 
 // Site-wide Schema.org JSON-LD. Every value here must be truthful and match

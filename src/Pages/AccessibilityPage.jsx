@@ -1,4 +1,3 @@
-import React from "react";
 import { Head } from "vite-react-ssg";
 import { useReveal } from "../hooks/useReveal";
 import { kicker, muted } from "../design/ui";
