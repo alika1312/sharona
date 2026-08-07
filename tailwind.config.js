@@ -12,6 +12,7 @@ export default {
           darkBrown: "#3a2c27",
           brite: "#fdf6ed",
           purpul: "#e6e0f4",
+          background: "#ebe9e1",
         },
       },
       // Add zoom utility

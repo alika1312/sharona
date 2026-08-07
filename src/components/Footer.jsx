@@ -1,38 +1,111 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { ContactInfo } from "./ContactInfo";
+
+const cols = [
+  [
+    { label: "אודות", to: "/about" },
+    { label: "תחומי הטיפול", to: "/experiences" },
+    { label: "סדנאות", to: "/workshops" },
+  ],
+  [
+    { label: "מאמרים", to: "/articles" },
+    { label: "צרו קשר", to: "/#contact" },
+    { label: "הצהרת נגישות", to: "/accessibility" },
+  ],
+];
 
 export const Footer = () => {
   return (
-    <footer className="bg-palette-darkBrown text-white py-6 zoom-80">
-      <div className="container mx-auto px-6 text-center space-y-4">
-        <p>
-          &copy; {new Date().getFullYear()} שרונה קדושאי בר-נס. כל הזכויות
-          שמורות.
-        </p>
-        <div className="text-sm flex justify-center items-center space-x-4">
-          {/* WhatsApp Icon */}
-          <a
-            href="https://wa.me/+972533402284"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:opacity-80"
-          >
-            <img
-              src="/whatsapp.png" // Ensure the path to your WhatsApp icon is correct
-              alt="WhatsApp Icon"
-              className="w-8 h-8"
-            />
-          </a>
-          {/* Phone Icon */}
-          <a href="tel:+972533402284" className="hover:opacity-80">
-            <img
-              src="/phone.png" // Replace with the path to your phone icon
-              alt="Phone Icon"
-              className="w-8 h-8"
-            />
-          </a>
-          <p className="mb-0">האתר פותח על ידי אליקא נירקיס</p>
+    <>
+      <ContactInfo />
+      <footer
+        style={{
+          background: "var(--color-accent-2-900)",
+          color: "color-mix(in srgb, #fff 82%, transparent)",
+          padding: "70px 54px 40px",
+          fontFamily: "var(--font-body)",
+        }}
+        className="org-section"
+      >
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: "0 auto",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            gap: 40,
+            flexWrap: "wrap",
+          }}
+        >
+          <div style={{ maxWidth: "32ch" }}>
+            <div
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontSize: 26,
+                color: "var(--color-bg)",
+                marginBottom: 14,
+              }}
+            >
+              שרונה קדושאי בר־נס
+            </div>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 16,
+                lineHeight: 1.66,
+                color: "color-mix(in srgb, #fff 62%, transparent)",
+              }}
+            >
+              יועצת ומטפלת רגשית. טיפול רגשי, ייעוץ זוגי, הדרכת הורים וטיפול
+              במשבר ובטראומה — אונליין ובאזור ירושלים ומבשרת ציון.
+            </p>
+          </div>
+          <div style={{ display: "flex", gap: 50, flexWrap: "wrap" }}>
+            {cols.map((col, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 12,
+                  fontSize: 16,
+                }}
+              >
+                {col.map((l) => (
+                  <Link
+                    key={l.to}
+                    to={l.to}
+                    style={{ color: "color-mix(in srgb, #fff 72%, transparent)" }}
+                  >
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </footer>
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: "44px auto 0",
+            paddingTop: 24,
+            borderTop: "1px solid color-mix(in srgb, #fff 14%, transparent)",
+            display: "flex",
+            justifyContent: "space-between",
+            gap: 16,
+            flexWrap: "wrap",
+            fontSize: 14,
+            color: "color-mix(in srgb, #fff 50%, transparent)",
+          }}
+        >
+          <span>
+            © {new Date().getFullYear()} שרונה קדושאי בר־נס. כל הזכויות שמורות.
+          </span>
+          <span>האתר פותח על ידי אליקא נירקיס</span>
+        </div>
+      </footer>
+    </>
   );
 };

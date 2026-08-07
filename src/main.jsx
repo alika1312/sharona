@@ -1,17 +1,8 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import { ViteReactSSG } from "vite-react-ssg";
+import { routes } from "./routes.jsx";
 import "./index.css";
-import App from "./App.jsx";
-import { BrowserRouter } from "react-router";
-import { Header } from "./components/Header.jsx";
-import { ContactInfo } from "./components/ContactInfo.jsx";
-import { Footer } from "./components/Footer.jsx";
+import "./design/organic.css";
 
-createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
-    <Header />
-    <App />
-    <ContactInfo />
-    <Footer />
-  </BrowserRouter>
-);
+// vite-react-ssg entry: statically renders every route in `routes` at build time
+// and hydrates on the client.
+export const createRoot = ViteReactSSG({ routes });
