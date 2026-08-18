@@ -12,6 +12,10 @@ const BASE = "https://sharona-bar-nes.com";
 const { articles } = await import(
   pathToFileURL(resolve(root, "src/information/articles.js")).href
 );
+// Same derivation the article page uses, so llms.txt matches the emitted <meta>.
+const { articleDescription, normalize } = await import(
+  pathToFileURL(resolve(root, "src/information/articleMeta.js")).href
+);
 
 // Canonical page list (mirrors the <Head> titles/descriptions in src/Pages/*).
 const staticPages = [
@@ -41,6 +45,11 @@ const staticPages = [
     desc: "מאמרים בנושאי משבר, טראומה, זוגיות, גירושין, אובדן וצמיחה אישית.",
   },
   {
+    path: "/faq/",
+    title: "שאלות נפוצות",
+    desc: "תשובות לשאלות הנפוצות לפני שמתחילים טיפול: תחומי הטיפול, מיקום המפגשים, טיפול אונליין בזום, שפות הטיפול, למי הטיפול מתאים וההכשרה שלי.",
+  },
+  {
     path: "/accessibility/",
     title: "הצהרת נגישות",
     desc: "הצהרת הנגישות של האתר: ההתאמות שבוצעו לפי תקן ישראלי 5568 ודרכי פנייה לדיווח על בעיות נגישות.",
@@ -49,8 +58,8 @@ const staticPages = [
 
 const articlePages = articles.map((a) => ({
   path: `/article/${a.id}/`,
-  title: a.title,
-  desc: a.description || "",
+  title: normalize(a.title),
+  desc: articleDescription(a),
 }));
 
 const allPages = [...staticPages, ...articlePages];

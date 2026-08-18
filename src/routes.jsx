@@ -6,6 +6,7 @@ import { ArticlesPage } from "./Pages/ArticlesPage";
 import { ExperiencesPage } from "./Pages/ExperiencesPage";
 import { ArticlePage } from "./Pages/ArticalPage";
 import WorkshopsPage from "./Pages/WorkshopPage";
+import FaqPage from "./Pages/FaqPage";
 import AccessibilityPage from "./Pages/AccessibilityPage";
 import { articles } from "./information/articles";
 
@@ -22,6 +23,7 @@ export const routes = [
       { path: "experiences", element: <ExperiencesPage /> },
       { path: "workshops", element: <WorkshopsPage /> },
       { path: "articles", element: <ArticlesPage /> },
+      { path: "faq", element: <FaqPage /> },
       { path: "accessibility", element: <AccessibilityPage /> },
       {
         path: "article/:id",

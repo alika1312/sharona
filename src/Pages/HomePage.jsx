@@ -3,8 +3,15 @@ import { Head } from "vite-react-ssg";
 import { Link } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import { aboutInformation, testimonials } from "../information/information";
+import { teaserFaqs } from "../information/faq";
+import FaqAccordion from "../components/FaqAccordion";
 import { useReveal } from "../hooks/useReveal";
 import { kicker, h2, muted } from "../design/ui";
+import {
+  trackContactFormSubmit,
+  trackWhatsappClick,
+  trackClickToCall,
+} from "../lib/analytics";
 
 const WHATSAPP = "https://wa.me/972587250990";
 const TEL = "tel:+972587250990";
@@ -29,84 +36,6 @@ const steps = [
 const voices = [2, 7, 16]
   .map((id) => testimonials.find((t) => t.id === id))
   .filter(Boolean);
-
-// FAQ. Answers marked `todo:true` are placeholders awaiting the client — they
-// render with a visible "להשלמה" note and are EXCLUDED from the FAQPage schema
-// so structured data only ever asserts truthful, on-page facts.
-const faqs = [
-  {
-    q: "באילו תחומים את מטפלת?",
-    a: "אני עוסקת בטיפול רגשי, בייעוץ ובטיפול זוגי, בהדרכת הורים, בטיפול במצבי משבר ובטראומה, וכן בייעוץ תעסוקתי וקריירה. בנוסף אני מעבירה סדנאות ליחידים, זוגות, קבוצות וארגונים.",
-  },
-  {
-    q: "היכן מתקיימים המפגשים?",
-    a: "בקליניקה בצור הדסה, וכן באזור ירושלים, הרי ירושלים, מבשרת ציון, בית שמש וגוש עציון. כמו כן ניתן לקיים מפגשים אונליין בזום מכל הארץ ומחוץ לישראל.",
-  },
-  {
-    q: "האם אפשר לקבל טיפול אונליין?",
-    a: "כן. יש לי ניסיון רב בטיפולים בזום ואונליין עם מטופלים מרחבי הארץ ומחוץ לישראל, וניתן גם לשלב מפגשים פרונטליים ואונליין באותו תהליך.",
-  },
-  {
-    q: "באילו שפות מתקיים הטיפול?",
-    a: "הטיפול מתקיים בעברית ובאנגלית.",
-  },
-  {
-    q: "למי מתאים הטיפול?",
-    a: "אני מלווה יחידים, זוגות וקבוצות, מכל המגזרים — חילונים, דתיים וחרדים — ומתאימה את הטיפול לצרכים הייחודיים של כל אחד ואחת.",
-  },
-  {
-    q: "מה ההשכלה וההכשרה שלך?",
-    a: "בעלת תואר שני בייעוץ חינוכי ותואר שני נוסף במנהל עסקים (MBA) מאוניברסיטת בר אילן, בוגרת בית הספר למנהיגות חינוכית של קרן מנדל, עם כ-20 שנות ניסיון כמנחה, יועצת ומטפלת.",
-  },
-  {
-    q: "כמה עולה מפגש?",
-    a: "עלות המפגש — לפרטים מוזמנים לפנות אליי.",
-    todo: true,
-  },
-  {
-    q: "כמה זמן נמשך מפגש וכמה מפגשים נדרשים?",
-    a: "אני עובדת בעיקר בגישות של טיפול קצר מועד. משך המפגש ומספר המפגשים — לפרטים מוזמנים לפנות אליי.",
-    todo: true,
-  },
-];
-
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs
-    .filter((f) => !f.todo)
-    .map((f) => ({
-      "@type": "Question",
-      name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: f.a },
-    })),
-};
-
-function FaqItem({ q, a, todo }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div data-reveal style={{ background: "var(--color-surface)", borderRadius: 20, boxShadow: "var(--shadow-sm)", overflow: "hidden" }}>
-      <button
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, background: "none", border: "none", cursor: "pointer", padding: "22px 26px", textAlign: "right", fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 20, color: "var(--color-accent-2-800)" }}
-      >
-        <span>{q}</span>
-        <span style={{ flex: "none", fontSize: 24, transition: "transform .3s ease", transform: open ? "rotate(45deg)" : "none", color: "var(--color-accent)" }}>＋</span>
-      </button>
-      {open && (
-        <div style={{ padding: "0 26px 24px", fontSize: 17, lineHeight: 1.72, color: muted(78) }}>
-          <p style={{ margin: 0 }}>{a}</p>
-          {todo && (
-            <p style={{ margin: "10px 0 0", fontSize: 13.5, fontWeight: 700, color: "var(--color-accent-700)" }}>
-              ⚠ להשלמה על ידי שרונה
-            </p>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
 
 function HomePage() {
   const rootRef = useReveal();
@@ -135,6 +64,8 @@ function HomePage() {
         () => {
           setStatus("ok");
           form.reset();
+          // GA4 conversion: only on a genuinely successful send.
+          trackContactFormSubmit("home_contact");
         },
         () => setStatus("err")
       );
@@ -154,7 +85,6 @@ function HomePage() {
         <meta property="og:description" content="יועצת ומטפלת המתמחה בטיפול רגשי, ייעוץ זוגי, הדרכת הורים, טראומה ומשבר – אונליין ובאזור ירושלים ומבשרת ציון." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://sharona-bar-nes.com/" />
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Head>
 
       {/* ============ HERO ============ */}
@@ -331,17 +261,24 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ============ FAQ ============ */}
+      {/* ============ FAQ TEASER ============ */}
+      {/* Short teaser only — the full 8 Q&As and the FAQPage schema live on /faq
+          (the client asked for a dedicated FAQ page), so the two don't compete. */}
       <section id="faq" className="org-section" style={{ position: "relative", padding: "120px 54px", background: "var(--color-bg)", overflow: "hidden" }}>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 56 }}>
             <div data-reveal style={{ ...kicker, marginInline: "auto" }}>שאלות נפוצות</div>
             <h2 data-reveal data-reveal-delay="120" className="org-h2" style={{ ...h2, maxWidth: "22ch", margin: "0 auto" }}>כל מה שרציתם לדעת לפני שמתחילים</h2>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {faqs.map((f) => (
-              <FaqItem key={f.q} {...f} />
-            ))}
+          <FaqAccordion items={teaserFaqs} />
+          <div data-reveal style={{ textAlign: "center", marginTop: 34 }}>
+            <Link
+              to="/faq"
+              className="pill-cta"
+              style={{ display: "inline-block", background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 17, padding: "15px 32px", borderRadius: 999, boxShadow: "var(--shadow-sm)" }}
+            >
+              לכל השאלות הנפוצות ←
+            </Link>
           </div>
         </div>
       </section>
@@ -355,10 +292,10 @@ function HomePage() {
             <h2 data-reveal data-reveal-delay="120" className="org-h2" style={{ ...h2, fontSize: 48, marginBottom: 24, maxWidth: "16ch" }}>הצעד הראשון מתחיל בשיחה.</h2>
             <p data-reveal data-reveal-delay="220" style={{ fontSize: 19, lineHeight: 1.7, margin: "0 0 32px", maxWidth: "40ch", color: muted(74) }}>השאירו פרטים ואחזור אליכם בהקדם לתיאום פגישת היכרות — ללא התחייבות.</p>
             <div data-reveal data-reveal-delay="320" style={{ display: "flex", flexDirection: "column", gap: 16, fontSize: 17 }}>
-              <ContactRow icon="✆" href={TEL}>058-725-0990</ContactRow>
+              <ContactRow icon="✆" href={TEL} onClick={() => trackClickToCall("home_contact_row")}>058-725-0990</ContactRow>
               <ContactRow icon="✉" href={`mailto:${EMAIL}`}>{EMAIL}</ContactRow>
               <ContactRow icon="⌂">מבשרת ציון · צור הדסה · אונליין מכל הארץ</ContactRow>
-              <ContactRow icon="✦" href={WHATSAPP}>שיחה מהירה בוואטסאפ</ContactRow>
+              <ContactRow icon="✦" href={WHATSAPP} onClick={() => trackWhatsappClick("home_contact_row")}>שיחה מהירה בוואטסאפ</ContactRow>
             </div>
           </div>
           <div data-reveal data-reveal-delay="200" style={{ flex: 1, background: "color-mix(in srgb,var(--color-bg) 55%,#fff)", borderRadius: 32, padding: 40, boxShadow: "var(--shadow-lg)" }}>
@@ -401,7 +338,7 @@ function Stat({ value, label, small }) {
   );
 }
 
-function ContactRow({ icon, href, children }) {
+function ContactRow({ icon, href, children, onClick }) {
   const inner = (
     <>
       <span style={{ width: 42, height: 42, borderRadius: "50%", background: "var(--color-accent-2-200)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{icon}</span>
@@ -410,7 +347,7 @@ function ContactRow({ icon, href, children }) {
   );
   const style = { display: "flex", alignItems: "center", gap: 14, color: "var(--color-text)" };
   return href ? (
-    <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" style={style}>{inner}</a>
+    <a href={href} onClick={onClick} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" style={style}>{inner}</a>
   ) : (
     <div style={style}>{inner}</div>
   );

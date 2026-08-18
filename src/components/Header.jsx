@@ -6,6 +6,7 @@ const links = [
   { label: "תחומי הטיפול", to: "/experiences" },
   { label: "סדנאות", to: "/workshops" },
   { label: "מאמרים", to: "/articles" },
+  { label: "שאלות נפוצות", to: "/faq" },
 ];
 
 export const Header = () => {
@@ -100,13 +101,13 @@ export const Header = () => {
             whiteSpace: "nowrap",
           }}
         >
-          שרונה בר־נס
+          שרונה בר-נס
         </Link>
 
         {/* desktop nav */}
         <nav
           aria-label="ניווט ראשי"
-          className="org-hide-mobile"
+          className="org-hide-mobile org-desktop-nav"
           style={{ display: "flex", gap: 30, alignItems: "center" }}
         >
           {links.map((l) => (

@@ -76,7 +76,7 @@ function AboutPage() {
           <div style={{ flex: 1.1 }}>
             <div data-reveal style={kicker}>קצת עליי</div>
             <h1 className="org-h1" style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 56, lineHeight: 1.12, margin: "0 0 26px" }}>
-              <span data-reveal style={{ display: "block" }}>שרונה קדושאי בר־נס</span>
+              <span data-reveal style={{ display: "block" }}>שרונה קדושאי בר-נס</span>
               <span data-reveal data-reveal-delay="120" style={{ display: "block", fontSize: 30, color: "var(--color-accent-2-700)", marginTop: 8 }}>
                 יועצת ומטפלת רגשית
               </span>

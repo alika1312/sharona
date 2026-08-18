@@ -1,3 +1,4 @@
+import { trackWhatsappClick, trackClickToCall } from "../lib/analytics";
 
 // Always-visible floating quick-contact: WhatsApp (primary) + one-tap call.
 const WHATSAPP =
@@ -22,6 +23,7 @@ export const ContactInfo = () => {
         href={WHATSAPP}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackWhatsappClick("floating_fab")}
         aria-label="שליחת הודעה בוואטסאפ"
         className="pill-cta"
         style={{ ...fab, background: "#25D366" }}
@@ -32,6 +34,7 @@ export const ContactInfo = () => {
       </a>
       <a
         href={TEL}
+        onClick={() => trackClickToCall("floating_fab")}
         aria-label="חיוג לשרונה"
         className="pill-cta"
         style={{ ...fab, background: "var(--color-accent-2)" }}

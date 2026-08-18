@@ -3,6 +3,8 @@
 //  - all JSON-LD blocks parse; report @types per page
 //  - internal links (href="/...") resolve to an emitted page
 //  - image srcs (src="/...") resolve to a real file in /dist
+//  - indexability table (robots + canonical per emitted page) and sitemap parity
+//  - the gtag bootstrap is present in the prerendered HTML of every page
 import { readdir, readFile, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve, join } from "node:path";
@@ -31,10 +33,12 @@ const files = await walk(dist);
 const titles = new Map(), descs = new Map(), canons = new Map();
 const problems = [];
 const typeReport = [];
+const indexTable = [];
 
 for (const f of files) {
   const html = await readFile(f, "utf8");
   const rel = "/" + f.slice(dist.length + 1).replace(/\\/g, "/");
+  const urlPath = "/" + rel.replace(/^\/+/, "").replace(/index\.html$/, "");
 
   const title = pick(/<title[^>]*>([^<]*)<\/title>/, html);
   const desc = pick(/<meta[^>]*name="description"[^>]*content="([^"]*)"/, html);
@@ -42,6 +46,20 @@ for (const f of files) {
 
   // noindex pages (redirect stubs) are intentionally excluded from SEO checks
   const noindex = /<meta[^>]*name="robots"[^>]*content="[^"]*noindex/i.test(html);
+  const robots = pick(/<meta[^>]*name="robots"[^>]*content="([^"]*)"/i, html);
+
+  indexTable.push({
+    url: urlPath,
+    robots: robots || "(none → indexable)",
+    canonical: canon || "—",
+    title: title || "—",
+  });
+
+  // gtag bootstrap must be on every prerendered page
+  if (!/window\.dataLayer\s*=\s*window\.dataLayer/.test(html)) {
+    problems.push(`${rel}: gtag bootstrap missing from prerendered HTML`);
+  }
+
   if (!noindex) {
     if (!title) problems.push(`${rel}: missing <title>`);
     if (!desc) problems.push(`${rel}: missing description`);
@@ -93,6 +111,32 @@ const dup = (map, kind) =>
 dup(titles, "title");
 dup(descs, "description");
 dup(canons, "canonical");
+
+// ---- sitemap parity: every indexable page listed, no noindex page listed ----
+const sitemap = await readFile(join(dist, "sitemap.xml"), "utf8");
+const sitemapPaths = new Set(
+  [...sitemap.matchAll(/<loc>https?:\/\/[^/]+([^<]*)<\/loc>/g)].map((m) => m[1])
+);
+const indexable = indexTable.filter((r) => !/noindex/i.test(r.robots));
+for (const r of indexable) {
+  if (!sitemapPaths.has(r.url)) problems.push(`sitemap: indexable page ${r.url} is NOT listed`);
+}
+for (const r of indexTable.filter((x) => /noindex/i.test(x.robots))) {
+  if (sitemapPaths.has(r.url)) problems.push(`sitemap: noindex page ${r.url} IS listed`);
+}
+for (const p of sitemapPaths) {
+  if (!indexTable.some((r) => r.url === p)) problems.push(`sitemap: lists ${p} but no page was emitted`);
+}
+
+// ---- indexability table ----
+const pad = (s, n) => String(s) + " ".repeat(Math.max(0, n - String(s).length));
+console.log("\nIndexability (every emitted page):");
+console.log(`  ${pad("URL", 20)} ${pad("robots", 22)} ${pad("in sitemap", 11)} canonical`);
+for (const r of indexTable.sort((a, b) => a.url.localeCompare(b.url))) {
+  console.log(
+    `  ${pad(r.url, 20)} ${pad(r.robots, 22)} ${pad(sitemapPaths.has(r.url) ? "yes" : "no", 11)} ${r.canonical}`
+  );
+}
 
 console.log(`\nPages scanned: ${files.length}`);
 console.log(`Unique titles: ${titles.size} | descriptions: ${descs.size} | canonicals: ${canons.size}`);

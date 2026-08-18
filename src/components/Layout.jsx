@@ -3,6 +3,7 @@ import { Head } from "vite-react-ssg";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import StructuredData from "./StructuredData";
+import Analytics from "./Analytics";
 
 // Shared shell for every route: site-wide head defaults, header, page, footer.
 // Per-page <Head> tags override these defaults (react-helmet-async dedupes by
@@ -32,6 +33,7 @@ export default function Layout() {
         />
       </Head>
       <StructuredData />
+      <Analytics />
       <a href="#main" className="skip-link">דילוג לתוכן הראשי</a>
       <Header />
       <main id="main">

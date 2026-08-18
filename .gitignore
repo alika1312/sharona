@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Local env (analytics / Ads / Search Console ids) — see .env.example
+.env
+.env.*
+!.env.example
+
 # Windows system files
 desktop.ini
 Thumbs.db

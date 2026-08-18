@@ -1,6 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 import { articles } from "../information/articles";
+import { articleDescription, articlePageTitle, normalize } from "../information/articleMeta";
+import ShareLinks from "../components/ShareLinks";
 import { useReveal } from "../hooks/useReveal";
 import { muted } from "../design/ui";
 
@@ -20,15 +22,14 @@ export const ArticlePage = () => {
 
   const { title, image, content } = article;
 
-  // Use first paragraph as description preview (safe fallback)
-  const description =
-    content[0]?.sectionFirstText?.substring(0, 160) ||
-    "מאמר בנושא טיפול זוגי ורגשי";
+  // First paragraph, trimmed on a word boundary (see articleMeta.js for why).
+  const description = articleDescription(article);
+  const pageTitle = articlePageTitle(article);
 
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: title,
+    headline: normalize(title),
     description,
     ...(image ? { image: `https://sharona-bar-nes.com${image}` } : {}),
     inLanguage: "he",
@@ -46,10 +47,10 @@ export const ArticlePage = () => {
       {/* SEO Tags (per article) */}
       <Head>
         <html lang="he" dir="rtl" />
-        <title>{`${title} | שרונה קדושאי בר-נס`}</title>
+        <title>{pageTitle}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={`https://sharona-bar-nes.com/article/${article.id}/`} />
-        <meta property="og:title" content={`${title} | שרונה קדושאי בר-נס`} />
+        <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={description} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={`https://sharona-bar-nes.com/article/${article.id}/`} />
@@ -100,7 +101,16 @@ export const ArticlePage = () => {
             </div>
           ))}
 
-          <div style={{ marginTop: 50, paddingTop: 30, borderTop: "1.5px solid color-mix(in srgb,var(--color-text) 12%,transparent)", display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
+          {/* share / send this article */}
+          <div style={{ marginTop: 50, paddingTop: 30, borderTop: "1.5px solid color-mix(in srgb,var(--color-text) 12%,transparent)" }}>
+            <ShareLinks
+              url={`https://sharona-bar-nes.com/article/${article.id}/`}
+              title={title}
+              label="שיתוף המאמר:"
+            />
+          </div>
+
+          <div style={{ marginTop: 34, display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
             <Link to="/articles" style={{ fontWeight: 700, fontSize: 16, color: "var(--color-accent-2-700)" }}>
               → חזרה לכל המאמרים
             </Link>

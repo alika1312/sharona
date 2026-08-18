@@ -9,6 +9,7 @@ const cols = [
   ],
   [
     { label: "מאמרים", to: "/articles" },
+    { label: "שאלות נפוצות", to: "/faq" },
     { label: "צרו קשר", to: "/#contact" },
     { label: "הצהרת נגישות", to: "/accessibility" },
   ],
@@ -47,7 +48,7 @@ export const Footer = () => {
                 marginBottom: 14,
               }}
             >
-              שרונה קדושאי בר־נס
+              שרונה קדושאי בר-נס
             </div>
             <p
               style={{
@@ -100,7 +101,7 @@ export const Footer = () => {
           }}
         >
           <span>
-            © {new Date().getFullYear()} שרונה קדושאי בר־נס. כל הזכויות שמורות.
+            © {new Date().getFullYear()} שרונה קדושאי בר-נס. כל הזכויות שמורות.
           </span>
           <span>האתר פותח על ידי אליקא נירקיס</span>
         </div>
