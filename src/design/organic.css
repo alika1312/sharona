@@ -64,8 +64,8 @@
 /* ---- keyframes ---- */
 @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
 @keyframes floaty2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-26px)} }
-@keyframes drift { 0%,100%{transform:translate(0,0) rotate(0deg)} 50%{transform:translate(18px,-24px) rotate(9deg)} }
-@keyframes drift2 { 0%,100%{transform:translate(0,0) rotate(0deg)} 50%{transform:translate(-22px,20px) rotate(-8deg)} }
+@keyframes drift { 0%,100%{transform:translate(0,0) rotate(0deg)} 50%{transform:translate(26px,-30px) rotate(10deg)} }
+@keyframes drift2 { 0%,100%{transform:translate(0,0) rotate(0deg)} 50%{transform:translate(-30px,26px) rotate(-9deg)} }
 @keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(14px,16px) scale(1.06)} }
 @keyframes marquee { to { transform: translateX(-50%) } }
 @keyframes hintBob { 0%{transform:translateY(0);opacity:.85} 55%{transform:translateY(10px);opacity:.35} 100%{transform:translateY(0);opacity:.85} }
@@ -169,7 +169,7 @@
 
 /* honor reduced-motion */
 @media (prefers-reduced-motion: reduce) {
-  .organic *,
+  .organic:not(.organic-v2) *,
   .reveal-on [data-reveal] {
     animation: none !important;
     transition: none !important;
@@ -234,3 +234,216 @@ select:focus-visible,
   .org-h2 { font-size: 34px !important; }
   .org-portrait { width: 78vw !important; height: 92vw !important; max-width: 360px; max-height: 430px; }
 }
+
+/* =====================================================================
+   Organic v2 — scroll-pinned homepage
+   Ported from the Claude Design handoff (Sharona.dc.html page styles).
+   Everything here is scoped to `.organic-v2` (the homepage root) or to the
+   v2-only data attributes, so the other pages keep the v1 look.
+   ===================================================================== */
+
+.organic-v2 {
+  position: relative;
+  overflow-x: clip;
+}
+
+@keyframes pulseRing { 0%{transform:scale(1);opacity:.5} 100%{transform:scale(1.9);opacity:0} }
+
+/* ---- pill CTA (v2 variant: no lift, just depth) ---- */
+.organic-v2 .pill {
+  display: inline-block;
+  transition: box-shadow .3s ease, background .3s ease, color .3s ease;
+}
+.organic-v2 .pill:hover {
+  box-shadow: var(--shadow-lg);
+  background: var(--color-accent-2-600);
+  color: var(--color-bg);
+}
+
+/* ---- form fields: v2 adds the focus lift ---- */
+.organic-v2 .fin {
+  box-sizing: border-box;
+  transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+}
+.organic-v2 .fin:focus { transform: translateY(-2px); }
+
+/* ---- rail dots ---- */
+.organic-v2 [data-dot-nav] {
+  display: block;
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent-2) 40%, transparent);
+  cursor: pointer;
+  transition: height .4s cubic-bezier(.2,.7,.2,1), background .4s ease;
+}
+
+/* ---- service cards ---- */
+.organic-v2 [data-deck] {
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .4s ease;
+}
+/* Only once a card has been dealt — mid-deal it carries an inline transform
+   and a hover lift would fight it. Shadow only, for the same reason. */
+.organic-v2 [data-deck][data-dealt="1"]:hover { box-shadow: var(--shadow-lg); }
+
+/* ---------------------------------------------------------------
+   Unpinning. A pinned section whose content is taller than the
+   viewport would clip, so motion.js flags it `data-unpin="1"` and it
+   falls back to normal flow. Same fallback covers reduced motion.
+   --------------------------------------------------------------- */
+@media (min-width: 901px) {
+  .organic-v2 [data-pin-sec][data-unpin="1"] { height: auto !important; }
+  .organic-v2 [data-pin-sec][data-unpin="1"] [data-pin-inner] {
+    position: static !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 96px 54px !important;
+  }
+  .organic-v2 [data-pin-sec][data-unpin="1"] [data-ghost],
+  .organic-v2 [data-pin-sec][data-unpin="1"] [data-spot] { display: none !important; }
+  .organic-v2 [data-pin-sec][data-unpin="1"] [data-deck] {
+    opacity: 1 !important;
+    transform: none !important;
+    z-index: auto !important;
+  }
+  .organic-v2 [data-pin-sec][data-unpin="1"] [data-cf] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .organic-v2 [data-pin-sec][data-unpin="1"] [data-step] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .organic-v2 [data-pin-sec][data-unpin="1"] [data-ab-portrait],
+  .organic-v2 [data-pin-sec][data-unpin="1"] [data-ab-stats],
+  .organic-v2 [data-pin-sec][data-unpin="1"] [data-cform] { opacity: 1 !important; }
+  .organic-v2 [data-gallery][data-unpin="1"] [data-pin-inner] { padding: 96px 0 !important; }
+  .organic-v2 [data-gallery][data-unpin="1"] [data-pin-inner] > div:first-of-type {
+    position: static !important;
+    padding: 0 54px 34px !important;
+  }
+  .organic-v2 [data-gallery][data-unpin="1"] [data-track] {
+    transform: none !important;
+    width: auto !important;
+    overflow-x: auto !important;
+    padding: 0 54px !important;
+    scrollbar-width: none;
+  }
+  .organic-v2 [data-gallery][data-unpin="1"] [data-gitem] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .organic-v2 [data-pin-sec][data-unpin="1"] [data-stack] { height: 370px !important; }
+}
+
+/* ---------------------------------------------------------------
+   Mobile: nothing pins, the gallery wraps, the rail and cursor
+   dot go away.
+   --------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .organic-v2 [data-rail],
+  .organic-v2 [data-cursor-dot] { display: none !important; }
+  .organic-v2 #top { padding: 70px 22px 80px !important; min-height: 0 !important; }
+  .organic-v2 #top > a[href="#about"] { display: none !important; }
+  .organic-v2 [data-pin-sec] { height: auto !important; }
+  .organic-v2 [data-pin-inner] {
+    position: static !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 80px 22px !important;
+  }
+  .organic-v2 [data-ghost],
+  .organic-v2 [data-spot],
+  .organic-v2 [data-path] { display: none !important; }
+  .organic-v2 [data-deck] {
+    opacity: 1 !important;
+    transform: none !important;
+    z-index: auto !important;
+  }
+  .organic-v2 [data-cf] { opacity: 1 !important; transform: none !important; }
+  .organic-v2 [data-ab-portrait],
+  .organic-v2 [data-ab-stats],
+  .organic-v2 [data-cform] { opacity: 1 !important; }
+  .organic-v2 #top h1 { font-size: clamp(40px, 12vw, 54px) !important; }
+  .organic-v2 #top p { font-size: 18px !important; }
+  .organic-v2 #about h2,
+  .organic-v2 #approach h2,
+  .organic-v2 #services h2,
+  .organic-v2 #gallery h2,
+  .organic-v2 #faq h2,
+  .organic-v2 #voices h2,
+  .organic-v2 #contact h2 { font-size: clamp(30px, 8vw, 38px) !important; }
+  .organic-v2 [data-m="stack"] {
+    flex-direction: column !important;
+    gap: 40px !important;
+    align-items: stretch !important;
+  }
+  .organic-v2 [data-m="stack"] > div { width: 100% !important; flex: 1 1 auto !important; }
+  .organic-v2 [data-m="portrait"] {
+    width: min(80vw, 300px) !important;
+    height: min(96vw, 360px) !important;
+    margin: 0 auto !important;
+  }
+  .organic-v2 [data-m="steps"] { flex-direction: column !important; gap: 34px !important; }
+  .organic-v2 [data-m="grid"] { grid-template-columns: 1fr !important; }
+  .organic-v2 [data-gallery] [data-pin-inner] { padding: 80px 0 !important; }
+  .organic-v2 [data-gallery] [data-pin-inner] > div:first-of-type {
+    position: static !important;
+    padding: 0 22px 26px !important;
+  }
+  .organic-v2 [data-gitem] { opacity: 1 !important; }
+  .organic-v2 [data-track] {
+    flex-wrap: wrap !important;
+    transform: none !important;
+    width: auto !important;
+    padding: 0 22px !important;
+    gap: 14px !important;
+  }
+  .organic-v2 [data-track] > div { flex: 1 1 44% !important; margin-top: 0 !important; }
+  .organic-v2 [data-track] > div > div { height: 210px !important; width: auto !important; }
+  .organic-v2 [data-stack] { height: 430px !important; }
+}
+
+/* ---------------------------------------------------------------
+   Reduced motion: motion.js unpins everything and stops scrubbing,
+   so the stacked cards need to become a plain column and the
+   decorative overlays need to stay out of the way.
+   --------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .organic-v2 *,
+  .organic-v2 *::before,
+  .organic-v2 *::after { animation: none !important; }
+  .organic-v2 [data-stack] {
+    height: auto !important;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .organic-v2 [data-card] {
+    position: static !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .organic-v2 [data-ghost],
+  .organic-v2 [data-spot] { display: none !important; }
+}
+
+/* Rail dots and in-page CTAs jump between sections; glide instead of teleport
+   (v2 homepage only in practice — no other page has in-page anchors). */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+/* Anchor landings clear the sticky header. Pinned sections are excluded —
+   their top edge is the start of their scroll timeline, not a headline. */
+.organic-v2 section[id]:not([data-pin-sec]) { scroll-margin-top: 76px; }
+
+/* With the cursor dot active the system pointer is redundant — hide it so the
+   dot is the only thing on screen. Only ever set from JS (fine pointers, no
+   reduced-motion), so touch users and anyone who needs the OS cursor keep it. */
+.organic-v2.cursor-dot-on,
+.organic-v2.cursor-dot-on * { cursor: none !important; }
