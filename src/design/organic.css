@@ -178,6 +178,24 @@
   }
 }
 
+/* ---- native scrollbar ----
+   The document scrollbar is hidden by request; the page keeps its own
+   indicators (the fixed scroll-progress bar and the homepage rail dots).
+   Deliberately NOT  — wheel, trackpad, touch, PgDn/PgUp,
+   Home/End, space and arrow keys all keep working exactly as before. Scoped to
+   the document scroller only, so inner scrollers (e.g. the unpinned gallery
+   track) keep whatever they already declare. */
+html,
+body {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* legacy Edge/IE */
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 /* ---- global accessibility (applies outside .organic too: header/footer/FAB) ---- */
 .skip-link {
   position: absolute;
@@ -205,8 +223,12 @@ select:focus-visible,
   border-radius: 4px;
 }
 
-/* nav: hamburger only on mobile */
-.org-menu-btn { display: none; }
+/* nav: the drawer, its toggle and the bottom action bar are mobile-only,
+   as is the "swipe for more" hint on the reviews rail */
+[data-navtoggle],
+[data-drawer],
+[data-mobar],
+[data-mhint] { display: none; }
 
 /* ---- responsive ---- */
 /* 5 nav items + CTA get tight before the hamburger kicks in at 900px */
@@ -216,12 +238,22 @@ select:focus-visible,
 }
 
 @media (max-width: 900px) {
-  .org-menu-btn { display: block; }
-  .org-nav-inner { padding-left: 22px !important; padding-right: 22px !important; }
+  * { -webkit-tap-highlight-color: transparent; }
+  [data-navlinks] { display: none !important; }
+  [data-navtoggle] { display: flex !important; }
+  [data-drawer] { display: block !important; }
+  [data-mobar] { display: grid !important; }
+  .org-header { background: color-mix(in srgb, var(--color-bg) 84%, #fff) !important; }
+  .org-nav-inner { padding: 11px 16px !important; }
+  .org-wordmark {
+    font-size: 19px !important;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
   .org-hero,
   .org-about,
   .org-contact { flex-direction: column !important; }
-  .org-hide-mobile { display: none !important; }
   .org-services-grid { grid-template-columns: 1fr !important; }
   .org-voices-grid { grid-template-columns: 1fr !important; }
   /* gallery is a flex row on desktop — stack it so tiles don't squish */
@@ -341,71 +373,353 @@ select:focus-visible,
 }
 
 /* ---------------------------------------------------------------
-   Mobile: nothing pins, the gallery wraps, the rail and cursor
-   dot go away.
+   Mobile (Kinetic mobile pass, ≤900px). Nothing pins, so every
+   section is re-laid-out here rather than scrubbed: the steps hang
+   as beads on a dashed thread, the services zigzag down the page,
+   the gallery is an organic mosaic and the reviews become a
+   swipeable rail with pagination dots.
    --------------------------------------------------------------- */
+@keyframes mrise { from { opacity: 0; transform: translateY(28px) } to { opacity: 1; transform: none } }
+@keyframes mthread { from { transform: scaleY(.02) } to { transform: scaleY(1) } }
+
 @media (max-width: 900px) {
   .organic-v2 [data-rail],
-  .organic-v2 [data-cursor-dot] { display: none !important; }
-  .organic-v2 #top { padding: 70px 22px 80px !important; min-height: 0 !important; }
-  .organic-v2 #top > a[href="#about"] { display: none !important; }
+  .organic-v2 [data-cursor-dot],
+  .organic-v2 [data-hint],
+  .organic-v2 [data-path],
+  .organic-v2 [data-ghost],
+  .organic-v2 [data-spot],
+  .organic-v2 [data-carrow] { display: none !important; }
+
   .organic-v2 [data-pin-sec] { height: auto !important; }
   .organic-v2 [data-pin-inner] {
     position: static !important;
     height: auto !important;
     overflow: visible !important;
-    padding: 80px 22px !important;
+    display: block !important;
+    padding: 74px 20px !important;
+    text-align: center !important;
   }
-  .organic-v2 [data-ghost],
-  .organic-v2 [data-spot],
-  .organic-v2 [data-path] { display: none !important; }
-  .organic-v2 [data-deck] {
-    opacity: 1 !important;
-    transform: none !important;
-    z-index: auto !important;
-  }
-  .organic-v2 [data-cf] { opacity: 1 !important; transform: none !important; }
+  .organic-v2 [data-pin-inner] > div { max-width: 440px !important; margin-inline: auto !important; }
+  .organic-v2 [data-cf],
   .organic-v2 [data-ab-portrait],
   .organic-v2 [data-ab-stats],
-  .organic-v2 [data-cform] { opacity: 1 !important; }
-  .organic-v2 #top h1 { font-size: clamp(40px, 12vw, 54px) !important; }
-  .organic-v2 #top p { font-size: 18px !important; }
+  .organic-v2 [data-cform] { opacity: 1 !important; transform: none !important; }
+  .organic-v2 [data-card] { z-index: auto !important; }
+
+  /* hero */
+  .organic-v2 #top { padding: 96px 20px 66px !important; min-height: 0 !important; text-align: center !important; }
+  .organic-v2 #top > a[href="#about"] { display: none !important; }
+  .organic-v2 #top h1 { font-size: clamp(37px, 10.8vw, 52px) !important; }
+  .organic-v2 #top p { font-size: 17.5px !important; margin: 22px auto 30px !important; max-width: 32ch !important; }
+  .organic-v2 #top .pill { font-size: 17px !important; padding: 16px 32px !important; }
+  .organic-v2 #top [data-reveal-delay="760"] { justify-content: center !important; }
+  .organic-v2 [data-m="stack"] {
+    flex-direction: column !important;
+    gap: 36px !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .organic-v2 [data-m="stack"] > div { width: 100% !important; flex: 1 1 auto !important; }
+  .organic-v2 [data-m="portrait"] {
+    width: min(74vw, 292px) !important;
+    height: min(88vw, 346px) !important;
+    margin: 0 auto !important;
+  }
+
+  .organic-v2 [data-marquee] { font-size: 25px !important; }
+  .organic-v2 [data-marquee] span { padding: 0 19px !important; }
+
+  /* about + shared headings */
   .organic-v2 #about h2,
   .organic-v2 #approach h2,
   .organic-v2 #services h2,
   .organic-v2 #gallery h2,
-  .organic-v2 #faq h2,
   .organic-v2 #voices h2,
-  .organic-v2 #contact h2 { font-size: clamp(30px, 8vw, 38px) !important; }
-  .organic-v2 [data-m="stack"] {
+  .organic-v2 #contact h2,
+  .organic-v2 #faq h2 {
+    font-size: clamp(28px, 7.6vw, 36px) !important;
+    max-width: none !important;
+    margin-inline: auto !important;
+  }
+  .organic-v2 #about p,
+  .organic-v2 #contact p { font-size: 17.5px !important; max-width: 34ch !important; margin-inline: auto !important; }
+  .organic-v2 [data-m="stats"] { gap: 20px !important; justify-content: center !important; padding-top: 22px !important; }
+  .organic-v2 [data-m="stats"] > div { flex: 1 1 92px; }
+  .organic-v2 [data-m="stats"] > div > div:first-child { font-size: 31px !important; }
+
+  /* approach — numbered beads hung on a dashed thread */
+  .organic-v2 [data-m="steps"] {
     flex-direction: column !important;
-    gap: 40px !important;
-    align-items: stretch !important;
-  }
-  .organic-v2 [data-m="stack"] > div { width: 100% !important; flex: 1 1 auto !important; }
-  .organic-v2 [data-m="portrait"] {
-    width: min(80vw, 300px) !important;
-    height: min(96vw, 360px) !important;
+    gap: 50px !important;
+    max-width: 344px !important;
     margin: 0 auto !important;
+    padding-top: 6px;
   }
-  .organic-v2 [data-m="steps"] { flex-direction: column !important; gap: 34px !important; }
-  .organic-v2 [data-m="grid"] { grid-template-columns: 1fr !important; }
-  .organic-v2 [data-gallery] [data-pin-inner] { padding: 80px 0 !important; }
+  .organic-v2 [data-m="steps"] > div:first-child {
+    position: absolute !important;
+    top: 30px !important;
+    bottom: 26px !important;
+    inset-inline: auto !important;
+    inset-inline-start: 50% !important;
+    width: 2px !important;
+    height: auto !important;
+    margin-inline-start: -1px;
+    transform-origin: top;
+    background: repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-accent-2) 55%, transparent) 0 7px,
+      transparent 7px 15px
+    );
+  }
+  .organic-v2 [data-step] {
+    display: block !important;
+    flex: 0 0 auto !important;
+    position: relative;
+    text-align: center !important;
+    padding: 46px 22px 26px !important;
+    border-radius: 30px;
+    box-shadow: var(--shadow-sm);
+  }
+  .organic-v2 [data-step]:nth-child(even) { background: color-mix(in srgb, var(--color-accent-2-100) 76%, #fff); }
+  .organic-v2 [data-step]:nth-child(odd) { background: color-mix(in srgb, var(--color-accent-100) 70%, #fff); }
+  .organic-v2 [data-step] [data-num] {
+    position: absolute !important;
+    top: -27px;
+    inset-inline-start: 50% !important;
+    transform: translateX(50%);
+    width: 54px !important;
+    height: 54px !important;
+    font-size: 25px !important;
+    margin: 0 !important;
+    box-shadow: var(--shadow-sm) !important;
+  }
+  .organic-v2 [data-step] > div:nth-child(2) { font-size: 20px !important; margin-bottom: 9px !important; }
+  .organic-v2 [data-step] p { font-size: 16.5px !important; max-width: 25ch; margin: 0 auto !important; }
+
+  /* services — offset cards zigzagging down, icon discs popping out */
+  .organic-v2 #services [data-pin-inner] [data-m="grid"] {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+    gap: 38px !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding-top: 14px;
+  }
+  .organic-v2 [data-deck] {
+    position: relative;
+    width: 86% !important;
+    max-width: 322px;
+    padding: 34px 24px 26px !important;
+    border-radius: 36px !important;
+    box-shadow: var(--shadow-sm) !important;
+    text-align: start !important;
+    opacity: 1 !important;
+  }
+  .organic-v2 [data-deck]:nth-child(odd) {
+    align-self: flex-start;
+    transform: rotate(-1.1deg);
+    border-end-start-radius: 12px !important;
+  }
+  .organic-v2 [data-deck]:nth-child(even) {
+    align-self: flex-end;
+    transform: rotate(1.1deg);
+    border-end-end-radius: 12px !important;
+    background-color: color-mix(in srgb, var(--color-accent-2-100) 60%, #fff) !important;
+  }
+  .organic-v2 [data-deck] > div:first-child {
+    position: absolute;
+    top: -20px;
+    width: 64px !important;
+    height: 64px !important;
+    font-size: 29px !important;
+    margin: 0 !important;
+    box-shadow: 0 0 0 7px var(--color-bg) !important;
+  }
+  .organic-v2 [data-deck]:nth-child(odd) > div:first-child { inset-inline-end: 20px; }
+  .organic-v2 [data-deck]:nth-child(even) > div:first-child { inset-inline-start: 20px; }
+  .organic-v2 [data-deck] > div:nth-child(2) { font-size: 22px !important; margin-bottom: 8px !important; }
+  .organic-v2 [data-deck] p { font-size: 16.5px !important; margin: 0 !important; }
+
+  /* gallery — a vertical organic mosaic */
+  .organic-v2 [data-gallery] [data-pin-inner] { padding: 74px 20px !important; }
   .organic-v2 [data-gallery] [data-pin-inner] > div:first-of-type {
     position: static !important;
-    padding: 0 22px 26px !important;
+    padding: 0 0 24px !important;
   }
-  .organic-v2 [data-gitem] { opacity: 1 !important; }
   .organic-v2 [data-track] {
-    flex-wrap: wrap !important;
-    transform: none !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
     width: auto !important;
-    padding: 0 22px !important;
-    gap: 14px !important;
+    max-width: 440px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    transform: none !important;
+    align-items: start !important;
   }
-  .organic-v2 [data-track] > div { flex: 1 1 44% !important; margin-top: 0 !important; }
-  .organic-v2 [data-track] > div > div { height: 210px !important; width: auto !important; }
-  .organic-v2 [data-stack] { height: 430px !important; }
+  .organic-v2 [data-gitem] { width: auto !important; opacity: 1 !important; }
+  .organic-v2 [data-gitem] > div {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 3 / 4;
+    box-shadow: var(--shadow-sm) !important;
+  }
+  .organic-v2 [data-gitem]:first-child { grid-column: 1 / -1; }
+  .organic-v2 [data-gitem]:first-child > div { aspect-ratio: 5 / 4; }
+  .organic-v2 [data-gitem]:last-child {
+    grid-column: 1 / -1;
+    display: flex !important;
+    justify-content: center;
+    padding: 8px 0 0 !important;
+  }
+
+  /* voices — a swipeable carousel, one review at a time */
+  .organic-v2 #voices [data-pin-inner] { padding: 74px 0 !important; }
+  .organic-v2 #voices [data-pin-inner] > div { padding-inline: 0 !important; }
+  .organic-v2 #voices [data-pin-inner] > div > div:first-child { padding-inline: 20px; margin-bottom: 30px !important; }
+  .organic-v2 #voices [data-vhint],
+  .organic-v2 #voices [data-vhint2] { display: none !important; }
+  .organic-v2 #voices [data-mhint] { display: block !important; }
+  .organic-v2 #voices [data-pin-inner] [data-stack] {
+    position: static !important;
+    height: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 6px 0 4px !important;
+    display: flex !important;
+    gap: 14px;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 20px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .organic-v2 [data-stack]::-webkit-scrollbar { display: none; }
+  .organic-v2 [data-stack]::before,
+  .organic-v2 [data-stack]::after { content: ""; flex: 0 0 20px; }
+  .organic-v2 [data-card] {
+    position: relative !important;
+    inset: auto !important;
+    flex: 0 0 82% !important;
+    width: auto !important;
+    max-width: 330px;
+    scroll-snap-align: center;
+    padding: 30px 24px !important;
+    border-radius: 32px !important;
+    text-align: start !important;
+    display: flex !important;
+    flex-direction: column;
+  }
+  .organic-v2 [data-card] > div:first-child { font-size: 50px !important; margin-bottom: 16px !important; }
+  .organic-v2 [data-card] p { font-size: 17.5px !important; margin: 0 0 22px !important; flex: 1 1 auto; }
+  .organic-v2 [data-mdots] { display: flex !important; }
+  .organic-v2 [data-mdots] button {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-bg) 34%, transparent);
+    cursor: pointer;
+    transition: width .35s cubic-bezier(.2,.7,.2,1), background .35s ease;
+  }
+  .organic-v2 [data-mdots] button[data-on="1"] { width: 26px; background: var(--color-accent-300); }
+
+  /* faq + contact */
+  .organic-v2 #faq [data-m="stack"] > div:first-child p { max-width: 30ch; margin: 0 auto !important; }
+  .organic-v2 [data-faq-q] {
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 12px !important;
+    padding: 18px 20px !important;
+  }
+  .organic-v2 [data-faq-q]::before { content: ""; flex: 0 0 30px; }
+  .organic-v2 [data-faq-a] p,
+  .organic-v2 [role="region"] > p {
+    text-align: center !important;
+    max-width: 31ch;
+    margin: 0 auto !important;
+    padding: 0 20px 20px !important;
+  }
+  .organic-v2 [data-cform] { padding: 26px 22px !important; border-radius: 28px !important; }
+  .organic-v2 .fin { text-align: center !important; }
+  .organic-v2 #contact [data-reveal-delay="220"] { align-items: center !important; }
+  .organic-v2 #contact [data-reveal-delay="220"] > a,
+  .organic-v2 #contact [data-reveal-delay="220"] > div { justify-content: center !important; white-space: nowrap; }
+  .organic-v2 #top > div [data-reveal] a[href="/about"] {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding-bottom: 0 !important;
+  }
+
+  /* the action bar carries the call CTA, so the FAB stack keeps only
+     WhatsApp — lifted clear of the bar */
+  .org-fab-call { display: none !important; }
+  .org-fabs {
+    bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important;
+    inset-inline-end: 14px !important;
+  }
+
+  /* footer: centred, and its bottom padding clears the fixed action bar */
+  footer {
+    padding: 56px 20px calc(118px + env(safe-area-inset-bottom, 0px)) !important;
+    text-align: center !important;
+  }
+  footer > div:first-of-type {
+    flex-direction: column;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 30px !important;
+  }
+  footer > div:first-of-type > div:nth-of-type(2) { gap: 34px !important; justify-content: center !important; }
+  footer > div:first-of-type > div:nth-of-type(2) > div { gap: 0 !important; align-items: center !important; }
+  footer a { min-height: 44px; display: flex; align-items: center; justify-content: center; }
+  footer > div:last-of-type { flex-direction: column; align-items: center; justify-content: center !important; gap: 6px !important; }
+}
+
+/* Scroll-driven reveals where the browser supports them; a plain
+   "already visible" fallback everywhere else. */
+@supports (animation-timeline: view()) {
+  @media (max-width: 900px) and (prefers-reduced-motion: no-preference) {
+    .organic-v2 [data-reveal],
+    .organic-v2 [data-words],
+    .organic-v2 [data-step],
+    .organic-v2 [data-faq],
+    .organic-v2 [data-ab-portrait],
+    .organic-v2 [data-ab-stats],
+    .organic-v2 [data-cform],
+    .organic-v2 [data-deck],
+    .organic-v2 [data-gitem],
+    .organic-v2 [data-stack] {
+      animation: mrise linear both;
+      animation-timeline: view();
+      animation-range: entry 6% cover 24%;
+    }
+    .organic-v2 [data-m="steps"] > div:first-child {
+      animation: mthread linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 50%;
+    }
+  }
+}
+@supports not (animation-timeline: view()) {
+  @media (max-width: 900px) {
+    .organic-v2 [data-step],
+    .organic-v2 [data-faq],
+    .organic-v2 [data-deck],
+    .organic-v2 [data-gitem],
+    .organic-v2 [data-card] { opacity: 1 !important; transform: none !important; }
+  }
+}
+@media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+  .organic-v2 [data-step],
+  .organic-v2 [data-faq],
+  .organic-v2 [data-deck],
+  .organic-v2 [data-gitem],
+  .organic-v2 [data-card] { opacity: 1 !important; transform: none !important; }
 }
 
 /* ---------------------------------------------------------------
@@ -417,6 +731,12 @@ select:focus-visible,
   .organic-v2 *,
   .organic-v2 *::before,
   .organic-v2 *::after { animation: none !important; }
+  .organic-v2 [data-ghost],
+  .organic-v2 [data-spot] { display: none !important; }
+}
+/* Only on desktop, though — the mobile layout already presents the reviews
+   as a swipeable rail, which needs no motion to work. */
+@media (prefers-reduced-motion: reduce) and (min-width: 901px) {
   .organic-v2 [data-stack] {
     height: auto !important;
     display: flex;
@@ -428,8 +748,6 @@ select:focus-visible,
     transform: none !important;
     opacity: 1 !important;
   }
-  .organic-v2 [data-ghost],
-  .organic-v2 [data-spot] { display: none !important; }
 }
 
 /* Rail dots and in-page CTAs jump between sections; glide instead of teleport
@@ -447,3 +765,79 @@ select:focus-visible,
    reduced-motion), so touch users and anyone who needs the OS cursor keep it. */
 .organic-v2.cursor-dot-on,
 .organic-v2.cursor-dot-on * { cursor: none !important; }
+
+/* =====================================================================
+   Kinetic — the second pass over the v2 homepage.
+   Adds: pointer-tilted service cards, the pinned FAQ column, the voices
+   carousel, magnetic CTAs and the ring cursor. Everything here is scoped
+   to `.organic-v2` or to kinetic-only data attributes.
+   ===================================================================== */
+
+/* Cards are tilted from JS; the reset on pointerleave needs to ease back. */
+.organic-v2 [data-tilt] {
+  transition: transform .5s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease;
+}
+.organic-v2 [data-tilt][data-dealt="0"] { transition: none; }
+
+/* Magnetic CTAs and the footer wordmark are transformed every frame. */
+.organic-v2 [data-magnet],
+[data-footer-name] span { will-change: transform; }
+
+.organic-v2 [data-hint] { pointer-events: none; }
+
+/* ---- FAQ rows (kinetic variant) ---- */
+.organic-v2 [data-faq-q]:hover [data-faq-i] {
+  background: var(--color-accent-2) !important;
+  color: var(--color-bg) !important;
+}
+
+/* ---- voices carousel controls ---- */
+.organic-v2 [data-carnav]:hover {
+  background: color-mix(in srgb, #fff 24%, transparent) !important;
+}
+.organic-v2 [data-stack] { touch-action: pan-y; }
+
+/* ---- three service cards per row is tight below ~1040px ---- */
+@media (min-width: 901px) and (max-width: 1039px) {
+  .organic-v2 [data-m="grid"] { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* ---- unpinned fallbacks for the kinetic-only pieces ---- */
+@media (min-width: 901px) {
+  .organic-v2 [data-pin-sec][data-unpin="1"] [data-faq] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  /* the deck can't sweep without a pin, so it becomes a plain column */
+  .organic-v2 [data-pin-sec][data-unpin="1"] [data-stack] {
+    height: auto !important;
+    max-width: 780px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 18px !important;
+  }
+  .organic-v2 [data-pin-sec][data-unpin="1"] [data-card] {
+    position: relative !important;
+    inset: auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+    z-index: auto !important;
+  }
+  .organic-v2 [data-pin-sec][data-unpin="1"] [data-carrow],
+  .organic-v2 [data-pin-sec][data-unpin="1"] [data-vhint2] { display: none !important; }
+}
+
+/* Reduced motion: the stack and the FAQ ship visible and static. */
+@media (prefers-reduced-motion: reduce) {
+  .organic-v2 [data-faq] { opacity: 1 !important; transform: none !important; }
+  .organic-v2 [data-carrow],
+  .organic-v2 [data-vhint2],
+  .organic-v2 [data-hint] { display: none !important; }
+}
+
+/* The ring cursor only ever exists on wide, fine-pointer screens. */
+@media (max-width: 900px), (hover: none) {
+  .organic-v2.cursor-dot-on,
+  .organic-v2.cursor-dot-on * { cursor: auto !important; }
+  .organic-v2 [data-cursor-dot] { display: none !important; }
+}

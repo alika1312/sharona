@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useId } from "react";
 import { Head } from "vite-react-ssg";
 import { Link } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import { aboutInformation, testimonials } from "../information/information";
-import { teaserFaqs } from "../information/faq";
-import FaqAccordion from "../components/FaqAccordion";
+import { faqs } from "../information/faq";
 import { createHomeMotion } from "../design/motion";
 import { muted } from "../design/ui";
 import {
@@ -41,11 +40,11 @@ const marqueeWords = ["הקשבה", "חמלה", "כבוד", "נוכחות", "א�
 // The clinic photos aren't shot yet, so the gallery runs on tinted plates in
 // the design's shapes. Swap `grad` for an <img> when the photos land.
 const gallery = [
-  { w: 380, h: 460, r: 30, top: 60, grad: "linear-gradient(140deg,var(--color-accent-2-300),var(--color-accent-2-200))" },
-  { w: 330, h: 400, r: "44% 56% 52% 48%/48% 44% 56% 52%", top: -40, grad: "linear-gradient(140deg,var(--color-accent-300),var(--color-accent-200))" },
-  { w: 440, h: 340, r: 30, top: 40, grad: "linear-gradient(140deg,var(--color-accent-2-200),var(--color-bg))" },
-  { w: 360, h: 440, r: "52% 48% 46% 54%/40% 52% 48% 60%", top: -30, grad: "linear-gradient(140deg,var(--color-accent-200),var(--color-surface))" },
-  { w: 320, h: 380, r: 30, top: 70, grad: "linear-gradient(140deg,var(--color-accent-2-200),var(--color-accent-2-300))" },
+  { w: 380, h: 460, r: 30, grad: "linear-gradient(140deg,var(--color-accent-2-300),var(--color-accent-2-200))" },
+  { w: 330, h: 400, r: "44% 56% 52% 48%/48% 44% 56% 52%", grad: "linear-gradient(140deg,var(--color-accent-300),var(--color-accent-200))" },
+  { w: 440, h: 340, r: 30, grad: "linear-gradient(140deg,var(--color-accent-2-200),var(--color-bg))" },
+  { w: 360, h: 440, r: "52% 48% 46% 54%/40% 52% 48% 60%", grad: "linear-gradient(140deg,var(--color-accent-200),var(--color-surface))" },
+  { w: 320, h: 380, r: 30, grad: "linear-gradient(140deg,var(--color-accent-2-200),var(--color-accent-2-300))" },
 ];
 
 const railSections = [
@@ -59,9 +58,15 @@ const railSections = [
   ["contact", "צרו קשר"],
 ];
 
-const voices = [2, 7, 16]
+// Six voices, one per card in the kinetic stack — a spread across the work
+// (individual, couple, parenting, career, separation, family).
+const voices = [17, 2, 7, 11, 12, 16]
   .map((id) => testimonials.find((t) => t.id === id))
   .filter(Boolean);
+
+// The full set (and the FAQPage schema) lives on /faq; the homepage stack
+// holds five — grounded answers only, the same count as the design.
+const homeFaqs = faqs.filter((f) => !f.todo).slice(0, 5);
 
 // The full text lives on /about; the homepage shows the opening two beats.
 const aboutLines = aboutInformation
@@ -117,6 +122,7 @@ function HomePage() {
     if (!rootRef.current) return;
     const m = createHomeMotion(rootRef.current, {
       motion: "full",
+      snapSections: true,
       showIntro: true,
       cursorDot: true,
     });
@@ -160,8 +166,9 @@ function HomePage() {
         }}
       >
         {/* Four circles under one SVG goo filter, so they melt together as
-            they drift past each other. */}
+            they drift past each other — and lean toward the pointer. */}
         <div
+          data-goo
           aria-hidden="true"
           style={{ position: "absolute", inset: "-12%", filter: "url(#goo)", opacity: 0.5, pointerEvents: "none" }}
         >
@@ -188,7 +195,7 @@ function HomePage() {
               לפעמים כל מה שצריך זה מקום אחד, שקט ובטוח, להניח בו את מה שכבד ולהתחיל להקשיב מחדש — לעצמכם, לזוגיות ולמשפחה.
             </p>
             <div data-reveal data-reveal-delay="760" style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
-              <a href="#contact" className="pill" style={{ background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 18, padding: "17px 36px", borderRadius: 999, boxShadow: "var(--shadow-md)" }}>
+              <a href="#contact" className="pill" data-magnet style={{ background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 18, padding: "17px 36px", borderRadius: 999, boxShadow: "var(--shadow-md)" }}>
                 בואו נדבר ←
               </a>
               <Link to="/about" style={{ fontWeight: 700, fontSize: 18, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
@@ -199,12 +206,16 @@ function HomePage() {
 
           <div style={{ flex: 0.92, display: "flex", justifyContent: "center", position: "relative" }}>
             <div data-reveal data-reveal-delay="420" style={{ position: "relative" }}>
-              <div data-m="portrait" style={{ width: 400, height: "min(470px,56vh)", borderRadius: "52% 48% 46% 54%/58% 56% 44% 42%", overflow: "hidden", boxShadow: "var(--shadow-lg)", animation: "floaty 11s ease-in-out infinite" }}>
+              {/* the portrait ripples under the cursor via #liquid */}
+              <div data-liquid data-m="portrait" style={{ width: 400, height: "min(470px,56vh)", borderRadius: "52% 48% 46% 54%/58% 56% 44% 42%", overflow: "hidden", boxShadow: "var(--shadow-lg)", filter: "url(#liquid)", animation: "floaty 11s ease-in-out infinite" }}>
                 <img src="/sharona.jpeg" alt="שרונה קדושאי בר-נס, יועצת ומטפלת רגשית" width="400" height="470" fetchpriority="high" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </div>
               <div aria-hidden="true" style={{ position: "absolute", top: -14, insetInlineEnd: 26, width: 58, height: 58, borderRadius: "50%", background: "var(--color-accent)", animation: "floaty2 7s ease-in-out infinite", boxShadow: "var(--shadow-sm)" }} />
               <div aria-hidden="true" style={{ position: "absolute", bottom: 24, insetInlineStart: -22, width: 40, height: 40, borderRadius: "50%", background: "var(--color-accent-2)", animation: "floaty 6s ease-in-out infinite" }} />
               <div aria-hidden="true" style={{ position: "absolute", top: "38%", insetInlineStart: -40, width: 96, height: 96, border: "2px dashed color-mix(in srgb,var(--color-accent-2) 50%,transparent)", borderRadius: "50%", animation: "spinSlow 30s linear infinite" }} />
+              <div data-hint aria-hidden="true" style={{ position: "absolute", bottom: -6, insetInlineEnd: -6, background: "color-mix(in srgb,var(--color-bg) 88%,#fff)", borderRadius: 999, padding: "9px 16px", fontSize: 13, fontWeight: 600, color: "var(--color-accent-2-800)", boxShadow: "var(--shadow-sm)", whiteSpace: "nowrap" }}>
+                געו בתמונה ↖
+              </div>
             </div>
           </div>
         </div>
@@ -329,14 +340,16 @@ function HomePage() {
               <Kicker>תחומי הטיפול</Kicker>
               <h2 data-words style={h2Style}>איך אני יכולה ללוות אתכם</h2>
             </div>
-            {/* cards start piled in the middle and get dealt into the grid */}
+            {/* cards start piled in the middle, get dealt into the grid, then
+                tilt under the pointer */}
             <div data-m="grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 22 }}>
               {services.map((s) => (
                 <Link
                   key={s.title}
                   to={s.to}
                   data-deck
-                  style={{ display: "block", color: "var(--color-text)", borderRadius: 28, padding: 28 }}
+                  data-tilt
+                  style={{ display: "block", color: "var(--color-text)", borderRadius: 28, padding: 28, transformStyle: "preserve-3d" }}
                 >
                   <div style={{ width: 56, height: 56, borderRadius: "50%", background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18, fontSize: 24 }}>
                     {s.icon}
@@ -363,14 +376,14 @@ function HomePage() {
 
           <div data-track style={{ display: "flex", alignItems: "center", gap: 34, padding: "0 8vw", width: "max-content", willChange: "transform" }}>
             {gallery.map((g, i) => (
-              <div key={i} data-gitem style={{ marginTop: g.top }}>
+              <div key={i} data-gitem>
                 <div title="תמונה מהקליניקה תתווסף בקרוב" style={{ width: g.w, height: g.h, borderRadius: g.r, overflow: "hidden", boxShadow: "var(--shadow-md)", background: g.grad, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <span aria-hidden="true" style={{ fontSize: 34, opacity: 0.5 }}>✦</span>
                 </div>
               </div>
             ))}
             <div data-gitem style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 340 }}>
-              <a href="#contact" className="pill" style={{ background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 18, padding: "18px 34px", borderRadius: 999, boxShadow: "var(--shadow-md)", whiteSpace: "nowrap" }}>
+              <a href="#contact" className="pill" data-magnet style={{ background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 18, padding: "18px 34px", borderRadius: 999, boxShadow: "var(--shadow-md)", whiteSpace: "nowrap" }}>
                 לתאם פגישה ←
               </a>
             </div>
@@ -379,29 +392,39 @@ function HomePage() {
       </section>
 
       {/* ============================== VOICES ============================== */}
-      <section id="voices" data-pin-sec style={{ position: "relative", height: "340vh", background: "var(--color-accent-2-800)", color: "var(--color-bg)" }}>
+      {/* Cards sweep in one at a time from alternating sides, then gather into
+          a running carousel you can drag or step through. */}
+      <section id="voices" data-pin-sec style={{ position: "relative", height: "620vh", background: "var(--color-accent-2-800)", color: "var(--color-bg)" }}>
         <div data-pin-inner style={pinInner}>
           <div aria-hidden="true" style={{ position: "absolute", top: -90, insetInlineStart: -60, width: 320, height: 320, borderRadius: "50%", background: "color-mix(in srgb,#fff 7%,transparent)", filter: "blur(10px)", animation: "drift 26s ease-in-out infinite" }} />
           <div aria-hidden="true" style={{ position: "absolute", bottom: -110, insetInlineEnd: -70, width: 260, height: 260, borderRadius: "50%", background: "color-mix(in srgb,var(--color-accent) 22%,transparent)", filter: "blur(14px)", animation: "drift2 30s ease-in-out infinite" }} />
           <div aria-hidden="true" style={{ position: "absolute", bottom: "8%", insetInlineStart: "12%", width: 180, height: 180, borderRadius: "50%", border: "2px dashed color-mix(in srgb,#fff 20%,transparent)", animation: "spinSlow 44s linear infinite" }} />
 
           <div style={{ position: "relative", maxWidth: 1100, margin: "0 auto", width: "100%" }}>
-            <div style={{ textAlign: "center", marginBottom: 44 }}>
+            <div style={{ textAlign: "center", marginBottom: 54 }}>
               <Kicker color="var(--color-accent-300)">מה שאומרים</Kicker>
               <h2 data-reveal data-reveal-delay="120" style={{ ...h2Style, fontSize: 46, lineHeight: 1.2, margin: "0 0 10px" }}>
                 מילים של מטופלים ומטופלות
               </h2>
-              <div data-reveal data-reveal-delay="240" style={{ fontSize: 15, color: "color-mix(in srgb,#fff 55%,transparent)" }}>
-                גללו — והכרטיסים יתחלפו
+              <div data-reveal data-reveal-delay="240" style={{ position: "relative", height: 24 }}>
+                <div data-vhint style={{ position: "absolute", inset: 0, fontSize: 15, color: "color-mix(in srgb,#fff 55%,transparent)" }}>
+                  גללו — כל המלצה מפנה מקום לבאה
+                </div>
+                <div data-vhint2 style={{ position: "absolute", inset: 0, opacity: 0, fontSize: 15, color: "color-mix(in srgb,#fff 55%,transparent)" }}>
+                  כל ההמלצות יחד — גררו לצדדים או השתמשו בחצים
+                </div>
+                {/* mobile has no pin, so the deck is a swipeable rail instead */}
+                <div data-mhint style={{ position: "absolute", inset: 0, fontSize: 15, color: "color-mix(in srgb,#fff 60%,transparent)" }}>
+                  החליקו לצדדים לעוד המלצות ←
+                </div>
               </div>
             </div>
 
-            {/* a deck: scrolling flicks the front card away */}
-            <div data-stack style={{ position: "relative", height: 380, maxWidth: 620, margin: "0 auto" }}>
+            <div data-stack style={{ position: "relative", height: 340, maxWidth: 620, margin: "0 auto" }}>
               {voices.map((t, i) => (
-                <blockquote key={t.id ?? i} data-card style={{ position: "absolute", inset: 0, margin: 0, background: "color-mix(in srgb,#fff 10%,transparent)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", border: "1px solid color-mix(in srgb,#fff 14%,transparent)", borderRadius: 30, padding: 40, boxSizing: "border-box", willChange: "transform" }}>
+                <blockquote key={t.id ?? i} data-card style={{ position: "absolute", inset: 0, margin: 0, background: "color-mix(in srgb,#fff 10%,transparent)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", border: "1px solid color-mix(in srgb,#fff 14%,transparent)", borderRadius: 30, padding: 44, boxSizing: "border-box", willChange: "transform" }}>
                   <div aria-hidden="true" style={{ fontFamily: HEAD, fontSize: 56, lineHeight: 0.6, color: "var(--color-accent-300)", marginBottom: 20 }}>״</div>
-                  <p style={{ margin: "0 0 24px", fontSize: 18, lineHeight: 1.6, display: "-webkit-box", WebkitLineClamp: 8, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                  <p style={{ margin: "0 0 26px", fontSize: 18.5, lineHeight: 1.62, display: "-webkit-box", WebkitLineClamp: 6, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                     {t.feedback.trim()}
                   </p>
                   <footer style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -413,26 +436,47 @@ function HomePage() {
                 </blockquote>
               ))}
             </div>
+
+            {/* one dot per card on mobile — motion.js fills this in */}
+            <div data-mdots style={{ display: "none", justifyContent: "center", alignItems: "center", gap: 9, marginTop: 22 }} />
+
+            <div data-carrow style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 20 }}>
+              <button type="button" data-carnav="-1" aria-label="ההמלצה הבאה" style={carNavStyle}>
+                <span aria-hidden="true">→</span>
+              </button>
+              <button type="button" data-carnav="1" aria-label="ההמלצה הקודמת" style={carNavStyle}>
+                <span aria-hidden="true">←</span>
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
       {/* =============================== FAQ =============================== */}
-      {/* Teaser only — the full set and the FAQPage schema live on /faq. Left
-          unpinned because an accordion has to be free to grow. */}
-      <section id="faq" style={{ position: "relative", padding: "120px 54px", background: "var(--color-bg)" }}>
-        <div style={{ maxWidth: 820, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 56 }}>
-            <Kicker>שאלות נפוצות</Kicker>
-            <h2 data-words style={{ ...h2Style, maxWidth: "22ch", margin: "0 auto" }}>
-              כל מה שרציתם לדעת לפני שמתחילים
-            </h2>
+      {/* Teaser only — the full set and the FAQPage schema live on /faq. */}
+      <section id="faq" data-pin-sec style={{ position: "relative", height: "250vh", background: "var(--color-bg)" }}>
+        <div data-pin-inner style={{ ...pinInner, alignItems: "center" }}>
+          <div data-parallax="0.08" aria-hidden="true" style={{ position: "absolute", bottom: -130, insetInlineStart: -100, width: 340, height: 340, pointerEvents: "none" }}>
+            <div style={{ width: "100%", height: "100%", borderRadius: "48% 52% 56% 44%/52% 46% 54% 48%", background: "color-mix(in srgb,var(--color-accent) 15%,transparent)", filter: "blur(4px)", animation: "drift2 24s ease-in-out infinite" }} />
           </div>
-          <FaqAccordion items={teaserFaqs} />
-          <div data-reveal style={{ textAlign: "center", marginTop: 34 }}>
-            <Link to="/faq" className="pill" style={{ display: "inline-block", background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 17, padding: "15px 32px", borderRadius: 999, boxShadow: "var(--shadow-sm)" }}>
-              לכל השאלות הנפוצות ←
-            </Link>
+
+          <div data-m="stack" style={{ position: "relative", maxWidth: 1100, margin: "0 auto", width: "100%", display: "flex", gap: 64, alignItems: "flex-start" }}>
+            <div style={{ flex: "0 0 32%", paddingTop: 4 }}>
+              <Kicker>שאלות נפוצות</Kicker>
+              <h2 data-words style={{ ...h2Style, fontSize: 44, margin: "0 0 20px", maxWidth: "14ch" }}>
+                מה ששואלים לפני השיחה הראשונה.
+              </h2>
+              <p data-words style={{ fontSize: 17, lineHeight: 1.7, margin: "0 0 16px", maxWidth: "26ch", color: muted(70) }}>
+                לא מצאתם תשובה? כתבו לי ואשמח לענות.
+              </p>
+              <div data-reveal data-reveal-delay="220">
+                <Link to="/faq" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
+                  לכל השאלות הנפוצות ←
+                </Link>
+              </div>
+            </div>
+
+            <KineticFaq items={homeFaqs} motionRef={motionRef} />
           </div>
         </div>
       </section>
@@ -471,7 +515,23 @@ function HomePage() {
 
 /* ------------------------------ sub-components ------------------------------ */
 
-// The `goo` filter melts the hero circles (and the intro blobs) together.
+const carNavStyle = {
+  width: 50,
+  height: 50,
+  padding: 0,
+  borderRadius: 999,
+  border: "1px solid color-mix(in srgb,#fff 26%,transparent)",
+  background: "color-mix(in srgb,#fff 12%,transparent)",
+  color: "var(--color-bg)",
+  fontSize: 21,
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+// `goo` melts the hero circles (and the intro blobs) together; `liquid`
+// displaces the hero portrait around the cursor (motion.js drives `scale`).
 function Filters() {
   return (
     <svg aria-hidden="true" focusable="false" style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}>
@@ -480,6 +540,10 @@ function Filters() {
           <feGaussianBlur in="SourceGraphic" stdDeviation="22" result="blr" />
           <feColorMatrix in="blr" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -10" result="goo" />
           <feBlend in="SourceGraphic" in2="goo" />
+        </filter>
+        <filter id="liquid">
+          <feTurbulence data-turb type="fractalNoise" baseFrequency="0.008 0.013" numOctaves="2" seed="7" result="noise" />
+          <feDisplacementMap data-liqmap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" />
         </filter>
       </defs>
     </svg>
@@ -523,6 +587,108 @@ function ContactRow({ icon, href, children, onClick }) {
     </a>
   ) : (
     <div style={style}>{inner}</div>
+  );
+}
+
+/* ---- FAQ (kinetic variant) ----
+   Single-open disclosure, first item open. The panel stays in the DOM
+   (collapsed by max-height) so its text is in the prerendered HTML.
+   motion.js only scrubs the rows in; React owns open/closed. */
+function KineticFaq({ items, motionRef }) {
+  const [open, setOpen] = useState(0);
+  const uid = useId();
+
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 13 }}>
+      {items.map((f, i) => {
+        const isOpen = open === i;
+        const panelId = `${uid}-p${i}`;
+        const btnId = `${uid}-b${i}`;
+        return (
+          <div
+            key={f.q}
+            data-faq
+            style={{
+              background: "color-mix(in srgb,#fff 52%,transparent)",
+              border: "1px solid color-mix(in srgb,var(--color-accent-2) 20%,transparent)",
+              borderRadius: 24,
+              overflow: "hidden",
+            }}
+          >
+            <h3 style={{ margin: 0 }}>
+              <button
+                id={btnId}
+                data-faq-q
+                aria-expanded={isOpen}
+                aria-controls={panelId}
+                onClick={() => {
+                  setOpen(isOpen ? -1 : i);
+                  // the row changes height, so the pin fit has to be redone
+                  requestAnimationFrame(() => motionRef.current?.remeasure());
+                }}
+                style={{
+                  width: "100%",
+                  boxSizing: "border-box",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 18,
+                  textAlign: "start",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "var(--font-body)",
+                  fontWeight: 700,
+                  fontSize: 18,
+                  color: "var(--color-text)",
+                  padding: "19px 22px",
+                }}
+              >
+                <span>{f.q}</span>
+                <span
+                  data-faq-i
+                  aria-hidden="true"
+                  style={{
+                    flex: "0 0 30px",
+                    width: 30,
+                    height: 30,
+                    borderRadius: 999,
+                    background: isOpen ? "var(--color-accent-2)" : "var(--color-accent-2-200)",
+                    color: isOpen ? "var(--color-bg)" : "var(--color-accent-2-800)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 19,
+                    lineHeight: 1,
+                    transform: isOpen ? "rotate(135deg)" : "none",
+                    transition:
+                      "transform .45s cubic-bezier(.2,.7,.2,1), background .3s ease, color .3s ease",
+                  }}
+                >
+                  +
+                </span>
+              </button>
+            </h3>
+            <div
+              id={panelId}
+              role="region"
+              aria-labelledby={btnId}
+              style={{
+                maxHeight: isOpen ? 420 : 0,
+                opacity: isOpen ? 1 : 0,
+                overflow: "hidden",
+                transition:
+                  "max-height .5s cubic-bezier(.2,.7,.2,1), opacity .4s ease",
+              }}
+            >
+              <p style={{ margin: 0, padding: "0 22px 20px", fontSize: 16.5, lineHeight: 1.66, color: muted(72) }}>
+                {f.a}
+              </p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 

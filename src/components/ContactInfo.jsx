@@ -9,11 +9,12 @@ const TEL = "tel:+972587250990";
 export const ContactInfo = () => {
   return (
     <div
+      className="org-fabs"
       style={{
         position: "fixed",
         bottom: 22,
         insetInlineEnd: 22,
-        zIndex: 95,
+        zIndex: 87,
         display: "flex",
         flexDirection: "column",
         gap: 14,
@@ -36,7 +37,8 @@ export const ContactInfo = () => {
         href={TEL}
         onClick={() => trackClickToCall("floating_fab")}
         aria-label="חיוג לשרונה"
-        className="pill-cta"
+        // the mobile action bar already carries a call button
+        className="pill-cta org-fab-call"
         style={{ ...fab, background: "var(--color-accent-2)" }}
       >
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">

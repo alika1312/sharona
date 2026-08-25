@@ -86,7 +86,15 @@ for (const [label, file] of contentPages) {
 {
   const d = await dom("index.html");
   const faqBtns = d.querySelectorAll("#faq button[aria-expanded]");
-  check(faqBtns.length === 3, `home: expected 3 FAQ teaser toggles, found ${faqBtns.length}`);
+  // The kinetic FAQ column holds five rows; the full list lives on /faq.
+  check(faqBtns.length === 5, `home: expected 5 FAQ teaser toggles, found ${faqBtns.length}`);
+  const fullFaq = (await dom("faq/index.html")).querySelectorAll(
+    "button[aria-expanded]"
+  ).length;
+  check(
+    faqBtns.length < fullFaq,
+    `home: FAQ teaser (${faqBtns.length}) must be shorter than /faq (${fullFaq})`
+  );
   check(d.querySelector('#faq a[href="/faq"]'), "home: FAQ teaser missing link to /faq");
   // teaser questions sit under the section's h2 → h3 (no skipped level)
   check(

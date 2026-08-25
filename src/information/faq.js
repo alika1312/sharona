@@ -45,8 +45,8 @@ export const faqs = [
   },
 ];
 
-// The 3 questions shown as a teaser on the homepage (grounded answers only).
-export const teaserFaqs = faqs.filter((f) => f.teaser && !f.todo);
+// The homepage FAQ column takes the first five grounded answers straight off
+// `faqs` (see HomePage), so there is no separate teaser list to keep in sync.
 
 // FAQPage JSON-LD — lives on /faq only. TODO answers are left out on purpose.
 export const faqSchema = {

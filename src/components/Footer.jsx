@@ -23,7 +23,8 @@ export const Footer = () => {
         style={{
           background: "var(--color-accent-2-900)",
           color: "color-mix(in srgb, #fff 82%, transparent)",
-          padding: "70px 54px 40px",
+          padding: "80px 54px 40px",
+          overflow: "hidden",
           fontFamily: "var(--font-body)",
         }}
         className="org-section"
@@ -40,12 +41,17 @@ export const Footer = () => {
           }}
         >
           <div style={{ maxWidth: "32ch" }}>
+            {/* On the homepage motion.js splits this into letters that
+                scatter away from the cursor; elsewhere it's plain text. */}
             <div
+              data-footer-name
               style={{
+                position: "relative",
                 fontFamily: "var(--font-heading)",
-                fontSize: 26,
+                fontSize: "clamp(30px,4.4vw,56px)",
+                lineHeight: 1.15,
                 color: "var(--color-bg)",
-                marginBottom: 14,
+                marginBottom: 18,
               }}
             >
               שרונה קדושאי בר-נס
