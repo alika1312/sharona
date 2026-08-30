@@ -5,7 +5,6 @@ import emailjs from "@emailjs/browser";
 import { aboutInformation, testimonials } from "../information/information";
 import { faqs } from "../information/faq";
 import { createHomeMotion } from "../design/motion";
-import { muted } from "../design/ui";
 import {
   trackContactFormSubmit,
   trackWhatsappClick,
@@ -19,13 +18,17 @@ const EMAIL = "sharonabar5@gmail.com";
 
 const HEAD = "var(--font-heading)";
 
+// All eight areas of work — the seven on /experiences plus the workshops.
+// Keep this list in step with `experiences` in ../information/experiences.
 const services = [
-  { icon: "❤", title: "טיפול רגשי", to: "/experiences", bg: "var(--color-accent-2-200)", text: "עיבוד רגשות, חיזוק הדימוי העצמי וכלים מעשיים להתמודדות עם אתגרים ומשברים." },
+  { icon: "❤", title: "משבר, מתח ולחץ נפשי", to: "/experiences", bg: "var(--color-accent-2-200)", text: "תמיכה בהתמודדות היומיומית, חזרה לאיזון וכלים מעשיים לצמיחה מתוך המשבר." },
   { icon: "◐", title: "ייעוץ וטיפול זוגי", to: "/experiences", bg: "var(--color-accent-200)", text: "מרחב לשיפור התקשורת, לחיזוק הקרבה והאינטימיות ולצליחת משברים בזוגיות." },
   { icon: "✦", title: "הדרכת הורים", to: "/experiences", bg: "var(--color-accent-2-300)", text: "כלים, ליווי רגשי והכוונה להורות מיטיבה ולהתמודדות עם הקשיים של ילדיכם." },
-  { icon: "☾", title: "טיפול במשבר ובטראומה", to: "/experiences", bg: "var(--color-accent-300)", text: "ליווי רגיש בעיבוד אירועים קשים, לחיזוק החוסן והחזרה לאיזון ולתפקוד." },
-  { icon: "◇", title: "ייעוץ תעסוקתי וקריירה", to: "/experiences", bg: "var(--color-accent-2-200)", text: "מיפוי נטיות וכישורים, ליווי במעברי קריירה ובבחירת כיוון מקצועי מיטבי." },
-  { icon: "✧", title: "סדנאות", to: "/workshops", bg: "var(--color-accent-200)", text: "סדנאות חווייתיות ליחידים, זוגות, קבוצות וארגונים — כלים לצמיחה ולתקשורת." },
+  { icon: "☾", title: "טיפול בטראומה", to: "/experiences", bg: "var(--color-accent-300)", text: "עיבוד ממוקד ורגיש של אירועים קשים, לחיזוק החוסן והחזרה לתפקוד." },
+  { icon: "❋", title: "גירושין בכבוד הדדי", to: "/experiences", bg: "var(--color-accent-2-200)", text: "ליווי בתהליך פרידה מתוך כבוד, שמפחית מתחים ומאפשר הורות מיטיבה משותפת." },
+  { icon: "◇", title: "כיוון תעסוקתי וקריירה", to: "/experiences", bg: "var(--color-accent-200)", text: "מיפוי נטיות וכישורים, שחרור תחושת תקיעות וליווי עד התפקיד הרצוי." },
+  { icon: "◈", title: "ליווי מנהלים וייעוץ ארגוני", to: "/experiences", bg: "var(--color-accent-2-300)", text: "פיתוח מנהיגות, הובלת תהליכי שינוי וליווי בכירים בארגונים, עמותות ורשויות." },
+  { icon: "✧", title: "סדנאות", to: "/workshops", bg: "var(--color-accent-300)", text: "סדנאות חווייתיות ליחידים, זוגות, קבוצות וארגונים — כלים לצמיחה ולתקשורת." },
 ];
 
 const steps = [
@@ -35,16 +38,28 @@ const steps = [
   ["4", "צמיחה מתמשכת", "התמודדות בריאה ומיטיבה שממשיכה איתכם גם אחרי התהליך.", "var(--color-accent)"],
 ];
 
+// Right-to-left, matching the RTL step order: step 1 is the rightmost disc.
+// Sits on y≈46, the vertical centre of the 92px box, so it threads between
+// the number discs rather than floating above them.
+const STEP_PATH =
+  "M 905 46 C 830 -6 730 98 655 46 S 480 -6 405 46 S 230 98 155 46";
+
 const marqueeWords = ["הקשבה", "חמלה", "כבוד", "נוכחות", "אמון", "צמיחה"];
 
-// The clinic photos aren't shot yet, so the gallery runs on tinted plates in
-// the design's shapes. Swap `grad` for an <img> when the photos land.
-const gallery = [
-  { w: 380, h: 460, r: 30, grad: "linear-gradient(140deg,var(--color-accent-2-300),var(--color-accent-2-200))" },
-  { w: 330, h: 400, r: "44% 56% 52% 48%/48% 44% 56% 52%", grad: "linear-gradient(140deg,var(--color-accent-300),var(--color-accent-200))" },
-  { w: 440, h: 340, r: 30, grad: "linear-gradient(140deg,var(--color-accent-2-200),var(--color-bg))" },
-  { w: 360, h: 440, r: "52% 48% 46% 54%/40% 52% 48% 60%", grad: "linear-gradient(140deg,var(--color-accent-200),var(--color-surface))" },
-  { w: 320, h: 380, r: 30, grad: "linear-gradient(140deg,var(--color-accent-2-200),var(--color-accent-2-300))" },
+// The clinic photos aren't shot yet, so the collage runs on tinted plates in
+// the design's shapes. Swap `grad` for an <img> when the photos land — the
+// motion doesn't care what's inside a plate.
+//
+// x/y are percentages of the stage, d is depth: 0 is closest to the viewer
+// (moves most, reacts most), 1 is furthest back. `label` is what the plate
+// says once it's the one you're pointing at.
+const plates = [
+  { x: 9,  y: 14, w: 260, h: 320, d: 0.15, r: "46% 54% 52% 48%/48% 46% 54% 52%", grad: "linear-gradient(150deg,var(--color-accent-2-300),var(--color-accent-2-200))", label: "פינת הישיבה" },
+  { x: 71, y: 8,  w: 220, h: 260, d: 0.62, r: 26, grad: "linear-gradient(150deg,var(--color-accent-300),var(--color-accent-200))", label: "אור טבעי" },
+  { x: 2,  y: 58, w: 210, h: 250, d: 0.78, r: 24, grad: "linear-gradient(150deg,var(--color-accent-2-200),var(--color-bg))", label: "מדף הספרים" },
+  { x: 63, y: 52, w: 290, h: 340, d: 0.05, r: "52% 48% 46% 54%/42% 52% 48% 58%", grad: "linear-gradient(150deg,var(--color-accent-200),var(--color-surface))", label: "הכורסה" },
+  { x: 34, y: 68, w: 200, h: 210, d: 0.45, r: 22, grad: "linear-gradient(150deg,var(--color-accent-2-200),var(--color-accent-2-300))", label: "צמחים" },
+  { x: 40, y: 2,  w: 180, h: 190, d: 0.88, r: "50% 50% 46% 54%/54% 46% 54% 46%", grad: "linear-gradient(150deg,var(--color-accent-2-300),var(--color-bg))", label: "שקט" },
 ];
 
 const railSections = [
@@ -104,9 +119,9 @@ const pinInner = {
   padding: "0 54px",
 };
 
-function Kicker({ delay = 0, color, children }) {
+function Kicker({ color, children }) {
   return (
-    <div data-reveal data-reveal-delay={delay} style={{ ...kickerStyle, color }}>
+    <div style={{ ...kickerStyle, color }}>
       {children}
     </div>
   );
@@ -180,21 +195,17 @@ function HomePage() {
 
         <div data-m="stack" style={{ position: "relative", maxWidth: 1200, margin: "0 auto", width: "100%", display: "flex", alignItems: "center", gap: 56 }}>
           <div style={{ flex: 1.08 }}>
-            <div data-reveal data-reveal-delay="0" style={{ ...kickerStyle, fontSize: 15, marginBottom: 24 }}>
+            <div style={{ ...kickerStyle, fontSize: 15, marginBottom: 24 }}>
               טיפול רגשי · ייעוץ זוגי · הדרכת הורים
             </div>
-            <h1 style={{ position: "relative", fontFamily: HEAD, fontWeight: 400, fontSize: "clamp(48px,6.4vw,84px)", lineHeight: 1.08, letterSpacing: "-.015em", margin: 0 }}>
-              <span data-line style={{ display: "block", overflow: "hidden", paddingBottom: ".09em" }}>
-                <span data-split style={{ display: "block" }}>מרחב לנשום בו,</span>
-              </span>
-              <span data-line style={{ display: "block", overflow: "hidden", paddingBottom: ".09em" }}>
-                <span data-split style={{ display: "block", color: "var(--color-accent-2-700)" }}>ולהתחיל מחדש.</span>
-              </span>
+            <h1 data-reveal data-reveal-delay="0" style={{ position: "relative", fontFamily: HEAD, fontWeight: 400, fontSize: "clamp(48px,6.4vw,84px)", lineHeight: 1.08, letterSpacing: "-.015em", margin: 0 }}>
+              <span style={{ display: "block", paddingBottom: ".09em" }}>מרחב לנשום בו,</span>
+              <span style={{ display: "block", paddingBottom: ".09em", color: "var(--color-accent-2-700)" }}>ולהתחיל מחדש.</span>
             </h1>
-            <p data-reveal data-reveal-delay="620" style={{ fontSize: 21, lineHeight: 1.62, maxWidth: "44ch", margin: "30px 0 36px", color: muted(74) }}>
+            <p style={{ fontSize: 21, lineHeight: 1.62, maxWidth: "44ch", margin: "30px 0 36px", color: "var(--color-text)" }}>
               לפעמים כל מה שצריך זה מקום אחד, שקט ובטוח, להניח בו את מה שכבד ולהתחיל להקשיב מחדש — לעצמכם, לזוגיות ולמשפחה.
             </p>
-            <div data-reveal data-reveal-delay="760" style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
               <a href="#contact" className="pill" data-magnet style={{ background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 18, padding: "17px 36px", borderRadius: 999, boxShadow: "var(--shadow-md)" }}>
                 בואו נדבר ←
               </a>
@@ -260,15 +271,15 @@ function HomePage() {
 
             <div style={{ flex: 1.08 }}>
               <Kicker>קצת עליי</Kicker>
-              <h2 data-words style={{ ...h2Style, fontSize: 46, lineHeight: 1.22, marginBottom: 26, maxWidth: "18ch" }}>
+              <h2 style={{ ...h2Style, fontSize: 46, lineHeight: 1.22, marginBottom: 26, maxWidth: "18ch" }}>
                 טיפול מתוך חמלה, כבוד והקשבה אמיתית.
               </h2>
               {aboutLines.map((line, i) => (
-                <p key={i} data-words style={{ fontSize: 19, lineHeight: 1.7, margin: i === aboutLines.length - 1 ? "0 0 26px" : "0 0 20px", color: muted(76) }}>
+                <p key={i} style={{ fontSize: 19, lineHeight: 1.7, margin: i === aboutLines.length - 1 ? "0 0 26px" : "0 0 20px", color: "var(--color-text)" }}>
                   {line}
                 </p>
               ))}
-              <div data-reveal data-reveal-delay="120" style={{ marginBottom: 30 }}>
+              <div style={{ marginBottom: 30 }}>
                 <Link to="/about" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
                   להמשך הקריאה ←
                 </Link>
@@ -284,7 +295,7 @@ function HomePage() {
       </section>
 
       {/* ============================= APPROACH ============================= */}
-      <section id="approach" data-pin-sec style={{ position: "relative", height: "360vh", background: "var(--color-surface)" }}>
+      <section id="approach" data-pin-sec style={{ position: "relative", height: "380vh", background: "var(--color-surface)" }}>
         <div data-pin-inner style={pinInner}>
           {/* huge ghost numeral behind the active step */}
           <div data-ghost aria-hidden="true" style={{ position: "absolute", insetInlineStart: "50%", top: "50%", transform: "translate(50%,-50%)", fontFamily: HEAD, fontSize: "min(64vh,520px)", lineHeight: 0.78, color: "color-mix(in srgb,var(--color-accent-2) 12%,transparent)", pointerEvents: "none", userSelect: "none", opacity: 0 }} />
@@ -293,38 +304,70 @@ function HomePage() {
           <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto", width: "100%" }}>
             <div style={{ textAlign: "center", marginBottom: 76 }}>
               <Kicker>הדרך שלנו יחד</Kicker>
-              <h2 data-words style={{ ...h2Style, margin: "0 auto", maxWidth: "20ch" }}>
+              <h2 style={{ ...h2Style, margin: "0 auto", maxWidth: "20ch" }}>
                 ארבעה צעדים, בקצב שנכון לכם
               </h2>
             </div>
 
             <div data-m="steps" style={{ position: "relative", display: "flex", gap: 26 }}>
-              {/* the dashed path draws itself as the section scrubs, with a
-                  dot riding along it */}
-              <div aria-hidden="true" style={{ position: "absolute", top: 0, insetInline: 40, height: 100, pointerEvents: "none" }}>
-                <svg data-path viewBox="0 0 1000 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}>
+              {/* The path threads between the number discs — its box is
+                  centred on the disc row, not sitting above it. Positioned
+                  with physical left/right: the SVG viewBox and `translate`
+                  are both LTR, so RTL logical props would send the dot the
+                  wrong way (which is exactly what used to happen). */}
+              <div aria-hidden="true" style={{ position: "absolute", top: 0, left: 40, right: 40, height: 92, pointerEvents: "none" }}>
+                <svg data-path viewBox="0 0 1000 92" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}>
+                  <defs>
+                    <linearGradient id="pathgrad" x1="1" y1="0" x2="0" y2="0">
+                      <stop offset="0" stopColor="var(--color-accent-2)" />
+                      <stop offset="1" stopColor="var(--color-accent)" />
+                    </linearGradient>
+                  </defs>
+                  {/* the faint full route, always visible so the four steps
+                      read as one journey even before you scroll */}
+                  <path
+                    d={STEP_PATH}
+                    fill="none"
+                    stroke="color-mix(in srgb,var(--color-accent-2) 22%,transparent)"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeDasharray="7 12"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  {/* and the solid line the dot leaves behind it */}
                   <path
                     data-pathline
-                    d="M 905 46 C 830 -14 730 106 655 46 S 480 -14 405 46 S 230 106 155 46"
+                    d={STEP_PATH}
                     fill="none"
-                    stroke="var(--color-accent-2)"
-                    strokeWidth="2.5"
+                    stroke="url(#pathgrad)"
+                    strokeWidth="3.5"
                     strokeLinecap="round"
-                    strokeDasharray="9 13"
                     vectorEffect="non-scaling-stroke"
                   />
                 </svg>
-                <div data-dot style={{ position: "absolute", top: 0, insetInlineStart: 0, width: 18, height: 18, borderRadius: "50%", background: "var(--color-accent)", boxShadow: "0 0 0 6px color-mix(in srgb,var(--color-accent) 22%,transparent)", opacity: 0, transition: "opacity .4s ease" }} />
+                {/* three trailing ghosts of the dot, each a frame behind */}
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    data-trail={i}
+                    style={{ position: "absolute", top: 0, left: 0, width: 12, height: 12, borderRadius: "50%", background: "var(--color-accent)", opacity: 0, willChange: "transform" }}
+                  />
+                ))}
+                <div data-dot style={{ position: "absolute", top: 0, left: 0, width: 18, height: 18, borderRadius: "50%", background: "var(--color-accent)", boxShadow: "0 0 0 6px color-mix(in srgb,var(--color-accent) 22%,transparent)", opacity: 0, transition: "opacity .4s ease", willChange: "transform" }} />
               </div>
 
               {steps.map(([n, title, text, color]) => (
-                <div key={n} data-step style={{ position: "relative", flex: 1, textAlign: "center" }}>
+                <div key={n} data-step style={{ position: "relative", flex: 1, textAlign: "center", paddingTop: 46 }}>
                   <div data-num style={{ position: "relative", width: 88, height: 88, borderRadius: "50%", background: color, color: "var(--color-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: HEAD, fontSize: 38, margin: "0 auto 22px", boxShadow: "var(--shadow-md)" }}>
+                    {/* two rings, staggered — a ripple when the dot arrives */}
                     <span data-ring aria-hidden="true" style={{ position: "absolute", inset: -9, borderRadius: "50%", border: `2px solid ${color}`, opacity: 0 }} />
-                    {n}
+                    <span data-ring2 aria-hidden="true" style={{ position: "absolute", inset: -9, borderRadius: "50%", border: `1.5px solid ${color}`, opacity: 0 }} />
+                    <span data-numtext>{n}</span>
+                    {/* swaps in for the numeral once the step is behind you */}
+                    <span data-numdone aria-hidden="true" style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, opacity: 0 }}>✓</span>
                   </div>
                   <div style={{ fontFamily: HEAD, fontSize: 23, marginBottom: 10 }}>{title}</div>
-                  <p style={{ margin: 0, fontSize: 16, lineHeight: 1.62, color: muted(68) }}>{text}</p>
+                  <p style={{ margin: 0, fontSize: 16, lineHeight: 1.62, color: "var(--color-text)" }}>{text}</p>
                 </div>
               ))}
             </div>
@@ -333,29 +376,29 @@ function HomePage() {
       </section>
 
       {/* ============================= SERVICES ============================= */}
-      <section id="services" data-pin-sec style={{ position: "relative", height: "300vh", background: "var(--color-bg)" }}>
+      <section id="services" data-pin-sec style={{ position: "relative", height: "360vh", background: "var(--color-bg)" }}>
         <div data-pin-inner style={pinInner}>
           <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%" }}>
             <div style={{ marginBottom: 40, maxWidth: "34ch" }}>
               <Kicker>תחומי הטיפול</Kicker>
-              <h2 data-words style={h2Style}>איך אני יכולה ללוות אתכם</h2>
+              <h2 style={h2Style}>איך אני יכולה ללוות אתכם</h2>
             </div>
             {/* cards start piled in the middle, get dealt into the grid, then
                 tilt under the pointer */}
-            <div data-m="grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 22 }}>
+            <div data-m="grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18 }}>
               {services.map((s) => (
                 <Link
                   key={s.title}
                   to={s.to}
                   data-deck
                   data-tilt
-                  style={{ display: "block", color: "var(--color-text)", borderRadius: 28, padding: 28, transformStyle: "preserve-3d" }}
+                  style={{ display: "block", color: "var(--color-text)", borderRadius: 26, padding: 24, transformStyle: "preserve-3d" }}
                 >
-                  <div style={{ width: 56, height: 56, borderRadius: "50%", background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18, fontSize: 24 }}>
+                  <div style={{ width: 50, height: 50, borderRadius: "50%", background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 15, fontSize: 22 }}>
                     {s.icon}
                   </div>
-                  <div style={{ fontFamily: HEAD, fontSize: 24, marginBottom: 10 }}>{s.title}</div>
-                  <p style={{ margin: 0, fontSize: 16, lineHeight: 1.62, color: muted(70) }}>{s.text}</p>
+                  <div style={{ fontFamily: HEAD, fontSize: 21, lineHeight: 1.24, marginBottom: 9 }}>{s.title}</div>
+                  <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: "var(--color-text)" }}>{s.text}</p>
                 </Link>
               ))}
             </div>
@@ -364,26 +407,52 @@ function HomePage() {
       </section>
 
       {/* ============================== GALLERY ============================== */}
-      {/* pinned: vertical scroll drives the track sideways */}
-      <section id="gallery" data-gallery data-pin-sec style={{ position: "relative", height: "340vh", background: "var(--color-surface)" }}>
-        <div data-pin-inner style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", display: "flex", alignItems: "center" }}>
-          <div style={{ position: "absolute", top: "14vh", insetInlineStart: 54, zIndex: 2, pointerEvents: "none" }}>
-            <Kicker>המרחב הטיפולי</Kicker>
-            <h2 data-reveal data-reveal-delay="120" style={{ ...h2Style, maxWidth: "22ch" }}>
-              מקום שנעים לחזור אליו
-            </h2>
-          </div>
-
-          <div data-track style={{ display: "flex", alignItems: "center", gap: 34, padding: "0 8vw", width: "max-content", willChange: "transform" }}>
-            {gallery.map((g, i) => (
-              <div key={i} data-gitem>
-                <div title="תמונה מהקליניקה תתווסף בקרוב" style={{ width: g.w, height: g.h, borderRadius: g.r, overflow: "hidden", boxShadow: "var(--shadow-md)", background: g.grad, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span aria-hidden="true" style={{ fontSize: 34, opacity: 0.5 }}>✦</span>
-                </div>
+      {/* A room you're standing inside rather than a reel you scroll past.
+          Scroll assembles the plates out of depth; the pointer decides which
+          one you're looking at, and the rest step back for it. */}
+      <section id="gallery" data-collage data-pin-sec style={{ position: "relative", height: "300vh", background: "var(--color-surface)" }}>
+        <div data-pin-inner style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 54px" }}>
+          <div data-stage style={{ position: "relative", width: "100%", maxWidth: 1180, height: "min(660px,76vh)" }}>
+            {plates.map((g, i) => (
+              <div
+                key={i}
+                data-plate
+                data-depth={g.d}
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  left: `${g.x}%`,
+                  top: `${g.y}%`,
+                  width: `clamp(140px,${g.w / 11.8}vw,${g.w}px)`,
+                  height: `clamp(160px,${g.h / 11.8}vw,${g.h}px)`,
+                  borderRadius: g.r,
+                  background: g.grad,
+                  boxShadow: "var(--shadow-md)",
+                  willChange: "transform,opacity,filter",
+                  display: "flex",
+                  alignItems: "flex-end",
+                  justifyContent: "center",
+                  padding: 18,
+                  boxSizing: "border-box",
+                }}
+              >
+                <span
+                  data-plabel
+                  style={{ opacity: 0, fontSize: 13.5, fontWeight: 700, letterSpacing: ".04em", color: "var(--color-accent-2-800)", background: "color-mix(in srgb,var(--color-bg) 82%,#fff)", borderRadius: 999, padding: "6px 14px", whiteSpace: "nowrap", transition: "opacity .35s ease" }}
+                >
+                  {g.label}
+                </span>
               </div>
             ))}
-            <div data-gitem style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 340 }}>
-              <a href="#contact" className="pill" data-magnet style={{ background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 18, padding: "18px 34px", borderRadius: 999, boxShadow: "var(--shadow-md)", whiteSpace: "nowrap" }}>
+
+            {/* the still centre of it — plain, static text */}
+            <div data-stagetext style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", zIndex: 4, pointerEvents: "none" }}>
+              <Kicker>המרחב הטיפולי</Kicker>
+              <h2 style={{ ...h2Style, maxWidth: "18ch" }}>מקום שנעים לחזור אליו</h2>
+              <p style={{ fontSize: 18.5, lineHeight: 1.66, maxWidth: "32ch", margin: "18px 0 26px", color: "var(--color-text)" }}>
+                חדר שקט ומוכר, שאפשר להיכנס אליו כמו שאתם ולצאת ממנו קצת יותר קלים.
+              </p>
+              <a href="#contact" className="pill" data-magnet style={{ pointerEvents: "auto", background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 17, padding: "15px 30px", borderRadius: 999, boxShadow: "var(--shadow-md)", whiteSpace: "nowrap" }}>
                 לתאם פגישה ←
               </a>
             </div>
@@ -394,44 +463,52 @@ function HomePage() {
       {/* ============================== VOICES ============================== */}
       {/* Cards sweep in one at a time from alternating sides, then gather into
           a running carousel you can drag or step through. */}
-      <section id="voices" data-pin-sec style={{ position: "relative", height: "620vh", background: "var(--color-accent-2-800)", color: "var(--color-bg)" }}>
+      <section id="voices" data-pin-sec style={{ position: "relative", height: "520vh", background: "var(--color-accent-2-800)", color: "var(--color-bg)" }}>
         <div data-pin-inner style={pinInner}>
           <div aria-hidden="true" style={{ position: "absolute", top: -90, insetInlineStart: -60, width: 320, height: 320, borderRadius: "50%", background: "color-mix(in srgb,#fff 7%,transparent)", filter: "blur(10px)", animation: "drift 26s ease-in-out infinite" }} />
           <div aria-hidden="true" style={{ position: "absolute", bottom: -110, insetInlineEnd: -70, width: 260, height: 260, borderRadius: "50%", background: "color-mix(in srgb,var(--color-accent) 22%,transparent)", filter: "blur(14px)", animation: "drift2 30s ease-in-out infinite" }} />
           <div aria-hidden="true" style={{ position: "absolute", bottom: "8%", insetInlineStart: "12%", width: 180, height: 180, borderRadius: "50%", border: "2px dashed color-mix(in srgb,#fff 20%,transparent)", animation: "spinSlow 44s linear infinite" }} />
 
           <div style={{ position: "relative", maxWidth: 1100, margin: "0 auto", width: "100%" }}>
-            <div style={{ textAlign: "center", marginBottom: 54 }}>
+            <div data-vhead style={{ textAlign: "center", marginBottom: 40 }}>
               <Kicker color="var(--color-accent-300)">מה שאומרים</Kicker>
-              <h2 data-reveal data-reveal-delay="120" style={{ ...h2Style, fontSize: 46, lineHeight: 1.2, margin: "0 0 10px" }}>
+              <h2 style={{ ...h2Style, fontSize: 46, lineHeight: 1.2, margin: "0 0 10px" }}>
                 מילים של מטופלים ומטופלות
               </h2>
-              <div data-reveal data-reveal-delay="240" style={{ position: "relative", height: 24 }}>
-                <div data-vhint style={{ position: "absolute", inset: 0, fontSize: 15, color: "color-mix(in srgb,#fff 55%,transparent)" }}>
+              <div style={{ position: "relative", height: 24 }}>
+                <div data-vhint style={{ position: "absolute", inset: 0, fontSize: 15, color: "var(--color-accent-300)" }}>
                   גללו — כל המלצה מפנה מקום לבאה
                 </div>
-                <div data-vhint2 style={{ position: "absolute", inset: 0, opacity: 0, fontSize: 15, color: "color-mix(in srgb,#fff 55%,transparent)" }}>
-                  כל ההמלצות יחד — גררו לצדדים או השתמשו בחצים
+                <div data-vhint2 style={{ position: "absolute", inset: 0, opacity: 0, fontSize: 15, color: "var(--color-accent-300)" }}>
+                  {`כל ${voices.length} ההמלצות — גררו לצדדים, או בחצים ובמקלדת`}
                 </div>
                 {/* mobile has no pin, so the deck is a swipeable rail instead */}
-                <div data-mhint style={{ position: "absolute", inset: 0, fontSize: 15, color: "color-mix(in srgb,#fff 60%,transparent)" }}>
+                <div data-mhint style={{ position: "absolute", inset: 0, fontSize: 15, color: "var(--color-accent-300)" }}>
                   החליקו לצדדים לעוד המלצות ←
                 </div>
               </div>
             </div>
 
-            <div data-stack style={{ position: "relative", height: 340, maxWidth: 620, margin: "0 auto" }}>
+            {/* 560px, not 340: at 340 the content ran ~60px over and the
+                patient's name was the part that got cut off. This is sized to
+                the longest of the six reviews, and the card is a column with
+                the footer pushed to the bottom, so the name can't be clipped
+                whatever the length. */}
+            <div data-stack style={{ position: "relative", height: 560, maxWidth: 640, margin: "0 auto" }}>
               {voices.map((t, i) => (
-                <blockquote key={t.id ?? i} data-card style={{ position: "absolute", inset: 0, margin: 0, background: "color-mix(in srgb,#fff 10%,transparent)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", border: "1px solid color-mix(in srgb,#fff 14%,transparent)", borderRadius: 30, padding: 44, boxSizing: "border-box", willChange: "transform" }}>
-                  <div aria-hidden="true" style={{ fontFamily: HEAD, fontSize: 56, lineHeight: 0.6, color: "var(--color-accent-300)", marginBottom: 20 }}>״</div>
-                  <p style={{ margin: "0 0 26px", fontSize: 18.5, lineHeight: 1.62, display: "-webkit-box", WebkitLineClamp: 6, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                <blockquote key={t.id ?? i} data-card style={{ position: "absolute", inset: 0, margin: 0, display: "flex", flexDirection: "column", background: "color-mix(in srgb,#fff 12%,transparent)", border: "1px solid color-mix(in srgb,#fff 16%,transparent)", borderRadius: 30, padding: 36, boxSizing: "border-box", willChange: "transform" }}>
+                  <div aria-hidden="true" style={{ fontFamily: HEAD, fontSize: 52, lineHeight: 0.6, color: "var(--color-accent-300)", marginBottom: 18, flex: "none" }}>״</div>
+                  {/* the card is tall enough for all six as written; the
+                      clamp is only a backstop for a longer one added later */}
+                  <p style={{ margin: "0 0 22px", fontSize: 19, lineHeight: 1.62, display: "-webkit-box", WebkitLineClamp: 12, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                     {t.feedback.trim()}
                   </p>
-                  <footer style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <div aria-hidden="true" style={{ width: 46, height: 46, borderRadius: "50%", background: "color-mix(in srgb,#fff 18%,transparent)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>
+                  {/* mt:auto — the name is pinned to the bottom of the card */}
+                  <footer style={{ display: "flex", alignItems: "center", gap: 12, marginTop: "auto", flex: "none" }}>
+                    <div aria-hidden="true" style={{ width: 46, height: 46, borderRadius: "50%", background: "color-mix(in srgb,#fff 20%,transparent)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, flex: "none" }}>
                       {t.name.trim().charAt(0)}
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: 16 }}>{t.name.trim()}</div>
+                    <div style={{ fontWeight: 700, fontSize: 16.5 }}>{t.name.trim()}</div>
                   </footer>
                 </blockquote>
               ))}
@@ -440,7 +517,7 @@ function HomePage() {
             {/* one dot per card on mobile — motion.js fills this in */}
             <div data-mdots style={{ display: "none", justifyContent: "center", alignItems: "center", gap: 9, marginTop: 22 }} />
 
-            <div data-carrow style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 20 }}>
+            <div data-carrow style={{ display: "flex", justifyContent: "center", gap: 14, marginTop: 26 }}>
               <button type="button" data-carnav="-1" aria-label="ההמלצה הבאה" style={carNavStyle}>
                 <span aria-hidden="true">→</span>
               </button>
@@ -463,13 +540,13 @@ function HomePage() {
           <div data-m="stack" style={{ position: "relative", maxWidth: 1100, margin: "0 auto", width: "100%", display: "flex", gap: 64, alignItems: "flex-start" }}>
             <div style={{ flex: "0 0 32%", paddingTop: 4 }}>
               <Kicker>שאלות נפוצות</Kicker>
-              <h2 data-words style={{ ...h2Style, fontSize: 44, margin: "0 0 20px", maxWidth: "14ch" }}>
+              <h2 style={{ ...h2Style, fontSize: 44, margin: "0 0 20px", maxWidth: "14ch" }}>
                 מה ששואלים לפני השיחה הראשונה.
               </h2>
-              <p data-words style={{ fontSize: 17, lineHeight: 1.7, margin: "0 0 16px", maxWidth: "26ch", color: muted(70) }}>
+              <p style={{ fontSize: 17, lineHeight: 1.7, margin: "0 0 16px", maxWidth: "26ch", color: "var(--color-text)" }}>
                 לא מצאתם תשובה? כתבו לי ואשמח לענות.
               </p>
-              <div data-reveal data-reveal-delay="220">
+              <div>
                 <Link to="/faq" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
                   לכל השאלות הנפוצות ←
                 </Link>
@@ -491,13 +568,13 @@ function HomePage() {
           <div data-m="stack" style={{ position: "relative", maxWidth: 1100, margin: "0 auto", display: "flex", gap: 64, alignItems: "center" }}>
             <div style={{ flex: 1 }}>
               <Kicker>בואו נתחיל</Kicker>
-              <h2 data-words style={{ ...h2Style, fontSize: 50, lineHeight: 1.16, margin: "0 0 24px", maxWidth: "16ch" }}>
+              <h2 style={{ ...h2Style, fontSize: 50, lineHeight: 1.16, margin: "0 0 24px", maxWidth: "16ch" }}>
                 הצעד הראשון מתחיל בשיחה.
               </h2>
-              <p data-words style={{ fontSize: 19, lineHeight: 1.7, margin: "0 0 34px", maxWidth: "40ch", color: muted(74) }}>
+              <p style={{ fontSize: 19, lineHeight: 1.7, margin: "0 0 34px", maxWidth: "40ch", color: "var(--color-text)" }}>
                 השאירו פרטים ואחזור אליכם בהקדם לתיאום פגישת היכרות — ללא התחייבות.
               </p>
-              <div data-reveal data-reveal-delay="220" style={{ display: "flex", flexDirection: "column", gap: 16, fontSize: 17 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 16, fontSize: 17 }}>
                 <ContactRow icon="✆" href={TEL} onClick={() => trackClickToCall("home_contact_row")}>{PHONE_LABEL}</ContactRow>
                 <ContactRow icon="✉" href={`mailto:${EMAIL}`}>{EMAIL}</ContactRow>
                 <ContactRow icon="⌂">מבשרת ציון · צור הדסה · אונליין מכל הארץ</ContactRow>
@@ -542,7 +619,7 @@ function Filters() {
           <feBlend in="SourceGraphic" in2="goo" />
         </filter>
         <filter id="liquid">
-          <feTurbulence data-turb type="fractalNoise" baseFrequency="0.008 0.013" numOctaves="2" seed="7" result="noise" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.008 0.013" numOctaves="2" seed="7" result="noise" />
           <feDisplacementMap data-liqmap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" />
         </filter>
       </defs>
@@ -566,7 +643,7 @@ function Stat({ value, label, small }) {
   return (
     <div>
       <div style={{ fontFamily: HEAD, fontSize: small ? 24 : 44, color: "var(--color-accent-2-700)", lineHeight: 1.1 }}>{value}</div>
-      <div style={{ fontSize: 15, color: muted(62), marginTop: 6 }}>{label}</div>
+      <div style={{ fontSize: 15, color: "var(--color-accent-2-800)", marginTop: 6 }}>{label}</div>
     </div>
   );
 }
@@ -681,7 +758,7 @@ function KineticFaq({ items, motionRef }) {
                   "max-height .5s cubic-bezier(.2,.7,.2,1), opacity .4s ease",
               }}
             >
-              <p style={{ margin: 0, padding: "0 22px 20px", fontSize: 16.5, lineHeight: 1.66, color: muted(72) }}>
+              <p style={{ margin: 0, padding: "0 22px 20px", fontSize: 16.5, lineHeight: 1.66, color: "var(--color-text)" }}>
                 {f.a}
               </p>
             </div>
@@ -693,8 +770,8 @@ function KineticFaq({ items, motionRef }) {
 }
 
 // Kept as its own component so its `status` state can't re-render the rest of
-// the page — motion.js rewrites the DOM of the [data-words] and [data-split]
-// headings, and a parent re-render would undo that.
+// the page — motion.js writes inline transforms onto the pinned sections'
+// children, and a parent re-render would undo that.
 function ContactForm({ motionRef }) {
   const [status, setStatus] = useState(null); // null | 'sending' | 'ok' | 'err'
 
@@ -749,7 +826,7 @@ function ContactForm({ motionRef }) {
           <path data-check d="M20 36 L31 47 L50 25" stroke="#fff" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="60" strokeDashoffset="60" style={{ transition: "stroke-dashoffset .7s cubic-bezier(.2,.7,.2,1) .15s" }} />
         </svg>
         <div style={{ fontFamily: HEAD, fontSize: 30 }}>תודה שפניתם</div>
-        <div style={{ fontSize: 17, maxWidth: "26ch", color: "color-mix(in srgb,#fff 82%,transparent)" }}>
+        <div style={{ fontSize: 17, maxWidth: "26ch", color: "var(--color-bg)" }}>
           אחזור אליכם בהקדם. עד אז — קחו נשימה אחת עמוקה.
         </div>
       </div>

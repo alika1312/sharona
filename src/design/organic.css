@@ -353,21 +353,30 @@ select:focus-visible,
   .organic-v2 [data-pin-sec][data-unpin="1"] [data-ab-portrait],
   .organic-v2 [data-pin-sec][data-unpin="1"] [data-ab-stats],
   .organic-v2 [data-pin-sec][data-unpin="1"] [data-cform] { opacity: 1 !important; }
-  .organic-v2 [data-gallery][data-unpin="1"] [data-pin-inner] { padding: 96px 0 !important; }
-  .organic-v2 [data-gallery][data-unpin="1"] [data-pin-inner] > div:first-of-type {
-    position: static !important;
-    padding: 0 54px 34px !important;
+  /* No pin means no assembly: the collage becomes a static mosaic with the
+     copy above it. */
+  .organic-v2 [data-collage][data-unpin="1"] [data-pin-inner] { padding: 96px 54px !important; }
+  .organic-v2 [data-collage][data-unpin="1"] [data-stage] {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+    height: auto !important;
   }
-  .organic-v2 [data-gallery][data-unpin="1"] [data-track] {
-    transform: none !important;
-    width: auto !important;
-    overflow-x: auto !important;
-    padding: 0 54px !important;
-    scrollbar-width: none;
-  }
-  .organic-v2 [data-gallery][data-unpin="1"] [data-gitem] {
+  .organic-v2 [data-collage][data-unpin="1"] [data-plate] {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 4 / 5;
     opacity: 1 !important;
     transform: none !important;
+    filter: none !important;
+  }
+  .organic-v2 [data-collage][data-unpin="1"] [data-stagetext] {
+    position: static !important;
+    grid-column: 1 / -1;
+    padding-bottom: 20px;
   }
   .organic-v2 [data-pin-sec][data-unpin="1"] [data-stack] { height: 370px !important; }
 }
@@ -542,37 +551,41 @@ select:focus-visible,
   .organic-v2 [data-deck] > div:nth-child(2) { font-size: 22px !important; margin-bottom: 8px !important; }
   .organic-v2 [data-deck] p { font-size: 16.5px !important; margin: 0 !important; }
 
-  /* gallery — a vertical organic mosaic */
-  .organic-v2 [data-gallery] [data-pin-inner] { padding: 74px 20px !important; }
-  .organic-v2 [data-gallery] [data-pin-inner] > div:first-of-type {
-    position: static !important;
-    padding: 0 0 24px !important;
-  }
-  .organic-v2 [data-track] {
+  /* gallery — the collage flattens into a vertical organic mosaic, copy
+     first, plates below it. No pointer proximity on a touch screen. */
+  .organic-v2 [data-collage] [data-pin-inner] { padding: 74px 20px !important; }
+  .organic-v2 [data-collage] [data-stage] {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
     gap: 12px !important;
     width: auto !important;
     max-width: 440px !important;
+    height: auto !important;
     margin: 0 auto !important;
-    padding: 0 !important;
-    transform: none !important;
-    align-items: start !important;
   }
-  .organic-v2 [data-gitem] { width: auto !important; opacity: 1 !important; }
-  .organic-v2 [data-gitem] > div {
+  .organic-v2 [data-plate] {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
     width: 100% !important;
     height: auto !important;
     aspect-ratio: 3 / 4;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
     box-shadow: var(--shadow-sm) !important;
+    padding: 12px !important;
   }
-  .organic-v2 [data-gitem]:first-child { grid-column: 1 / -1; }
-  .organic-v2 [data-gitem]:first-child > div { aspect-ratio: 5 / 4; }
-  .organic-v2 [data-gitem]:last-child {
+  .organic-v2 [data-plate]:first-child { grid-column: 1 / -1; aspect-ratio: 5 / 4; }
+  .organic-v2 [data-plate]:last-child { grid-column: 1 / -1; aspect-ratio: 2 / 1; }
+  /* the labels are decoration for a hover that doesn't exist here */
+  .organic-v2 [data-plabel] { display: none !important; }
+  .organic-v2 [data-stagetext] {
+    position: static !important;
     grid-column: 1 / -1;
-    display: flex !important;
-    justify-content: center;
-    padding: 8px 0 0 !important;
+    padding-bottom: 22px;
+    opacity: 1 !important;
+    transform: none !important;
   }
 
   /* voices — a swipeable carousel, one review at a time */
@@ -692,7 +705,7 @@ select:focus-visible,
     .organic-v2 [data-ab-stats],
     .organic-v2 [data-cform],
     .organic-v2 [data-deck],
-    .organic-v2 [data-gitem],
+    .organic-v2 [data-plate],
     .organic-v2 [data-stack] {
       animation: mrise linear both;
       animation-timeline: view();
@@ -710,7 +723,7 @@ select:focus-visible,
     .organic-v2 [data-step],
     .organic-v2 [data-faq],
     .organic-v2 [data-deck],
-    .organic-v2 [data-gitem],
+    .organic-v2 [data-plate],
     .organic-v2 [data-card] { opacity: 1 !important; transform: none !important; }
   }
 }
@@ -718,7 +731,7 @@ select:focus-visible,
   .organic-v2 [data-step],
   .organic-v2 [data-faq],
   .organic-v2 [data-deck],
-  .organic-v2 [data-gitem],
+  .organic-v2 [data-plate],
   .organic-v2 [data-card] { opacity: 1 !important; transform: none !important; }
 }
 
@@ -797,7 +810,7 @@ select:focus-visible,
 }
 .organic-v2 [data-stack] { touch-action: pan-y; }
 
-/* ---- three service cards per row is tight below ~1040px ---- */
+/* ---- two service cards per row below ~1040px (see the 3-col step below) ---- */
 @media (min-width: 901px) and (max-width: 1039px) {
   .organic-v2 [data-m="grid"] { grid-template-columns: repeat(2, 1fr) !important; }
 }
@@ -840,4 +853,25 @@ select:focus-visible,
   .organic-v2.cursor-dot-on,
   .organic-v2.cursor-dot-on * { cursor: auto !important; }
   .organic-v2 [data-cursor-dot] { display: none !important; }
+}
+
+/* ---- Eight service cards: four across, dropping to two then one ---- */
+@media (min-width: 1040px) and (max-width: 1279px) {
+  .organic-v2 #services [data-m="grid"] { grid-template-columns: repeat(3, 1fr) !important; }
+}
+
+/* ---- מרחב טיפולי: the collage plates ---- */
+.organic-v2 [data-plate] {
+  transition: box-shadow .45s ease;
+}
+.organic-v2 [data-stagetext] {
+  transition: opacity .4s ease, transform .5s cubic-bezier(.2,.7,.2,1);
+}
+/* Reduced motion: the collage is a plain, still mosaic. */
+@media (prefers-reduced-motion: reduce) {
+  .organic-v2 [data-plate] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
 }

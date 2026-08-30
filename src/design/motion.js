@@ -3,7 +3,9 @@
 // canvas).
 //
 // It is a single requestAnimationFrame loop that reads scroll/pointer state
-// once per frame and writes transforms. Everything is progressive
+// once per frame and writes transforms. Text is deliberately exempt: every
+// heading and paragraph renders in its final state, because copy is there to
+// be read, not watched. Everything is progressive
 // enhancement: the markup ships fully visible, and `prime()` is what hides
 // the animated bits — so without JS (and for crawlers) the page still reads
 // as plain, complete content.
@@ -14,12 +16,22 @@
 // whose content is too tall scale down to fit (see measurePins); only when
 // even that would be too small do they unpin and fall back to normal flow.
 //
+// The gallery is the one section that isn't a timeline of its own: its
+// plates assemble out of depth and then respond to the pointer, so it holds
+// still and lets you look around it.
+//
 // On top of that, Kinetic adds section snapping: scrolling into the seam
 // between two sections latches there, the locked section leans toward its
 // exit as you keep pushing, and past a threshold the page hard-cuts to the
 // next one. Desktop + fine pointer + no reduced-motion only.
 
 const CB = "cubic-bezier(.2,.7,.2,1)";
+
+// How hard you have to push to break out of a seam. The old threshold was
+// 88px — one notch of most wheels — so a section you'd just finished reading
+// would snap away under a single flick. There's no time lock: push and the
+// page moves, immediately.
+const BREAK = 340;
 
 export function createHomeMotion(root, props = {}) {
   const m = new HomeMotion(root, props);
@@ -91,6 +103,9 @@ class HomeMotion {
       this.mqCycle = 0;
       this.deckM = null;
       this.pinsM = null;
+      this._pathBox = null;
+      (this.plates || []).forEach((pl) => (pl.ox = undefined));
+      this._spotEl = null;
       this.narrow = window.innerWidth < 901;
       this._mreset = false;
     };
@@ -99,11 +114,10 @@ class HomeMotion {
     this.later(() => {
       this.pinsM = null;
       this.deckM = null;
+      this._pathBox = null;
     }, 1500);
 
     this.prime();
-    this.splitChars();
-    this.splitWords();
     this.setupDot();
     this.setupStack();
     this.setupTilt();
@@ -132,7 +146,6 @@ class HomeMotion {
     this.grid = this.q('[data-m="grid"]');
     this.portrait = this.q("[data-ab-portrait]");
     this.abStats = this.q("[data-ab-stats]");
-    this.counters = this.qa("[data-count]");
     this.cform = this.q("[data-cform]");
     this.cfs = this.qa("[data-cf]");
     this.reveals = this.qa("[data-reveal]");
@@ -141,14 +154,22 @@ class HomeMotion {
       w: +el.dataset.w || 1,
       ph: i * 1.7,
     }));
-    this.turb = this.q("[data-turb]");
     this.liqEl = this.q("[data-liqmap]");
     this.liqWrap = this.q("[data-liquid]");
     this.hint = this.q("[data-hint]");
     this.marquee = this.q("[data-marquee]");
-    this.gallery = this.q("[data-gallery]");
-    this.track = this.q("[data-track]");
-    this.gitems = this.qa("[data-gitem]");
+    this.gallery = this.q("[data-collage]");
+    this.stage = this.q("[data-stage]");
+    this.stageText = this.q("[data-stagetext]");
+    this.plates = this.qa("[data-plate]").map((el, i) => ({
+      el,
+      d: +el.dataset.depth || 0,
+      label: el.querySelector("[data-plabel]"),
+      // staggered so they don't all arrive together: back plates first,
+      // the closest one last
+      order: i,
+      near: 0,
+    }));
     this.faqSec = this.q("#faq");
     this.faqs = this.qa("[data-faq]");
     this.magnets = this.qa("[data-magnet]").concat(
@@ -169,8 +190,8 @@ class HomeMotion {
       const dt = Math.min(0.05, (now - this.last) / 1000);
       this.last = now;
       const vh = window.innerHeight;
-      const vw = window.innerWidth;
 
+      this.tick = (this.tick || 0) + 1;
       const y0 = window.scrollY;
       this.velS += (y0 - this.sy - this.velS) * 0.2;
       this.sy = y0;
@@ -195,10 +216,8 @@ class HomeMotion {
       this.revealPass(vh);
       document.documentElement.style.setProperty("--progress", this.prog(this.sySm));
       this.blobField(t, vh);
-      this.headWave(t, vh);
-      this.liquid(t, vh);
+      this.liquid(vh);
       this.marqueeStep(dt);
-      this.wordsScrub(vh);
       this.aboutStep();
       this.contactStep();
       if (this.narrow) {
@@ -206,13 +225,12 @@ class HomeMotion {
       } else {
         this.stepsStep();
         this.servicesStep();
-        this.galleryStep(vh, vw);
+        this.collageStep();
         this.stackStep(vh, dt);
         this.faqStep();
       }
       this.parallaxStep(vh);
       this.magnetStep();
-      this.footerStep(vh);
       this.railStep(vh);
       this.dotStep();
     };
@@ -226,6 +244,7 @@ class HomeMotion {
     window.removeEventListener("resize", this.onResize);
     if (this.onWheel) window.removeEventListener("wheel", this.onWheel);
     if (this.onKeyNav) window.removeEventListener("keydown", this.onKeyNav);
+    if (this.onCarKey) window.removeEventListener("keydown", this.onCarKey);
     if (this.onAnchor) document.removeEventListener("click", this.onAnchor);
     if (this.onDragMove) {
       window.removeEventListener("pointermove", this.onDragMove);
@@ -237,8 +256,6 @@ class HomeMotion {
     if (this.dotsHost) this.dotsHost.textContent = "";
     this.timers.forEach(clearTimeout);
     this.timers = [];
-    // The footer outlives this page, so its letters must not stay scattered.
-    (this.fchars || []).forEach((s) => (s.style.transform = ""));
     if (this.intro) this.intro.remove();
     if (this.dotEl) {
       this.dotEl.remove();
@@ -255,6 +272,7 @@ class HomeMotion {
   // (and therefore the fit scale) has to be redone.
   remeasure() {
     this.pinsM = null;
+    this._pathBox = null;
   }
 
   /* ============================ mobile ============================
@@ -310,17 +328,18 @@ class HomeMotion {
   mobileReset() {
     if (this._mreset) return;
     this._mreset = true;
-    this.qa("[data-card],[data-gitem],[data-deck],[data-step],[data-faq]").forEach(
+    this.qa("[data-card],[data-plate],[data-deck],[data-step],[data-faq]").forEach(
       (el) => {
         el.style.opacity = "";
         el.style.transform = "";
         el.style.zIndex = "";
+        el.style.filter = "";
         // stackStep hides the off-deck cards from AT; on the mobile rail
-        // every card is a peer, so that has to come back off.
-        if (el.hasAttribute("aria-hidden")) el.removeAttribute("aria-hidden");
+        // every card is a peer, so that has to come back off. (The collage
+        // plates are decorative — their aria-hidden is not ours to remove.)
+        if (el.hasAttribute("data-card")) el.removeAttribute("aria-hidden");
       }
     );
-    if (this.track) this.track.style.transform = "";
   }
 
   /* Hide the animated elements. Done from JS so the served HTML stays
@@ -346,11 +365,18 @@ class HomeMotion {
     hide("[data-deck]", null);
     hide("[data-faq]", "translateY(34px)");
     hide("[data-cform]", "translateY(70px) scale(.94)");
+    hide("[data-plate]", "scale(.72)");
     this.qa("[data-cf]").forEach((el) => {
       el.style.opacity = "0";
       el.style.transform = "translateX(38px)";
     });
-    this.qa("[data-ring]").forEach((el) => (el.style.opacity = "0"));
+    this.qa("[data-ring],[data-ring2],[data-numdone]").forEach(
+      (el) => (el.style.opacity = "0")
+    );
+    // Counters are text: show the final figure, don't tick it up.
+    this.qa("[data-count]").forEach((el) => {
+      el.textContent = el.dataset.count + (el.dataset.suffix || "");
+    });
     // Every card past the first starts hidden; stackStep sweeps them in.
     this.qa("[data-card]").forEach((el, i) => {
       if (i > 0) el.style.opacity = "0";
@@ -385,9 +411,8 @@ class HomeMotion {
       el._kids = [...inner.children].filter(
         (k) => getComputedStyle(k).position !== "absolute"
       );
-      el._reel = el._kids.some((k) => k.hasAttribute("data-track"));
       el._kids.forEach((k) => {
-        if (k.style.transform && !k.hasAttribute("data-track")) k.style.transform = "";
+        if (k.style.transform) k.style.transform = "";
       });
       let need = 0;
       el._kids.forEach((k) => {
@@ -398,7 +423,7 @@ class HomeMotion {
     pins.forEach((el) => {
       el._fit = 1;
       const fit = el._need ? this.cl((vh - 36) / el._need, 0, 1) : 1;
-      if (narrow || this.reduce || fit < 0.6 || (el._reel && el._need > vh - 16)) {
+      if (narrow || this.reduce || fit < 0.6) {
         el.dataset.unpin = "1";
         return;
       }
@@ -444,6 +469,7 @@ class HomeMotion {
 
   setY(v) {
     const t = Math.round(v);
+    if (Math.abs(window.scrollY - t) < 1) return;
     window.scrollTo({ top: t, behavior: "instant" });
     this.sy = t;
     this.velS = 0;
@@ -506,9 +532,9 @@ class HomeMotion {
         this.holdA += d;
         this.lastIn = now;
         this.setY(h.anchor);
-      } else if (now - (this.lastIn || 0) > 400) this.holdA *= 0.92;
+      } else if (now - (this.lastIn || 0) > 500) this.holdA *= 0.9;
       this.chgDir = h.up ? -1 : 1;
-      this.charge(h.el, this.cl(Math.abs(this.holdA) / 88, 0, 1));
+      this.charge(h.el, this.cl(Math.abs(this.holdA) / BREAK, 0, 1));
       this.checkJump(now);
       return;
     }
@@ -562,8 +588,8 @@ class HomeMotion {
   checkJump(now) {
     const h = this.hold;
     if (!h) return;
-    if (!h.up && this.holdA >= 88) this.jump(h.next, now, h.el);
-    else if (h.up && this.holdA <= -88) this.jump(h.end, now, h.el);
+    if (!h.up && this.holdA >= BREAK) this.jump(h.next, now, h.el);
+    else if (h.up && this.holdA <= -BREAK) this.jump(h.end, now, h.el);
   }
 
   jump(t, now, el) {
@@ -641,12 +667,13 @@ class HomeMotion {
       const upk = ["ArrowUp", "PageUp"].includes(e.key);
       if (!dn && !upk) return;
       const h = this.hold;
+      const now = performance.now();
       if (dn && !h.up) {
         e.preventDefault();
-        this.jump(h.next, performance.now());
+        this.jump(h.next, now);
       } else if (upk && h.up) {
         e.preventDefault();
-        this.jump(h.end, performance.now());
+        this.jump(h.end, now);
       } else {
         this.hold = null;
         this.holdA = 0;
@@ -745,71 +772,16 @@ class HomeMotion {
     }, 2900);
   }
 
-  /* ============================ split text ============================ */
-
-  splitChars() {
-    this.chars = [];
-    this.charHost = null;
-    if (this.reduce) return; // leave the headline as plain, static text
-
-    this.qa("[data-split]").forEach((host) => {
-      const text = host.textContent;
-      host.textContent = "";
-      const words = text.split(" ");
-      words.forEach((word, wi) => {
-        const wrap = document.createElement("span");
-        wrap.style.cssText = "display:inline-block;white-space:nowrap";
-        [...word].forEach((c) => {
-          const outer = document.createElement("span");
-          outer.style.cssText =
-            "display:inline-block;white-space:pre;will-change:transform";
-          const inner = document.createElement("span");
-          inner.style.cssText =
-            "display:inline-block;white-space:pre;opacity:0;transform:translateY(115%) rotate(7deg);transition:opacity .7s ease,transform .95s cubic-bezier(.19,.9,.22,1)";
-          inner.textContent = c;
-          outer.appendChild(inner);
-          wrap.appendChild(outer);
-          this.chars.push({ el: outer, inner });
-        });
-        host.appendChild(wrap);
-        if (wi < words.length - 1) host.appendChild(document.createTextNode(" "));
-      });
-      if (!this.charHost) this.charHost = host.closest("h1");
-    });
-  }
-
-  splitWords() {
-    this.wordHosts = this.qa("[data-words]").map((el) => {
-      const words = el.textContent.split(/\s+/).filter(Boolean);
-      el.textContent = "";
-      const spans = words.map((w, i) => {
-        const s = document.createElement("span");
-        s.style.cssText = "display:inline-block;opacity:.14;will-change:opacity,transform";
-        s.textContent = w;
-        el.appendChild(s);
-        if (i < words.length - 1) el.appendChild(document.createTextNode(" "));
-        return s;
-      });
-      if (this.reduce) spans.forEach((s) => (s.style.opacity = "1"));
-      return { el, words: spans, p: -1 };
-    });
-  }
+  /* ============================ reveals ============================
+     Text is never animated — headings and copy render in their final state
+     so they can just be read. The only [data-reveal] elements left are the
+     hero headline (one gentle fade on load) and non-text pieces: the
+     portrait, the service cards, the form. */
 
   startReveals() {
     // Reveal what is already on screen; the rAF loop picks up the rest as
     // they scroll in.
     this.revealPass(window.innerHeight, true);
-    this.chars.forEach((c, i) =>
-      this.later(() => {
-        c.inner.style.opacity = "1";
-        c.inner.style.transform = "none";
-      }, 120 + i * 34)
-    );
-    this.later(
-      () => this.qa("[data-line]").forEach((l) => (l.style.overflow = "visible")),
-      400 + this.chars.length * 34 + 900
-    );
-    this.headReady = true;
     // The "touch the portrait" nudge has done its job after a few seconds.
     if (this.hint) {
       this.later(() => {
@@ -838,6 +810,7 @@ class HomeMotion {
   /* ============================ rail / parallax ============================ */
 
   railStep(vh) {
+    if (this.tick % 4) return;
     if (!this.dots) {
       this.dots = this.qa("[data-dot-nav]");
       if (!this.dots.length) return;
@@ -891,26 +864,8 @@ class HomeMotion {
     });
   }
 
-  // Headline characters bob on a slow sine wave, and shy away from the cursor.
-  headWave(t, vh) {
-    if (!this.headReady || !this.chars.length || !this.charHost || this.amp === 0)
-      return;
-    const r = this.charHost.getBoundingClientRect();
-    if (r.bottom < -60 || r.top > vh + 60) return;
-    this.chars.forEach((c, i) => {
-      const el = c.el;
-      const x = r.left + el.offsetLeft + el.offsetWidth / 2;
-      const yy = r.top + el.offsetTop + el.offsetHeight / 2;
-      const near = this.fine
-        ? Math.max(0, 1 - Math.hypot(this.cx - x, this.cy - yy) / 165)
-        : 0;
-      const wave = Math.sin(t * 1.15 + i * 0.4) * 4.5;
-      el.style.transform = `translateY(${((wave - near * 20) * this.amp).toFixed(2)}px) rotate(${(near * -3 * this.amp).toFixed(2)}deg)`;
-    });
-  }
-
   // The hero portrait ripples under the cursor via an SVG displacement map.
-  liquid(t, vh) {
+  liquid(vh) {
     if (!this.liqEl || !this.liqWrap) return;
     const r = this.liqWrap.getBoundingClientRect();
     if (r.bottom < 0 || r.top > vh) {
@@ -927,12 +882,6 @@ class HomeMotion {
     const target = this.fine ? Math.max(0, 1 - d / (r.width * 1.05)) * 30 * this.amp : 0;
     this.liqV += (target - this.liqV) * 0.1;
     this.liqEl.setAttribute("scale", this.liqV.toFixed(2));
-    if (this.turb && this.liqV > 0.5) {
-      this.turb.setAttribute(
-        "baseFrequency",
-        `${(0.008 + Math.sin(t * 0.5) * 0.003).toFixed(4)} ${(0.013 + Math.cos(t * 0.37) * 0.004).toFixed(4)}`
-      );
-    }
   }
 
   marqueeStep(dt) {
@@ -944,37 +893,6 @@ class HomeMotion {
     if (this.mqX > this.mqCycle) this.mqX -= this.mqCycle;
     const sk = this.cl(-this.velS * 0.32, -7, 7) * this.amp;
     el.style.transform = `translateX(${this.mqX.toFixed(1)}px) skewX(${sk.toFixed(2)}deg)`;
-  }
-
-  /* ============================ scrubbed words ============================ */
-
-  wordsScrub(vh) {
-    if (this.reduce) return;
-    this.wordHosts.forEach((h) => {
-      if (h.sec === undefined) {
-        h.sec = h.el.closest("[data-pin-sec]");
-        h.si = h.sec ? [...h.sec.querySelectorAll("[data-words]")].indexOf(h.el) : 0;
-      }
-      let p;
-      if (h.sec) {
-        if (!h.sec._vis) return;
-        p = this.seg(h.sec._p, 0.02 + h.si * 0.08, 0.42 + h.si * 0.08);
-      } else {
-        const r = h.el.getBoundingClientRect();
-        const rt = r.top + this.lag;
-        if (r.bottom + this.lag < -60 || rt > vh + 60) return;
-        p = this.cl((vh * 0.88 - rt) / (r.height + vh * 0.2), 0, 1);
-      }
-      if (Math.abs(p - h.p) < 0.004) return;
-      h.p = p;
-      const n = h.words.length;
-      h.words.forEach((w, i) => {
-        const wp = this.cl(p * n * 1.45 - i, 0, 1);
-        w.style.opacity = (0.14 + wp * 0.86).toFixed(3);
-        w.style.transform = `translateY(${((1 - wp) * 8).toFixed(2)}px)`;
-        w.style.filter = wp > 0.97 ? "none" : `blur(${((1 - wp) * 3).toFixed(2)}px)`;
-      });
-    });
   }
 
   /* ============================ about ============================ */
@@ -1000,11 +918,6 @@ class HomeMotion {
       this.abStats.style.opacity = e.toFixed(3);
       this.abStats.style.transform = `translateY(${((1 - e) * 30).toFixed(1)}px)`;
     }
-    (this.counters || []).forEach((el, i) => {
-      const e = this.es(this.seg(p, 0.46 + i * 0.05, 0.86));
-      const txt = Math.round(+el.dataset.count * e) + (el.dataset.suffix || "");
-      if (el.textContent !== txt) el.textContent = txt;
-    });
   }
 
   /* ============================ contact ============================ */
@@ -1044,6 +957,10 @@ class HomeMotion {
     this.pathSvg = this.q("[data-path]");
     this.pathLine = this.q("[data-pathline]");
     this.dot = this.q("[data-dot]");
+    this.trail = this.qa("[data-trail]");
+    this.trailBuf = [];
+    this.arrive = 0;
+    this._curStep = -1;
     this.steps = this.qa("[data-step]");
     if (this.pathLine && this.pathLine.getTotalLength) {
       this.pathLen = this.pathLine.getTotalLength();
@@ -1065,50 +982,96 @@ class HomeMotion {
 
     if (this.pathLine && this.pathLen && this.pathSvg) {
       this.pathLine.style.strokeDashoffset = (this.pathLen * (1 - drawn)).toFixed(1);
-      const pr = this.pathSvg.getBoundingClientRect();
+      // Cached: the SVG box only changes on resize, but getPointAtLength
+      // right after a style write forced a reflow every frame.
+      const pr = this._pathBox || (this._pathBox = this.pathSvg.getBoundingClientRect());
       if (this.dot && pr.width) {
         const pt = this.pathLine.getPointAtLength(this.pathLen * drawn);
-        this.dot.style.transform = `translate(${((pt.x / 1000) * pr.width - 9).toFixed(1)}px,${((pt.y / 100) * pr.height - 9).toFixed(1)}px) scale(${(1 - settle * 0.5).toFixed(2)})`;
+        const px = (pt.x / 1000) * pr.width;
+        const py = (pt.y / 92) * pr.height;
+        this.dot.style.transform = `translate(${(px - 9).toFixed(1)}px,${(py - 9).toFixed(1)}px) scale(${(1 - settle * 0.5 + this.arrive * 0.55).toFixed(2)})`;
         const vis = sp > 0.02 && settle < 0.7 ? "1" : "0";
         if (this.dot.style.opacity !== vis) this.dot.style.opacity = vis;
+
+        // The dot drags a short comet tail of its own recent positions.
+        this.trailBuf.unshift([px, py]);
+        if (this.trailBuf.length > 22) this.trailBuf.pop();
+        this.trail.forEach((el, i) => {
+          const q = this.trailBuf[(i + 1) * 6] || this.trailBuf[this.trailBuf.length - 1];
+          if (!q) return;
+          const k = 1 - (i + 1) / (this.trail.length + 1);
+          el.style.transform = `translate(${(q[0] - 6).toFixed(1)}px,${(q[1] - 6).toFixed(1)}px) scale(${(0.4 + k * 0.5).toFixed(2)})`;
+          el.style.opacity = (+vis * k * 0.5 * (1 - settle)).toFixed(3);
+        });
       }
     }
 
     let peak = 0;
     let actEl = null;
-    this.steps.forEach((s, i) => {
+    // Which disc the dot is sitting on right now — used for the pop.
+    const cur = Math.round(f);
+    if (cur !== this._curStep) {
+      this._curStep = cur;
+      if (sp > 0.02 && sp < 0.99) this.arrive = 1;
+    }
+    this.arrive = (this.arrive || 0) * 0.9;
+    const arrive = this.arrive;
+
+    this.steps.forEach((st, i) => {
       const d = f - i;
       let op, ty, sc, rot;
       if (d <= 0) {
+        // still ahead of you: rises into place
         const e = this.es(this.cl(1 + d, 0, 1));
         op = e;
         ty = (1 - e) * 54;
         sc = 0.8 + e * 0.2;
         rot = (1 - e) * 7;
       } else {
+        // behind you: recedes, but never all the way out
         const k = this.cl(d / 2.2, 0, 1);
-        op = 1 - k * 0.62;
+        op = 1 - k * 0.5;
         ty = -k * 12;
-        sc = 1 - k * 0.11;
+        sc = 1 - k * 0.09;
         rot = 0;
       }
-      const a = Math.max(0, 1 - Math.abs(d) / 0.9) * (1 - settle);
-      if (a > peak) peak = a;
-      if (Math.abs(d) < 0.55) actEl = s;
+      const act = Math.max(0, 1 - Math.abs(d) / 0.9) * (1 - settle);
+      if (act > peak) peak = act;
+      if (Math.abs(d) < 0.55) actEl = st;
       op = this.mix(op, 1, settle);
       ty = this.mix(ty, 0, settle);
       sc = this.mix(sc, 1, settle);
       rot = this.mix(rot, 0, settle);
-      s.style.opacity = op.toFixed(3);
-      s.style.transform = `translateY(${ty.toFixed(1)}px) scale(${sc.toFixed(3)}) rotate(${rot.toFixed(2)}deg)`;
-      const num = s._num || (s._num = s.querySelector("[data-num]"));
+      st.style.opacity = op.toFixed(3);
+      st.style.transform = `translateY(${ty.toFixed(1)}px) scale(${sc.toFixed(3)}) rotate(${rot.toFixed(2)}deg)`;
+
+      // The disc the dot has just reached springs — overshoot then settle.
+      const isCur = i === cur;
+      const pop = isCur ? arrive : 0;
+      const spring = 1 + pop * 0.3 * Math.cos(pop * 5.2);
+      const num = st._num || (st._num = st.querySelector("[data-num]"));
       if (num)
-        num.style.transform = `scale(${(1 + a * 0.22).toFixed(3)}) rotate(${(a * -7).toFixed(2)}deg)`;
-      const ring = s._ring || (s._ring = s.querySelector("[data-ring]"));
+        num.style.transform = `scale(${(1 + act * 0.16 + (spring - 1)).toFixed(3)}) rotate(${(act * -5 + pop * 6).toFixed(2)}deg)`;
+
+      // Two rings expanding at different rates read as a ripple, not a glow.
+      const ring = st._ring || (st._ring = st.querySelector("[data-ring]"));
       if (ring) {
-        ring.style.opacity = (a * 0.8).toFixed(3);
-        ring.style.transform = `scale(${(1 + a * 0.42).toFixed(3)})`;
+        ring.style.opacity = (act * 0.75 + pop * 0.5).toFixed(3);
+        ring.style.transform = `scale(${(1 + act * 0.24 + pop * 0.5).toFixed(3)})`;
       }
+      const r2 = st._ring2 || (st._ring2 = st.querySelector("[data-ring2]"));
+      if (r2) {
+        r2.style.opacity = (pop * 0.55).toFixed(3);
+        r2.style.transform = `scale(${(1 + (1 - pop) * 0.95).toFixed(3)})`;
+      }
+
+      // Once a step is properly behind you it becomes a tick, so progress
+      // through the four is legible at a glance.
+      const done = this.cl((d - 0.75) / 0.5, 0, 1) * (1 - settle);
+      const numTxt = st._nt || (st._nt = st.querySelector("[data-numtext]"));
+      const numDone = st._nd || (st._nd = st.querySelector("[data-numdone]"));
+      if (numTxt) numTxt.style.opacity = (1 - done).toFixed(3);
+      if (numDone) numDone.style.opacity = done.toFixed(3);
     });
 
     if (this.ghost) {
@@ -1117,17 +1080,23 @@ class HomeMotion {
         this.ghost.textContent = txt;
         this.ghostPop = 1;
       }
-      this.ghostPop *= 0.87;
-      this.ghost.style.opacity = (this.cl(sp * 4, 0, 1) * (1 - settle)).toFixed(3);
-      this.ghost.style.transform = `translate(50%,-50%) scale(${(1 + this.ghostPop * 0.09).toFixed(3)})`;
+      this.ghostPop *= 0.9;
+      this.ghost.style.opacity = (
+        this.cl(sp * 4, 0, 1) *
+        (1 - settle) *
+        (1 - this.ghostPop * 0.55)
+      ).toFixed(3);
+      this.ghost.style.transform = `translate(50%,-50%) scale(${(1 + this.ghostPop * 0.14).toFixed(3)})`;
     }
     if (this.spot) {
-      this.spot.style.opacity = (peak * 0.8).toFixed(3);
-      if (actEl && this.pinner) {
+      this.spot.style.opacity = (peak * 0.85).toFixed(3);
+      if (actEl && this.pinner && actEl !== this._spotEl) {
+        this._spotEl = actEl;
         const ir = this.pinner.getBoundingClientRect();
         const sr = actEl.getBoundingClientRect();
+        this.spot.style.transition = `left .55s ${CB}, top .55s ${CB}`;
         this.spot.style.left = `${(sr.left - ir.left + sr.width / 2).toFixed(0)}px`;
-        this.spot.style.top = `${(sr.top - ir.top + 60).toFixed(0)}px`;
+        this.spot.style.top = `${(sr.top - ir.top + 106).toFixed(0)}px`;
       }
     }
   }
@@ -1164,6 +1133,8 @@ class HomeMotion {
           el.style.opacity = "1";
           el.style.transform = "none";
           el.style.zIndex = "";
+          // Landed — stop paying for a compositor layer we no longer animate.
+          el.style.willChange = "";
         }
         return;
       }
@@ -1202,25 +1173,80 @@ class HomeMotion {
 
   /* ============================ gallery ============================ */
 
-  galleryStep(vh, vw) {
-    if (!this.gallery || !this.track || !this.gallery._vis) return;
-    if (this.gallery._flow) {
-      if (this.track.style.transform) this.track.style.transform = "";
+  /* The plates assemble out of depth as the section scrubs, drift on a
+     parallax split by depth, and the one nearest the pointer lifts while
+     the others step back and soften. Reads as a room you're standing in.
+
+     One rect per frame for the whole stage; each plate's box comes from
+     cached offsets, so no plate forces a reflow. */
+  collageStep() {
+    if (!this.gallery || !this.stage || !this.gallery._vis || !this.plates.length)
       return;
-    }
-    const p = this.gallery._p;
-    const max = Math.max(0, this.track.offsetWidth - vw);
-    // RTL: the track starts flush right and slides right-to-left.
-    this.track.style.transform = `translateX(${(p * max).toFixed(1)}px)`;
-    this.gitems.forEach((it) => {
-      const ir = it.getBoundingClientRect();
-      const k = Math.max(
-        0,
-        1 - Math.abs(ir.left + ir.width / 2 - vw / 2) / (vw * 0.52)
-      );
-      it.style.opacity = (0.42 + k * 0.58).toFixed(3);
-      it.style.transform = `scale(${(0.9 + k * 0.12).toFixed(3)})`;
+    const flow = this.gallery._flow;
+    const p = flow ? 1 : this.gallery._p;
+    const sr = this.stage.getBoundingClientRect();
+    if (!sr.width) return;
+    // measurePins may have scaled the stage down to fit the viewport.
+    const fit = sr.width / (this.stage.offsetWidth || sr.width);
+
+    // assembled by 55% of the pin, then it just breathes for the rest
+    const built = this.es(this.seg(p, 0.02, 0.55));
+    // and a gentle drift either side of centre for the whole section
+    const drift = flow ? 0 : (p - 0.5) * 2;
+
+    this.plates.forEach((pl, i) => {
+      const { el, d } = pl;
+      // back plates land first; the closest one arrives last
+      const s0 = 0.02 + (1 - d) * 0.26;
+      const e = flow ? 1 : this.es(this.seg(p, s0, s0 + 0.34));
+
+      // pointer proximity, from cached offsets against the one stage rect
+      if (pl.ox === undefined || pl._w !== el.offsetWidth) {
+        pl.ox = el.offsetLeft;
+        pl.oy = el.offsetTop;
+        pl._w = el.offsetWidth;
+        pl._h = el.offsetHeight;
+      }
+      const cxp = sr.left + (pl.ox + pl._w / 2) * fit;
+      const cyp = sr.top + (pl.oy + pl._h / 2) * fit;
+      const reach = Math.max(pl._w, pl._h) * fit * 0.95;
+      const raw =
+        this.fine && built > 0.6
+          ? Math.max(0, 1 - Math.hypot(this.cx - cxp, this.cy - cyp) / reach)
+          : 0;
+      pl.near += (raw - pl.near) * 0.14;
+      const near = pl.near;
+
+      // depth: near plates swing wide on the parallax, far ones barely move
+      const par = (1 - d) * 62 * this.amp;
+      const ty = (1 - e) * (60 + d * 90) - drift * par;
+      const tx = (1 - e) * (i % 2 ? 44 : -44) * (1 - d);
+      const sc =
+        (0.72 + e * 0.28) * (1 + near * 0.1) * (1 - (1 - near) * built * d * 0.05);
+      const rot = (1 - e) * (i % 2 ? 5 : -5) + near * (i % 2 ? -1.6 : 1.6);
+
+      el.style.opacity = (e * (0.52 + 0.48 * (1 - d)) * (0.7 + near * 0.3)).toFixed(3);
+      el.style.transform = `translate3d(${tx.toFixed(1)}px,${ty.toFixed(1)}px,0) rotate(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+      el.style.zIndex = String(Math.round((1 - d) * 3 + near * 10));
+
+      // far plates sit softly out of focus; whatever you point at snaps sharp
+      const blur = (d * 2.4 + (1 - e) * 3) * (1 - near);
+      const bs = blur < 0.12 ? "none" : `blur(${blur.toFixed(2)}px)`;
+      if (el.style.filter !== bs) el.style.filter = bs;
+      el.style.boxShadow = near > 0.5 ? "var(--shadow-lg)" : "var(--shadow-md)";
+      if (pl.label) {
+        const lo = near > 0.62 ? "1" : "0";
+        if (pl.label.style.opacity !== lo) pl.label.style.opacity = lo;
+      }
     });
+
+    // The centre copy dims a touch while you're exploring a plate, so the
+    // two never compete for attention.
+    if (this.stageText) {
+      const hot = this.plates.reduce((a, pl) => Math.max(a, pl.near), 0);
+      this.stageText.style.opacity = (1 - hot * 0.55).toFixed(3);
+      this.stageText.style.transform = `scale(${(1 - hot * 0.03).toFixed(3)})`;
+    }
   }
 
   /* ============================ FAQ ============================ */
@@ -1246,6 +1272,7 @@ class HomeMotion {
     this.cards = this.qa("[data-card]");
     this.voices = this.q("#voices");
     this.vstage = this.voices && this.voices.querySelector("[data-pin-inner]");
+    this.vhead = this.q("[data-vhead]");
     this.hint1 = this.q("[data-vhint]");
     this.hint2 = this.q("[data-vhint2]");
     this.carOff = null;
@@ -1255,14 +1282,27 @@ class HomeMotion {
     this.carHover = false;
     this.carDrag = null;
     this.carNav = this.qa("[data-carnav]");
+    this.carTouched = false;
+    this.carNudge = (dir) => {
+      const st = this.carStep;
+      this.carGoal = Math.round(this.carGoal / st) * st + dir * st;
+      this.carT = 0;
+      this.carTouched = true;
+    };
     this.carNav.forEach((b) =>
-      b.addEventListener("click", () => {
-        const st = this.carStep;
-        this.carGoal =
-          Math.round(this.carGoal / st) * st + (+b.dataset.carnav || 1) * st;
-        this.carT = 0;
-      })
+      b.addEventListener("click", () => this.carNudge(+b.dataset.carnav || 1))
     );
+    // Arrow keys work once the carousel is on screen — reading six reviews
+    // shouldn't require a mouse.
+    this.onCarKey = (e) => {
+      if (this.carOn < 0.4) return;
+      if (e.target.closest && e.target.closest("input,textarea")) return;
+      if (e.key === "ArrowRight") this.carNudge(1);
+      else if (e.key === "ArrowLeft") this.carNudge(-1);
+      else return;
+      e.preventDefault();
+    };
+    window.addEventListener("keydown", this.onCarKey);
     if (this.stack) {
       this.stack.addEventListener("pointerenter", () => (this.carHover = true));
       this.stack.addEventListener("pointerleave", () => (this.carHover = false));
@@ -1271,6 +1311,7 @@ class HomeMotion {
     this.vstage.addEventListener("pointerdown", (e) => {
       if (this.carOn < 0.5 || e.target.closest("[data-carnav]")) return;
       this.carDrag = { x: e.clientX, g: this.carGoal };
+      this.carTouched = true;
     });
     this.onDragMove = (e) => {
       if (!this.carDrag) return;
@@ -1306,13 +1347,18 @@ class HomeMotion {
     const out = (vw * 0.55) / fit + cw * 0.62;
 
     // one card at a time, each sweeping in from the opposite side
-    const s = this.seg(p, 0.04, 0.7) * (n - 1 + 0.34);
-    // then all of them gather into a running carousel
-    const cB = this.es(this.seg(p, 0.745, 0.95));
+    const s = this.seg(p, 0.04, 0.56) * (n - 1 + 0.34);
+    // then all of them gather into a running carousel — which gets the back
+    // third of the pin, because reading them is the point of the section
+    const cB = this.es(this.seg(p, 0.6, 0.84));
     this.carOn = cB;
 
-    const csc = 0.72;
-    const step = cw * csc + 26;
+    // 0.72 left the reviews as thumbnails at the exact moment they were
+    // meant to be read. The focused card now sits at ~0.94 and its
+    // neighbours at 0.78, so there's a clear subject with more either side.
+    const CSC_NEAR = 0.94;
+    const CSC_FAR = 0.78;
+    const step = cw * 0.84 + 30;
     const span = n * step;
     this.carStep = step;
     if (cB > 0.002) {
@@ -1321,7 +1367,8 @@ class HomeMotion {
         this.carGoal = this.carOff;
       }
       // The carousel idles forward on its own, unless you're holding it.
-      if (this.carDrag || this.carHover || this.amp === 0) this.carT = 0;
+      if (this.carDrag || this.carHover || this.carTouched || this.amp === 0)
+        this.carT = 0;
       else {
         this.carT = (this.carT || 0) + (dt || 0.016);
         if (this.carT > 3.4) {
@@ -1346,11 +1393,14 @@ class HomeMotion {
       if (cB > 0.002) {
         const cx = this.wrapS(i * step - this.carOff, span);
         const k = this.cl(1 - Math.abs(cx) / ((vw * 0.5) / fit + cw * 0.35), 0, 1);
+        // how squarely this card is the centred one
+        const focus = Math.pow(k, 3);
         x = this.mix(x, cx, cB);
         y = this.mix(y, 0, cB);
         rot = this.mix(rot, 0, cB);
-        sc = this.mix(sc, csc * (1 + 0.06 * k), cB);
-        op = this.mix(op, 0.2 + 0.8 * Math.pow(k, 1.2), cB);
+        sc = this.mix(sc, CSC_FAR + (CSC_NEAR - CSC_FAR) * focus, cB);
+        // 0.35 floor, so it always reads that there are more to come
+        op = this.mix(op, 0.35 + 0.65 * Math.pow(k, 1.2), cB);
         z = Math.round(this.mix(z, 4 + k * 16, cB));
       }
       el.style.opacity = op.toFixed(3);
@@ -1360,11 +1410,16 @@ class HomeMotion {
     });
 
     this.carNav.forEach((b) => {
-      b.style.opacity = (cB * 0.92).toFixed(3);
-      b.style.pointerEvents = cB > 0.6 ? "auto" : "none";
+      b.style.opacity = (cB * 0.95).toFixed(3);
+      b.style.pointerEvents = cB > 0.15 ? "auto" : "none";
     });
     if (this.hint1) this.hint1.style.opacity = (1 - cB).toFixed(3);
     if (this.hint2) this.hint2.style.opacity = cB.toFixed(3);
+    // The heading shrinks back so the reviews have the viewport to themselves.
+    if (this.vhead) {
+      this.vhead.style.transform = `translateY(${(-cB * 26).toFixed(1)}px) scale(${(1 - cB * 0.12).toFixed(3)})`;
+      this.vhead.style.opacity = (1 - cB * 0.42).toFixed(3);
+    }
   }
 
   /* ============================ magnets ============================ */
@@ -1380,47 +1435,6 @@ class HomeMotion {
       const d = Math.hypot(dx, dy);
       const k = Math.max(0, 1 - d / 150);
       el.style.transform = `translate(${(dx * 0.18 * k * this.amp).toFixed(1)}px,${(dy * 0.18 * k * this.amp).toFixed(1)}px) scale(${(1 + k * 0.06 * this.amp).toFixed(3)})`;
-    });
-  }
-
-  // The footer wordmark scatters away from the cursor, letter by letter.
-  footerStep(vh) {
-    if (this.amp === 0) return;
-    if (!this.fchars) {
-      const host = document.querySelector("[data-footer-name]");
-      if (!host) {
-        this.fchars = [];
-        return;
-      }
-      const text = host.textContent;
-      host.textContent = "";
-      this.fchars = [];
-      text.split(" ").forEach((word, wi, arr) => {
-        const wrap = document.createElement("span");
-        wrap.style.cssText = "display:inline-block;white-space:nowrap";
-        [...word].forEach((c) => {
-          const s = document.createElement("span");
-          s.style.cssText = "display:inline-block;white-space:pre;will-change:transform";
-          s.textContent = c;
-          wrap.appendChild(s);
-          this.fchars.push(s);
-        });
-        host.appendChild(wrap);
-        if (wi < arr.length - 1) host.appendChild(document.createTextNode(" "));
-      });
-      this.fhost = host;
-    }
-    if (!this.fchars.length || !this.fhost) return;
-    const r = this.fhost.getBoundingClientRect();
-    if (r.bottom < 0 || r.top > vh) return;
-    this.fchars.forEach((s) => {
-      const x = r.left + s.offsetLeft + s.offsetWidth / 2;
-      const y = r.top + s.offsetTop + s.offsetHeight / 2;
-      const dx = x - this.cx;
-      const dy = y - this.cy;
-      const d = Math.hypot(dx, dy);
-      const k = Math.max(0, 1 - d / 190);
-      s.style.transform = `translate(${(dx * 0.4 * k * this.amp).toFixed(1)}px,${(dy * 0.4 * k * this.amp).toFixed(1)}px) rotate(${(k * 8 * this.amp).toFixed(2)}deg)`;
     });
   }
 
@@ -1462,12 +1476,15 @@ class HomeMotion {
     const d = this.dotEl;
     if (!d) return;
     d.style.transform = `translate3d(${this.mx.toFixed(1)}px,${this.my.toFixed(1)}px,0)`;
-    const over = document.elementFromPoint(this.mx, this.my);
-    const hot = !!(
-      over &&
-      over.closest &&
-      over.closest("a,button,input,textarea,[data-tilt],[data-card]")
-    );
+    if (this.tick % 3 === 0) {
+      const over = document.elementFromPoint(this.mx, this.my);
+      this._hot = !!(
+        over &&
+        over.closest &&
+        over.closest("a,button,input,textarea,[data-tilt],[data-card]")
+      );
+    }
+    const hot = this._hot;
     const size = this.cDown ? 9 : hot ? 26 : 13;
     if (this._cSize !== size) {
       this._cSize = size;
