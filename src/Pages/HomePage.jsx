@@ -18,7 +18,7 @@ const EMAIL = "sharonabar5@gmail.com";
 
 const HEAD = "var(--font-heading)";
 
-// All eight areas of work — the seven on /experiences plus the workshops.
+// All nine areas of work — the eight on /experiences plus the workshops.
 // Keep this list in step with `experiences` in ../information/experiences.
 const services = [
   { icon: "❤", title: "משבר, מתח ולחץ נפשי", to: "/experiences", bg: "var(--color-accent-2-200)", text: "תמיכה בהתמודדות היומיומית, חזרה לאיזון וכלים מעשיים לצמיחה מתוך המשבר." },
@@ -29,6 +29,7 @@ const services = [
   { icon: "◇", title: "כיוון תעסוקתי וקריירה", to: "/experiences", bg: "var(--color-accent-200)", text: "מיפוי נטיות וכישורים, שחרור תחושת תקיעות וליווי עד התפקיד הרצוי." },
   { icon: "◈", title: "ליווי מנהלים וייעוץ ארגוני", to: "/experiences", bg: "var(--color-accent-2-300)", text: "פיתוח מנהיגות, הובלת תהליכי שינוי וליווי בכירים בארגונים, עמותות ורשויות." },
   { icon: "✧", title: "סדנאות", to: "/workshops", bg: "var(--color-accent-300)", text: "סדנאות חווייתיות ליחידים, זוגות, קבוצות וארגונים — כלים לצמיחה ולתקשורת." },
+  { icon: "◍", title: "ישראלים בחו״ל", to: "/experiences", bg: "var(--color-accent-2-200)", text: "מפגשים אונליין בעברית, בהתאמה לאזורי זמן — זוגיות, טיפול רגשי, הורות ורילוקיישן." },
 ];
 
 const steps = [
@@ -73,9 +74,9 @@ const railSections = [
   ["contact", "צרו קשר"],
 ];
 
-// Six voices, one per card in the kinetic stack — a spread across the work
-// (individual, couple, parenting, career, separation, family).
-const voices = [17, 2, 7, 11, 12, 16]
+// Seven voices, one per card in the kinetic stack — a spread across the work
+// (trauma, individual, couple, parenting, career, separation, family).
+const voices = [18, 17, 2, 7, 11, 12, 16]
   .map((id) => testimonials.find((t) => t.id === id))
   .filter(Boolean);
 
@@ -152,14 +153,14 @@ function HomePage() {
     <div ref={rootRef} className="organic organic-v2">
       <Head>
         <html lang="he" dir="rtl" />
-        <title>שרונה קדושאי בר-נס | טיפול רגשי, ייעוץ זוגי והדרכת הורים</title>
+        <title>שרונה קדושאי בר-נס | טיפול וייעוץ זוגי, טיפול רגשי והדרכת הורים</title>
         <meta
           name="description"
-          content="שרונה קדושאי בר-נס – יועצת ומטפלת המתמחה בטיפול רגשי, ייעוץ זוגי, הדרכת הורים, טראומה ומשבר. טיפול קצר מועד, אונליין ובאזור ירושלים ומבשרת ציון. בעברית ובאנגלית."
+          content="שרונה קדושאי בר-נס – טיפול וייעוץ זוגי, טיפול רגשי במצבי משבר, חרדה וטראומה והדרכת הורים, לישראלים בארץ ובחו״ל. טיפול קצר מועד — בקליניקה בצור הדסה ובאזור ירושלים, ובמפגשים אונליין בעברית ובאנגלית."
         />
         <link rel="canonical" href="https://sharona-bar-nes.com/" />
-        <meta property="og:title" content="שרונה קדושאי בר-נס | טיפול רגשי, ייעוץ זוגי והדרכת הורים" />
-        <meta property="og:description" content="יועצת ומטפלת המתמחה בטיפול רגשי, ייעוץ זוגי, הדרכת הורים, טראומה ומשבר – אונליין ובאזור ירושלים ומבשרת ציון." />
+        <meta property="og:title" content="שרונה קדושאי בר-נס | טיפול וייעוץ זוגי, טיפול רגשי והדרכת הורים" />
+        <meta property="og:description" content="טיפול וייעוץ זוגי, טיפול רגשי במצבי משבר, טראומה והדרכת הורים – לישראלים בארץ ובחו״ל, בקליניקה בצור הדסה ובאונליין." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://sharona-bar-nes.com/" />
       </Head>
@@ -195,8 +196,11 @@ function HomePage() {
 
         <div data-m="stack" style={{ position: "relative", maxWidth: 1200, margin: "0 auto", width: "100%", display: "flex", alignItems: "center", gap: 56 }}>
           <div style={{ flex: 1.08 }}>
-            <div style={{ ...kickerStyle, fontSize: 15, marginBottom: 24 }}>
-              טיפול רגשי · ייעוץ זוגי · הדרכת הורים
+            <div style={{ ...kickerStyle, fontSize: 15, marginBottom: 8 }}>
+              טיפול וייעוץ זוגי · טיפול רגשי במצבי משבר · הדרכת הורים
+            </div>
+            <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: ".04em", color: "var(--color-accent-2-700)", marginBottom: 24 }}>
+              לישראלים בארץ ובחו״ל — בקליניקה ובאונליין
             </div>
             <h1 data-reveal data-reveal-delay="0" style={{ position: "relative", fontFamily: HEAD, fontWeight: 400, fontSize: "clamp(48px,6.4vw,84px)", lineHeight: 1.08, letterSpacing: "-.015em", margin: 0 }}>
               <span style={{ display: "block", paddingBottom: ".09em" }}>מרחב לנשום בו,</span>
@@ -376,7 +380,7 @@ function HomePage() {
       </section>
 
       {/* ============================= SERVICES ============================= */}
-      <section id="services" data-pin-sec style={{ position: "relative", height: "360vh", background: "var(--color-bg)" }}>
+      <section id="services" data-pin-sec style={{ position: "relative", height: "420vh", background: "var(--color-bg)" }}>
         <div data-pin-inner style={pinInner}>
           <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%" }}>
             <div style={{ marginBottom: 40, maxWidth: "34ch" }}>
@@ -491,17 +495,18 @@ function HomePage() {
 
             {/* 560px, not 340: at 340 the content ran ~60px over and the
                 patient's name was the part that got cut off. This is sized to
-                the longest of the six reviews, and the card is a column with
+                the longest of the reviews, and the card is a column with
                 the footer pushed to the bottom, so the name can't be clipped
                 whatever the length. */}
             <div data-stack style={{ position: "relative", height: 560, maxWidth: 640, margin: "0 auto" }}>
               {voices.map((t, i) => (
                 <blockquote key={t.id ?? i} data-card style={{ position: "absolute", inset: 0, margin: 0, display: "flex", flexDirection: "column", background: "color-mix(in srgb,#fff 12%,transparent)", border: "1px solid color-mix(in srgb,#fff 16%,transparent)", borderRadius: 30, padding: 36, boxSizing: "border-box", willChange: "transform" }}>
                   <div aria-hidden="true" style={{ fontFamily: HEAD, fontSize: 52, lineHeight: 0.6, color: "var(--color-accent-300)", marginBottom: 18, flex: "none" }}>״</div>
-                  {/* the card is tall enough for all six as written; the
-                      clamp is only a backstop for a longer one added later */}
+                  {/* `excerpt` is the card-length cut of a long review — the
+                      full text still lives in `feedback`. The clamp is the
+                      backstop for anything without one. */}
                   <p style={{ margin: "0 0 22px", fontSize: 19, lineHeight: 1.62, display: "-webkit-box", WebkitLineClamp: 12, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                    {t.feedback.trim()}
+                    {(t.excerpt ?? t.feedback).trim()}
                   </p>
                   {/* mt:auto — the name is pinned to the bottom of the card */}
                   <footer style={{ display: "flex", alignItems: "center", gap: 12, marginTop: "auto", flex: "none" }}>

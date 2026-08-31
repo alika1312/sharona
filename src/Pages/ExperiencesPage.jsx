@@ -14,13 +14,13 @@ export const ExperiencesPage = () => {
         <title>תחומי המומחיות שלי – טיפול רגשי, זוגי, טראומה והדרכת הורים</title>
         <meta
           name="description"
-          content="תחומי המומחיות של שרונה קדושאי בר-נס: טיפול במצבי משבר ולחץ, ייעוץ וטיפול זוגי, הדרכת הורים, גירושין בכבוד הדדי, טיפול בטראומה, ייעוץ תעסוקתי וליווי מנהלים."
+          content="תחומי המומחיות של שרונה קדושאי בר-נס: טיפול במצבי משבר ולחץ, ייעוץ וטיפול זוגי, הדרכת הורים, גירושין בכבוד הדדי, טיפול בטראומה, ייעוץ תעסוקתי, ליווי מנהלים וייעוץ אונליין לישראלים בחו״ל."
         />
         <link rel="canonical" href="https://sharona-bar-nes.com/experiences/" />
         <meta property="og:title" content="תחומי המומחיות שלי – שרונה קדושאי בר-נס" />
         <meta
           property="og:description"
-          content="טיפול רגשי, זוגי, טראומה, הדרכת הורים, ייעוץ תעסוקתי וליווי מנהלים."
+          content="טיפול רגשי, זוגי, טראומה, הדרכת הורים, ייעוץ תעסוקתי, ליווי מנהלים וייעוץ אונליין לישראלים בחו״ל."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://sharona-bar-nes.com/experiences/" />

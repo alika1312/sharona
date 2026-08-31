@@ -1,6 +1,6 @@
 import { Head } from "vite-react-ssg";
 import { Link } from "react-router-dom";
-import { faqs, faqSchema } from "../information/faq";
+import { faqsByCategory, faqSchema } from "../information/faq";
 import FaqAccordion from "../components/FaqAccordion";
 import ShareLinks from "../components/ShareLinks";
 import { useReveal } from "../hooks/useReveal";
@@ -10,7 +10,7 @@ import { trackWhatsappClick, trackClickToCall } from "../lib/analytics";
 const URL = "https://sharona-bar-nes.com/faq/";
 const TITLE = "שאלות נפוצות | טיפול רגשי, ייעוץ זוגי והדרכת הורים – שרונה קדושאי בר-נס";
 const DESC =
-  "תשובות לשאלות הנפוצות לפני שמתחילים טיפול: תחומי הטיפול, מיקום הקליניקה בצור הדסה ואזור ירושלים, מפגשים אונליין בזום, שפות הטיפול, למי הטיפול מתאים וההכשרה שלי.";
+  "תשובות לשאלות הנפוצות לפני שמתחילים: טיפול וייעוץ זוגי, טיפול רגשי אישי, חרדה וטראומה, הדרכת הורים, ליווי אונליין לישראלים בחו״ל, תהליך הטיפול ופרטים מעשיים — קליניקה בצור הדסה ואונליין.";
 
 const WHATSAPP = "https://wa.me/972587250990";
 const TEL = "tel:+972587250990";
@@ -28,7 +28,7 @@ function FaqPage() {
         <meta property="og:title" content={TITLE} />
         <meta
           property="og:description"
-          content="תשובות לשאלות הנפוצות: תחומי הטיפול, מיקום המפגשים, טיפול אונליין, שפות, למי זה מתאים וההכשרה שלי."
+          content="תשובות לשאלות הנפוצות: טיפול זוגי, טיפול רגשי, חרדה וטראומה, הדרכת הורים, ליווי אונליין לישראלים בחו״ל ופרטים מעשיים."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={URL} />
@@ -71,10 +71,21 @@ function FaqPage() {
       {/* ============ QUESTIONS ============ */}
       <section className="org-section" style={{ padding: "80px 54px 40px", background: "var(--color-bg)" }}>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>
-          {/* h2 here: the questions are the top-level sections under the page h1 */}
-          <FaqAccordion items={faqs} headingLevel={2} />
+          {/* One block per subject: the category is the h2, its questions the h3s. */}
+          {faqsByCategory.map((group, i) => (
+            <div key={group.name} style={{ marginTop: i === 0 ? 0 : 56 }}>
+              <h2
+                data-reveal
+                className="org-h2"
+                style={{ ...h2, fontSize: 30, margin: "0 0 20px" }}
+              >
+                {group.name}
+              </h2>
+              <FaqAccordion items={group.items} headingLevel={3} />
+            </div>
+          ))}
 
-          <div data-reveal style={{ marginTop: 40 }}>
+          <div data-reveal style={{ marginTop: 48 }}>
             <ShareLinks url={URL} title="שאלות נפוצות – שרונה קדושאי בר-נס" label="שיתוף העמוד:" />
           </div>
         </div>

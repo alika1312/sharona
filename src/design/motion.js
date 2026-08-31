@@ -1122,10 +1122,17 @@ class HomeMotion {
     if (!this.deckM) this.measureDeck();
     const p = sec._p;
     const n = this.deck.length;
-    const span = 0.72 / n; // deal every card within the pin, whatever the count
+    // The whole deal has to land inside the pin, with a beat left over to
+    // read the finished grid. At eight cards the old 0.72/n stagger put the
+    // last card's landing at p=1.05, so the tail never finished dealing.
+    // Fit the stagger to the window instead: the last card lands on DEAL_END.
+    const DEAL_START = 0.06;
+    const DEAL_END = 0.86;
+    const CARD = 0.28; // how long one card takes to fly to its slot
+    const span = n > 1 ? (DEAL_END - DEAL_START - CARD) / (n - 1) : 0;
     this.deck.forEach((el, i) => {
-      const s0 = 0.08 + i * span;
-      const e = this.es(this.seg(p, s0, s0 + 0.34));
+      const s0 = DEAL_START + i * span;
+      const e = this.es(this.seg(p, s0, s0 + CARD));
       if (e >= 1) {
         // Hand the card back to CSS once it has landed, so hover/tilt works.
         if (el.dataset.dealt !== "1") {
@@ -1139,7 +1146,7 @@ class HomeMotion {
         return;
       }
       el.dataset.dealt = "0";
-      el.style.opacity = this.es(this.seg(p, s0 - 0.07, s0 + 0.08)).toFixed(3);
+      el.style.opacity = this.es(this.seg(p, s0 - 0.06, s0 + 0.07)).toFixed(3);
       el.style.zIndex = String(n + 4 - i);
       el.style.transform =
         `translate(${((el._dx || 0) * (1 - e)).toFixed(1)}px,${((el._dy || 0) * (1 - e)).toFixed(1)}px) ` +
