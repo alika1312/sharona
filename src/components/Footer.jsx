@@ -1,18 +1,16 @@
 import { Link } from "react-router-dom";
 import { ContactInfo } from "./ContactInfo";
 
-const cols = [
-  [
-    { label: "אודות", to: "/about" },
-    { label: "תחומי הטיפול", to: "/experiences" },
-    { label: "סדנאות", to: "/workshops" },
-  ],
-  [
-    { label: "מאמרים", to: "/articles" },
-    { label: "שאלות נפוצות", to: "/faq" },
-    { label: "צרו קשר", to: "/#contact" },
-    { label: "הצהרת נגישות", to: "/accessibility" },
-  ],
+// One flat row of links rather than two stacked columns — the footer is a
+// sitemap, not a section, and it shouldn't cost a screenful.
+const links = [
+  { label: "אודות", to: "/about" },
+  { label: "תחומי הטיפול", to: "/experiences" },
+  { label: "סדנאות", to: "/workshops" },
+  { label: "מאמרים", to: "/articles" },
+  { label: "שאלות נפוצות", to: "/faq" },
+  { label: "צרו קשר", to: "/#contact" },
+  { label: "הצהרת נגישות", to: "/accessibility" },
 ];
 
 export const Footer = () => {
@@ -23,7 +21,7 @@ export const Footer = () => {
         style={{
           background: "var(--color-accent-2-900)",
           color: "color-mix(in srgb, #fff 82%, transparent)",
-          padding: "80px 54px 40px",
+          padding: "38px 54px 22px",
           overflow: "hidden",
           fontFamily: "var(--font-body)",
         }}
@@ -35,12 +33,12 @@ export const Footer = () => {
             margin: "0 auto",
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "flex-start",
-            gap: 40,
+            alignItems: "center",
+            gap: "20px 40px",
             flexWrap: "wrap",
           }}
         >
-          <div style={{ maxWidth: "32ch" }}>
+          <div style={{ maxWidth: "38ch" }}>
             {/* On the homepage motion.js splits this into letters that
                 scatter away from the cursor; elsewhere it's plain text. */}
             <div
@@ -48,10 +46,10 @@ export const Footer = () => {
               style={{
                 position: "relative",
                 fontFamily: "var(--font-heading)",
-                fontSize: "clamp(30px,4.4vw,56px)",
-                lineHeight: 1.15,
+                fontSize: "clamp(23px,2.4vw,31px)",
+                lineHeight: 1.2,
                 color: "var(--color-bg)",
-                marginBottom: 18,
+                marginBottom: 6,
               }}
             >
               שרונה קדושאי בר-נס
@@ -59,51 +57,47 @@ export const Footer = () => {
             <p
               style={{
                 margin: 0,
-                fontSize: 16,
-                lineHeight: 1.66,
-                color: "color-mix(in srgb, #fff 62%, transparent)",
+                fontSize: 14.5,
+                lineHeight: 1.55,
+                color: "color-mix(in srgb, #fff 58%, transparent)",
               }}
             >
-              יועצת ומטפלת רגשית. טיפול רגשי, ייעוץ זוגי, הדרכת הורים וטיפול
-              במשבר ובטראומה — אונליין ובאזור ירושלים ומבשרת ציון.
+              יועצת ומטפלת רגשית — ייעוץ זוגי, הדרכת הורים וטיפול במשבר
+              ובטראומה. אונליין ובאזור ירושלים.
             </p>
           </div>
-          <div style={{ display: "flex", gap: 50, flexWrap: "wrap" }}>
-            {cols.map((col, i) => (
-              <div
-                key={i}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 12,
-                  fontSize: 16,
-                }}
+          <nav
+            aria-label="ניווט בתחתית העמוד"
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "10px 24px",
+              fontSize: 15,
+            }}
+          >
+            {links.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                style={{ color: "color-mix(in srgb, #fff 72%, transparent)" }}
               >
-                {col.map((l) => (
-                  <Link
-                    key={l.to}
-                    to={l.to}
-                    style={{ color: "color-mix(in srgb, #fff 72%, transparent)" }}
-                  >
-                    {l.label}
-                  </Link>
-                ))}
-              </div>
+                {l.label}
+              </Link>
             ))}
-          </div>
+          </nav>
         </div>
         <div
           style={{
             maxWidth: 1200,
-            margin: "44px auto 0",
-            paddingTop: 24,
+            margin: "22px auto 0",
+            paddingTop: 14,
             borderTop: "1px solid color-mix(in srgb, #fff 14%, transparent)",
             display: "flex",
             justifyContent: "space-between",
             gap: 16,
             flexWrap: "wrap",
-            fontSize: 14,
-            color: "color-mix(in srgb, #fff 50%, transparent)",
+            fontSize: 13,
+            color: "color-mix(in srgb, #fff 46%, transparent)",
           }}
         >
           <span>

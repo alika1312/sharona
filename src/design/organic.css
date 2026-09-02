@@ -358,7 +358,7 @@ select:focus-visible,
   .organic-v2 [data-collage][data-unpin="1"] [data-pin-inner] { padding: 96px 54px !important; }
   .organic-v2 [data-collage][data-unpin="1"] [data-stage] {
     display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-columns: repeat(2, 1fr) !important;
     gap: 16px !important;
     height: auto !important;
   }
@@ -368,7 +368,7 @@ select:focus-visible,
     top: auto !important;
     width: 100% !important;
     height: auto !important;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 4 / 3;
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
@@ -452,7 +452,7 @@ select:focus-visible,
     margin-inline: auto !important;
   }
   .organic-v2 #about p,
-  .organic-v2 #contact p { font-size: 17.5px !important; max-width: 34ch !important; margin-inline: auto !important; }
+  .organic-v2 #contact p:not([data-cf]) { font-size: 17.5px !important; max-width: 34ch !important; margin-inline: auto !important; }
   .organic-v2 [data-m="stats"] { gap: 20px !important; justify-content: center !important; padding-top: 22px !important; }
   .organic-v2 [data-m="stats"] > div { flex: 1 1 92px; }
   .organic-v2 [data-m="stats"] > div > div:first-child { font-size: 31px !important; }
@@ -556,10 +556,10 @@ select:focus-visible,
   .organic-v2 [data-collage] [data-pin-inner] { padding: 74px 20px !important; }
   .organic-v2 [data-collage] [data-stage] {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 12px !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
     width: auto !important;
-    max-width: 440px !important;
+    max-width: 520px !important;
     height: auto !important;
     margin: 0 auto !important;
   }
@@ -569,15 +569,13 @@ select:focus-visible,
     top: auto !important;
     width: 100% !important;
     height: auto !important;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 4 / 3;
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
     box-shadow: var(--shadow-sm) !important;
     padding: 12px !important;
   }
-  .organic-v2 [data-plate]:first-child { grid-column: 1 / -1; aspect-ratio: 5 / 4; }
-  .organic-v2 [data-plate]:last-child { grid-column: 1 / -1; aspect-ratio: 2 / 1; }
   /* the labels are decoration for a hover that doesn't exist here */
   .organic-v2 [data-plabel] { display: none !important; }
   .organic-v2 [data-stagetext] {
@@ -658,9 +656,11 @@ select:focus-visible,
   }
   .organic-v2 [data-cform] { padding: 26px 22px !important; border-radius: 28px !important; }
   .organic-v2 .fin { text-align: center !important; }
-  .organic-v2 #contact [data-reveal-delay="220"] { align-items: center !important; }
-  .organic-v2 #contact [data-reveal-delay="220"] > a,
-  .organic-v2 #contact [data-reveal-delay="220"] > div { justify-content: center !important; white-space: nowrap; }
+  .organic-v2 #contact [data-cbeats] { align-items: center !important; }
+  .organic-v2 #contact [data-cbeats] li { max-width: 34ch; text-align: start; }
+  .organic-v2 #contact [data-cactions] { justify-content: center !important; }
+  .organic-v2 #contact [data-crows] { align-items: center !important; }
+  .organic-v2 #contact [data-ctopics] { justify-content: center !important; }
   .organic-v2 #top > div [data-reveal] a[href="/about"] {
     min-height: 44px;
     display: flex;
@@ -678,18 +678,17 @@ select:focus-visible,
 
   /* footer: centred, and its bottom padding clears the fixed action bar */
   footer {
-    padding: 56px 20px calc(118px + env(safe-area-inset-bottom, 0px)) !important;
+    padding: 30px 20px calc(100px + env(safe-area-inset-bottom, 0px)) !important;
     text-align: center !important;
   }
   footer > div:first-of-type {
     flex-direction: column;
     align-items: center !important;
     justify-content: center !important;
-    gap: 30px !important;
+    gap: 16px !important;
   }
-  footer > div:first-of-type > div:nth-of-type(2) { gap: 34px !important; justify-content: center !important; }
-  footer > div:first-of-type > div:nth-of-type(2) > div { gap: 0 !important; align-items: center !important; }
-  footer a { min-height: 44px; display: flex; align-items: center; justify-content: center; }
+  footer > div:first-of-type > nav { justify-content: center !important; gap: 2px 18px !important; }
+  footer a { min-height: 40px; display: flex; align-items: center; justify-content: center; }
   footer > div:last-of-type { flex-direction: column; align-items: center; justify-content: center !important; gap: 6px !important; }
 }
 

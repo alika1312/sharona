@@ -87,7 +87,6 @@ class HomeMotion {
     this.sySm = window.scrollY;
     this.lag = 0;
     this.velS = 0;
-    this.liqV = 0;
     this.mqX = 0;
     this.mqCycle = 0;
 
@@ -154,8 +153,6 @@ class HomeMotion {
       w: +el.dataset.w || 1,
       ph: i * 1.7,
     }));
-    this.liqEl = this.q("[data-liqmap]");
-    this.liqWrap = this.q("[data-liquid]");
     this.hint = this.q("[data-hint]");
     this.marquee = this.q("[data-marquee]");
     this.gallery = this.q("[data-collage]");
@@ -216,7 +213,6 @@ class HomeMotion {
       this.revealPass(vh);
       document.documentElement.style.setProperty("--progress", this.prog(this.sySm));
       this.blobField(t, vh);
-      this.liquid(vh);
       this.marqueeStep(dt);
       this.aboutStep();
       this.contactStep();
@@ -864,26 +860,6 @@ class HomeMotion {
     });
   }
 
-  // The hero portrait ripples under the cursor via an SVG displacement map.
-  liquid(vh) {
-    if (!this.liqEl || !this.liqWrap) return;
-    const r = this.liqWrap.getBoundingClientRect();
-    if (r.bottom < 0 || r.top > vh) {
-      if (this.liqV > 0.05) {
-        this.liqV = 0;
-        this.liqEl.setAttribute("scale", "0");
-      }
-      return;
-    }
-    const d = Math.hypot(
-      this.cx - (r.left + r.width / 2),
-      this.cy - (r.top + r.height / 2)
-    );
-    const target = this.fine ? Math.max(0, 1 - d / (r.width * 1.05)) * 30 * this.amp : 0;
-    this.liqV += (target - this.liqV) * 0.1;
-    this.liqEl.setAttribute("scale", this.liqV.toFixed(2));
-  }
-
   marqueeStep(dt) {
     const el = this.marquee;
     if (!el) return;
@@ -1232,12 +1208,14 @@ class HomeMotion {
         (0.72 + e * 0.28) * (1 + near * 0.1) * (1 - (1 - near) * built * d * 0.05);
       const rot = (1 - e) * (i % 2 ? 5 : -5) + near * (i % 2 ? -1.6 : 1.6);
 
-      el.style.opacity = (e * (0.52 + 0.48 * (1 - d)) * (0.7 + near * 0.3)).toFixed(3);
+      // Photographs, not tinted plates: the depth fade is much gentler than
+      // it was, or the ones at the back stop reading as a room at all.
+      el.style.opacity = (e * (0.78 + 0.22 * (1 - d)) * (0.86 + near * 0.14)).toFixed(3);
       el.style.transform = `translate3d(${tx.toFixed(1)}px,${ty.toFixed(1)}px,0) rotate(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
       el.style.zIndex = String(Math.round((1 - d) * 3 + near * 10));
 
       // far plates sit softly out of focus; whatever you point at snaps sharp
-      const blur = (d * 2.4 + (1 - e) * 3) * (1 - near);
+      const blur = (d * 1.3 + (1 - e) * 3) * (1 - near);
       const bs = blur < 0.12 ? "none" : `blur(${blur.toFixed(2)}px)`;
       if (el.style.filter !== bs) el.style.filter = bs;
       el.style.boxShadow = near > 0.5 ? "var(--shadow-lg)" : "var(--shadow-md)";
@@ -1277,6 +1255,13 @@ class HomeMotion {
   setupStack() {
     this.stack = this.q("[data-stack]");
     this.cards = this.qa("[data-card]");
+    // The full set of reviews lives in the carousel, but only the featured
+    // few take part in the one-at-a-time entrance — eighteen cards sweeping
+    // in would give each of them a couple of hundred pixels of scroll. The
+    // rest (`data-extra`) wait off-stage and fade in when the deck gathers.
+    this.cardExtra = this.cards.map((el) => el.hasAttribute("data-extra"));
+    this.sweepN =
+      this.cardExtra.filter((x) => !x).length || this.cards.length;
     this.voices = this.q("#voices");
     this.vstage = this.voices && this.voices.querySelector("[data-pin-inner]");
     this.vhead = this.q("[data-vhead]");
@@ -1353,8 +1338,10 @@ class HomeMotion {
     const cw = (this.cards[0] && this.cards[0].offsetWidth) || 620;
     const out = (vw * 0.55) / fit + cw * 0.62;
 
-    // one card at a time, each sweeping in from the opposite side
-    const s = this.seg(p, 0.04, 0.56) * (n - 1 + 0.34);
+    // one card at a time, each sweeping in from the opposite side — paced
+    // over the featured cards only, not the whole carousel
+    const ns = this.sweepN || n;
+    const s = this.seg(p, 0.04, 0.56) * (ns - 1 + 0.34);
     // then all of them gather into a running carousel — which gets the back
     // third of the pin, because reading them is the point of the section
     const cB = this.es(this.seg(p, 0.6, 0.84));
@@ -1397,6 +1384,16 @@ class HomeMotion {
       let sc = 1 - d * 0.05 - eout * 0.04;
       let op = this.cl((2.75 - d) / 0.5, 0, 1) * this.cl(1 - eout * 1.5, 0, 1);
       let z = t > 0 ? 20 : 12 - Math.round(d);
+      // carousel-only cards have no entrance of their own: they sit off to
+      // the side at zero opacity until `cB` mixes them into the deck
+      if (this.cardExtra[i]) {
+        x = dir * out;
+        y = 0;
+        rot = dir * 16;
+        sc = CSC_FAR;
+        op = 0;
+        z = 4;
+      }
       if (cB > 0.002) {
         const cx = this.wrapS(i * step - this.carOff, span);
         const k = this.cl(1 - Math.abs(cx) / ((vw * 0.5) / fit + cw * 0.35), 0, 1);

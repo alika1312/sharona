@@ -18,8 +18,8 @@ const EMAIL = "sharonabar5@gmail.com";
 
 const HEAD = "var(--font-heading)";
 
-// All nine areas of work — the eight on /experiences plus the workshops.
-// Keep this list in step with `experiences` in ../information/experiences.
+// The eight areas of work on /experiences. Workshops live on /workshops and
+// are not part of this grid.
 const services = [
   { icon: "❤", title: "משבר, מתח ולחץ נפשי", to: "/experiences", bg: "var(--color-accent-2-200)", text: "תמיכה בהתמודדות היומיומית, חזרה לאיזון וכלים מעשיים לצמיחה מתוך המשבר." },
   { icon: "◐", title: "ייעוץ וטיפול זוגי", to: "/experiences", bg: "var(--color-accent-200)", text: "מרחב לשיפור התקשורת, לחיזוק הקרבה והאינטימיות ולצליחת משברים בזוגיות." },
@@ -28,7 +28,6 @@ const services = [
   { icon: "❋", title: "גירושין בכבוד הדדי", to: "/experiences", bg: "var(--color-accent-2-200)", text: "ליווי בתהליך פרידה מתוך כבוד, שמפחית מתחים ומאפשר הורות מיטיבה משותפת." },
   { icon: "◇", title: "כיוון תעסוקתי וקריירה", to: "/experiences", bg: "var(--color-accent-200)", text: "מיפוי נטיות וכישורים, שחרור תחושת תקיעות וליווי עד התפקיד הרצוי." },
   { icon: "◈", title: "ליווי מנהלים וייעוץ ארגוני", to: "/experiences", bg: "var(--color-accent-2-300)", text: "פיתוח מנהיגות, הובלת תהליכי שינוי וליווי בכירים בארגונים, עמותות ורשויות." },
-  { icon: "✧", title: "סדנאות", to: "/workshops", bg: "var(--color-accent-300)", text: "סדנאות חווייתיות ליחידים, זוגות, קבוצות וארגונים — כלים לצמיחה ולתקשורת." },
   { icon: "◍", title: "ישראלים בחו״ל", to: "/experiences", bg: "var(--color-accent-2-200)", text: "מפגשים אונליין בעברית, בהתאמה לאזורי זמן — זוגיות, טיפול רגשי, הורות ורילוקיישן." },
 ];
 
@@ -47,20 +46,37 @@ const STEP_PATH =
 
 const marqueeWords = ["הקשבה", "חמלה", "כבוד", "נוכחות", "אמון", "צמיחה"];
 
-// The clinic photos aren't shot yet, so the collage runs on tinted plates in
-// the design's shapes. Swap `grad` for an <img> when the photos land — the
-// motion doesn't care what's inside a plate.
+// The contact section's three beats: what happens after you press send. Not
+// knowing is most of what stops people from writing in the first place.
+const contactBeats = [
+  ["1", "כותבים", "כמה מילים, לא יותר. גם ״לא יודע/ת מאיפה להתחיל״ זו התחלה."],
+  ["2", "מדברים", "אחזור אליכם לשיחה קצרה להיכרות — ללא עלות."],
+  ["3", "קובעים", "אם זה מרגיש נכון, נמצא יחד מועד שמתאים לכם."],
+];
+
+// One-tap openers for the form's message field. Choosing a topic is a smaller
+// first step than facing an empty box.
+const contactTopics = [
+  ["זוגיות", "אנחנו זוג ורוצים לדבר על מה שקורה בינינו."],
+  ["משבר או חרדה", "אני מרגיש/ה בתקופה קשה ורוצה לדבר על זה."],
+  ["הורות", "אשמח להדרכה בהתמודדות עם הילדים שלי."],
+  ["טראומה", "יש משהו מהעבר שאני רוצה לעבד."],
+  ["מחו״ל", "אני בחו״ל ומחפש/ת טיפול בעברית באונליין."],
+  ["עוד לא יודע/ת", "עוד לא בטוח/ה מה בדיוק, אבל משהו צריך להשתנות."],
+];
+
+// The real photographs of the space. Four large plates rather than six small
+// tinted ones — a photo has to be big enough to actually see.
 //
 // x/y are percentages of the stage, d is depth: 0 is closest to the viewer
 // (moves most, reacts most), 1 is furthest back. `label` is what the plate
-// says once it's the one you're pointing at.
+// says once it's the one you're pointing at. Depths are kept shallow (≤0.42)
+// so no photograph ever sits too far back to read.
 const plates = [
-  { x: 9,  y: 14, w: 260, h: 320, d: 0.15, r: "46% 54% 52% 48%/48% 46% 54% 52%", grad: "linear-gradient(150deg,var(--color-accent-2-300),var(--color-accent-2-200))", label: "פינת הישיבה" },
-  { x: 71, y: 8,  w: 220, h: 260, d: 0.62, r: 26, grad: "linear-gradient(150deg,var(--color-accent-300),var(--color-accent-200))", label: "אור טבעי" },
-  { x: 2,  y: 58, w: 210, h: 250, d: 0.78, r: 24, grad: "linear-gradient(150deg,var(--color-accent-2-200),var(--color-bg))", label: "מדף הספרים" },
-  { x: 63, y: 52, w: 290, h: 340, d: 0.05, r: "52% 48% 46% 54%/42% 52% 48% 58%", grad: "linear-gradient(150deg,var(--color-accent-200),var(--color-surface))", label: "הכורסה" },
-  { x: 34, y: 68, w: 200, h: 210, d: 0.45, r: 22, grad: "linear-gradient(150deg,var(--color-accent-2-200),var(--color-accent-2-300))", label: "צמחים" },
-  { x: 40, y: 2,  w: 180, h: 190, d: 0.88, r: "50% 50% 46% 54%/54% 46% 54% 46%", grad: "linear-gradient(150deg,var(--color-accent-2-300),var(--color-bg))", label: "שקט" },
+  { x: -1, y: 4,  w: 430, h: 320, d: 0.12, r: "44% 56% 52% 48%/48% 44% 56% 52%", src: "/clinic-1.jpeg", label: "הפרגולה" },
+  { x: 60, y: 0,  w: 450, h: 330, d: 0.34, r: 28, src: "/clinic-2.jpeg", label: "הגינה" },
+  { x: 2,  y: 51, w: 420, h: 310, d: 0.42, r: 26, src: "/clinic-3.jpeg", label: "פינת הישיבה" },
+  { x: 57, y: 46, w: 470, h: 345, d: 0.04, r: "52% 48% 46% 54%/44% 52% 48% 56%", src: "/clinic-4.jpeg", label: "המרחב הטיפולי" },
 ];
 
 const railSections = [
@@ -74,11 +90,22 @@ const railSections = [
   ["contact", "צרו קשר"],
 ];
 
-// Seven voices, one per card in the kinetic stack — a spread across the work
-// (trauma, individual, couple, parenting, career, separation, family).
-const voices = [18, 17, 2, 7, 11, 12, 16]
-  .map((id) => testimonials.find((t) => t.id === id))
-  .filter(Boolean);
+// Seven voices sweep in one at a time — a spread across the work (trauma,
+// individual, couple, parenting, career, separation, family). Every other
+// review then joins them for the carousel at the end of the section, so the
+// full set is readable without leaving the homepage. `sweep: false` is what
+// motion.js reads to keep the extras out of the one-at-a-time entrance.
+const featuredVoiceIds = [18, 17, 2, 7, 11, 12, 16];
+
+const voices = [
+  ...featuredVoiceIds
+    .map((id) => testimonials.find((t) => t.id === id))
+    .filter(Boolean)
+    .map((t) => ({ ...t, sweep: true })),
+  ...testimonials
+    .filter((t) => !featuredVoiceIds.includes(t.id))
+    .map((t) => ({ ...t, sweep: false })),
+];
 
 // The full set (and the FAQPage schema) lives on /faq; the homepage stack
 // holds five — grounded answers only, the same count as the design.
@@ -221,24 +248,16 @@ function HomePage() {
 
           <div style={{ flex: 0.92, display: "flex", justifyContent: "center", position: "relative" }}>
             <div data-reveal data-reveal-delay="420" style={{ position: "relative" }}>
-              {/* the portrait ripples under the cursor via #liquid */}
-              <div data-liquid data-m="portrait" style={{ width: 400, height: "min(470px,56vh)", borderRadius: "52% 48% 46% 54%/58% 56% 44% 42%", overflow: "hidden", boxShadow: "var(--shadow-lg)", filter: "url(#liquid)", animation: "floaty 11s ease-in-out infinite" }}>
+              <div data-m="portrait" style={{ width: 400, height: "min(470px,56vh)", borderRadius: "52% 48% 46% 54%/58% 56% 44% 42%", overflow: "hidden", boxShadow: "var(--shadow-lg)", animation: "floaty 11s ease-in-out infinite" }}>
                 <img src="/sharona.jpeg" alt="שרונה קדושאי בר-נס, יועצת ומטפלת רגשית" width="400" height="470" fetchpriority="high" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </div>
               <div aria-hidden="true" style={{ position: "absolute", top: -14, insetInlineEnd: 26, width: 58, height: 58, borderRadius: "50%", background: "var(--color-accent)", animation: "floaty2 7s ease-in-out infinite", boxShadow: "var(--shadow-sm)" }} />
               <div aria-hidden="true" style={{ position: "absolute", bottom: 24, insetInlineStart: -22, width: 40, height: 40, borderRadius: "50%", background: "var(--color-accent-2)", animation: "floaty 6s ease-in-out infinite" }} />
               <div aria-hidden="true" style={{ position: "absolute", top: "38%", insetInlineStart: -40, width: 96, height: 96, border: "2px dashed color-mix(in srgb,var(--color-accent-2) 50%,transparent)", borderRadius: "50%", animation: "spinSlow 30s linear infinite" }} />
-              <div data-hint aria-hidden="true" style={{ position: "absolute", bottom: -6, insetInlineEnd: -6, background: "color-mix(in srgb,var(--color-bg) 88%,#fff)", borderRadius: 999, padding: "9px 16px", fontSize: 13, fontWeight: 600, color: "var(--color-accent-2-800)", boxShadow: "var(--shadow-sm)", whiteSpace: "nowrap" }}>
-                געו בתמונה ↖
-              </div>
             </div>
           </div>
         </div>
 
-        <a href="#about" style={{ position: "absolute", bottom: 34, insetInlineStart: "50%", transform: "translateX(50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 8, color: "var(--color-accent-2-700)", fontSize: 13, fontWeight: 600, letterSpacing: ".08em" }}>
-          גללו
-          <span aria-hidden="true" style={{ animation: "hintBob 1.8s ease-in-out infinite", fontSize: 20 }}>↓</span>
-        </a>
       </section>
 
       {/* ============================== MARQUEE ============================== */}
@@ -267,7 +286,7 @@ function HomePage() {
             <div style={{ flex: 0.92, position: "relative", display: "flex", justifyContent: "center" }}>
               <div data-parallax="0.07">
                 <div data-ab-portrait data-m="portrait" style={{ width: 420, height: "min(500px,54vh)", borderRadius: "48% 52% 55% 45%/56% 46% 54% 44%", overflow: "hidden", boxShadow: "var(--shadow-lg)" }}>
-                  <img src="/sharona.jpeg" alt="שרונה קדושאי בר-נס" width="420" height="500" loading="lazy" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img src="/sharona-portrait.png" alt="שרונה קדושאי בר-נס" width="553" height="659" loading="lazy" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
               </div>
               <div aria-hidden="true" style={{ position: "absolute", bottom: 10, insetInlineEnd: 0, width: 52, height: 52, borderRadius: "50%", background: "var(--color-accent)", animation: "floaty2 7s ease-in-out infinite" }} />
@@ -422,15 +441,17 @@ function HomePage() {
                 key={i}
                 data-plate
                 data-depth={g.d}
-                aria-hidden="true"
                 style={{
                   position: "absolute",
                   left: `${g.x}%`,
                   top: `${g.y}%`,
-                  width: `clamp(140px,${g.w / 11.8}vw,${g.w}px)`,
-                  height: `clamp(160px,${g.h / 11.8}vw,${g.h}px)`,
+                  // Sized against the stage (1180×660 at full size), not the
+                  // viewport: x% + width% then stays inside the stage at any
+                  // width, so a plate can't run off the edge on a laptop.
+                  width: `min(${g.w}px,${(g.w / 11.8).toFixed(1)}%)`,
+                  height: `min(${g.h}px,${(g.h / 6.6).toFixed(1)}%)`,
                   borderRadius: g.r,
-                  background: g.grad,
+                  overflow: "hidden",
                   boxShadow: "var(--shadow-md)",
                   willChange: "transform,opacity,filter",
                   display: "flex",
@@ -440,17 +461,27 @@ function HomePage() {
                   boxSizing: "border-box",
                 }}
               >
+                <img
+                  src={g.src}
+                  alt={`המרחב הטיפולי — ${g.label}`}
+                  loading="lazy"
+                  decoding="async"
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                />
                 <span
                   data-plabel
-                  style={{ opacity: 0, fontSize: 13.5, fontWeight: 700, letterSpacing: ".04em", color: "var(--color-accent-2-800)", background: "color-mix(in srgb,var(--color-bg) 82%,#fff)", borderRadius: 999, padding: "6px 14px", whiteSpace: "nowrap", transition: "opacity .35s ease" }}
+                  aria-hidden="true"
+                  style={{ position: "relative", opacity: 0, fontSize: 13.5, fontWeight: 700, letterSpacing: ".04em", color: "var(--color-accent-2-800)", background: "color-mix(in srgb,var(--color-bg) 88%,#fff)", borderRadius: 999, padding: "6px 14px", whiteSpace: "nowrap", transition: "opacity .35s ease" }}
                 >
                   {g.label}
                 </span>
               </div>
             ))}
-
             {/* the still centre of it — plain, static text */}
+            {/* Now that the plates carry photographs, the centre copy needs a
+                soft ground of its own to stay readable over them. */}
             <div data-stagetext style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", zIndex: 4, pointerEvents: "none" }}>
+              <div style={{ background: "color-mix(in srgb,var(--color-surface) 82%,#fff)", backdropFilter: "blur(7px)", WebkitBackdropFilter: "blur(7px)", borderRadius: 34, padding: "34px 42px", boxShadow: "var(--shadow-md)", display: "flex", flexDirection: "column", alignItems: "center" }}>
               <Kicker>המרחב הטיפולי</Kicker>
               <h2 style={{ ...h2Style, maxWidth: "18ch" }}>מקום שנעים לחזור אליו</h2>
               <p style={{ fontSize: 18.5, lineHeight: 1.66, maxWidth: "32ch", margin: "18px 0 26px", color: "var(--color-text)" }}>
@@ -459,6 +490,7 @@ function HomePage() {
               <a href="#contact" className="pill" data-magnet style={{ pointerEvents: "auto", background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 17, padding: "15px 30px", borderRadius: 999, boxShadow: "var(--shadow-md)", whiteSpace: "nowrap" }}>
                 לתאם פגישה ←
               </a>
+              </div>
             </div>
           </div>
         </div>
@@ -500,7 +532,7 @@ function HomePage() {
                 whatever the length. */}
             <div data-stack style={{ position: "relative", height: 560, maxWidth: 640, margin: "0 auto" }}>
               {voices.map((t, i) => (
-                <blockquote key={t.id ?? i} data-card style={{ position: "absolute", inset: 0, margin: 0, display: "flex", flexDirection: "column", background: "color-mix(in srgb,#fff 12%,transparent)", border: "1px solid color-mix(in srgb,#fff 16%,transparent)", borderRadius: 30, padding: 36, boxSizing: "border-box", willChange: "transform" }}>
+                <blockquote key={t.id ?? i} data-card {...(t.sweep ? {} : { "data-extra": "" })} style={{ position: "absolute", inset: 0, margin: 0, display: "flex", flexDirection: "column", background: "color-mix(in srgb,#fff 12%,transparent)", border: "1px solid color-mix(in srgb,#fff 16%,transparent)", borderRadius: 30, padding: 36, boxSizing: "border-box", willChange: "transform" }}>
                   <div aria-hidden="true" style={{ fontFamily: HEAD, fontSize: 52, lineHeight: 0.6, color: "var(--color-accent-300)", marginBottom: 18, flex: "none" }}>״</div>
                   {/* `excerpt` is the card-length cut of a long review — the
                       full text still lives in `feedback`. The clamp is the
@@ -520,7 +552,7 @@ function HomePage() {
             </div>
 
             {/* one dot per card on mobile — motion.js fills this in */}
-            <div data-mdots style={{ display: "none", justifyContent: "center", alignItems: "center", gap: 9, marginTop: 22 }} />
+            <div data-mdots style={{ display: "none", justifyContent: "center", alignItems: "center", flexWrap: "wrap", gap: 9, marginTop: 22, padding: "0 20px" }} />
 
             <div data-carrow style={{ display: "flex", justifyContent: "center", gap: 14, marginTop: 26 }}>
               <button type="button" data-carnav="-1" aria-label="ההמלצה הבאה" style={carNavStyle}>
@@ -573,17 +605,60 @@ function HomePage() {
           <div data-m="stack" style={{ position: "relative", maxWidth: 1100, margin: "0 auto", display: "flex", gap: 64, alignItems: "center" }}>
             <div style={{ flex: 1 }}>
               <Kicker>בואו נתחיל</Kicker>
-              <h2 style={{ ...h2Style, fontSize: 50, lineHeight: 1.16, margin: "0 0 24px", maxWidth: "16ch" }}>
+              <h2 style={{ ...h2Style, fontSize: 50, lineHeight: 1.16, margin: "0 0 20px", maxWidth: "16ch" }}>
                 הצעד הראשון מתחיל בשיחה.
               </h2>
-              <p style={{ fontSize: 19, lineHeight: 1.7, margin: "0 0 34px", maxWidth: "40ch", color: "var(--color-text)" }}>
-                השאירו פרטים ואחזור אליכם בהקדם לתיאום פגישת היכרות — ללא התחייבות.
+              <p style={{ fontSize: 19, lineHeight: 1.68, margin: "0 0 28px", maxWidth: "40ch", color: "var(--color-text)" }}>
+                אין צורך לדעת מראש מה להגיד. השאירו פרטים ואחזור אליכם לשיחת
+                היכרות קצרה — בלי עלות ובלי התחייבות.
               </p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 16, fontSize: 17 }}>
-                <ContactRow icon="✆" href={TEL} onClick={() => trackClickToCall("home_contact_row")}>{PHONE_LABEL}</ContactRow>
-                <ContactRow icon="✉" href={`mailto:${EMAIL}`}>{EMAIL}</ContactRow>
-                <ContactRow icon="⌂">מבשרת ציון · צור הדסה · אונליין מכל הארץ</ContactRow>
-                <ContactRow icon="✦" href={WHATSAPP} onClick={() => trackWhatsappClick("home_contact_row")}>שיחה מהירה בוואטסאפ</ContactRow>
+
+              {/* What actually happens after you press send — the unknown is
+                  most of what stops people from writing. */}
+              <ol data-cbeats style={{ listStyle: "none", margin: "0 0 28px", padding: 0, display: "flex", flexDirection: "column", gap: 13 }}>
+                {contactBeats.map(([n, title, text]) => (
+                  <li key={n} style={{ display: "flex", alignItems: "flex-start", gap: 13 }}>
+                    <span aria-hidden="true" style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--color-accent-2)", color: "var(--color-bg)", fontFamily: HEAD, fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center", flex: "none", marginTop: 1 }}>
+                      {n}
+                    </span>
+                    <span style={{ fontSize: 16.5, lineHeight: 1.5 }}>
+                      <strong style={{ fontWeight: 700 }}>{title}</strong>
+                      <span style={{ color: "color-mix(in srgb,var(--color-text) 76%,transparent)" }}> — {text}</span>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+
+              <div data-cactions style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 22 }}>
+                <a
+                  href={WHATSAPP}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackWhatsappClick("home_contact_cta")}
+                  className="pill"
+                  data-magnet
+                  style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "#25D366", color: "#fff", fontWeight: 700, fontSize: 16.5, padding: "13px 24px", borderRadius: 999, boxShadow: "var(--shadow-sm)" }}
+                >
+                  <svg width="19" height="19" viewBox="0 0 32 32" fill="#fff" aria-hidden="true">
+                    <path d="M16.01 3.2c-7.06 0-12.8 5.73-12.8 12.79 0 2.25.59 4.45 1.71 6.39L3.2 28.8l6.6-1.73a12.76 12.76 0 0 0 6.2 1.58h.01c7.05 0 12.79-5.74 12.79-12.8 0-3.42-1.33-6.63-3.75-9.04a12.7 12.7 0 0 0-9.04-3.61zm0 23.31h-.01c-1.9 0-3.76-.51-5.39-1.48l-.39-.23-3.92 1.03 1.05-3.82-.25-.4a10.6 10.6 0 0 1-1.63-5.66c0-5.86 4.77-10.63 10.64-10.63 2.84 0 5.51 1.11 7.52 3.12a10.56 10.56 0 0 1 3.11 7.52c0 5.87-4.77 10.64-10.63 10.64zm5.83-7.96c-.32-.16-1.89-.93-2.18-1.04-.29-.11-.5-.16-.71.16-.21.32-.82 1.04-1 1.25-.19.21-.37.24-.68.08-.32-.16-1.35-.5-2.57-1.58-.95-.85-1.59-1.9-1.78-2.22-.19-.32-.02-.49.14-.65.15-.14.32-.37.48-.56.16-.19.21-.32.32-.53.11-.21.05-.4-.03-.56-.08-.16-.71-1.72-.98-2.35-.26-.62-.52-.54-.71-.55-.18-.01-.4-.01-.61-.01-.21 0-.56.08-.85.4-.29.32-1.11 1.09-1.11 2.66 0 1.57 1.14 3.08 1.3 3.29.16.21 2.25 3.43 5.45 4.81.76.33 1.35.53 1.82.68.76.24 1.46.21 2.01.13.61-.09 1.89-.77 2.16-1.52.27-.74.27-1.38.19-1.51-.08-.13-.29-.21-.61-.37z" />
+                  </svg>
+                  הודעה בוואטסאפ
+                </a>
+                <a
+                  href={TEL}
+                  onClick={() => trackClickToCall("home_contact_cta")}
+                  className="pill"
+                  data-magnet
+                  style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "color-mix(in srgb,var(--color-bg) 70%,#fff)", color: "var(--color-accent-2-800)", border: "1.5px solid color-mix(in srgb,var(--color-accent-2) 34%,transparent)", fontWeight: 700, fontSize: 16.5, padding: "13px 24px", borderRadius: 999 }}
+                >
+                  <span aria-hidden="true">✆</span>
+                  {PHONE_LABEL}
+                </a>
+              </div>
+
+              <div data-crows style={{ display: "flex", flexDirection: "column", gap: 11, fontSize: 16 }}>
+                <ContactRow icon="✉" href={`mailto:${EMAIL}`} compact>{EMAIL}</ContactRow>
+                <ContactRow icon="⌂" compact>מבשרת ציון · צור הדסה · אונליין מכל הארץ</ContactRow>
               </div>
             </div>
 
@@ -612,8 +687,7 @@ const carNavStyle = {
   justifyContent: "center",
 };
 
-// `goo` melts the hero circles (and the intro blobs) together; `liquid`
-// displaces the hero portrait around the cursor (motion.js drives `scale`).
+// `goo` melts the hero circles (and the intro blobs) together.
 function Filters() {
   return (
     <svg aria-hidden="true" focusable="false" style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}>
@@ -622,10 +696,6 @@ function Filters() {
           <feGaussianBlur in="SourceGraphic" stdDeviation="22" result="blr" />
           <feColorMatrix in="blr" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -10" result="goo" />
           <feBlend in="SourceGraphic" in2="goo" />
-        </filter>
-        <filter id="liquid">
-          <feTurbulence type="fractalNoise" baseFrequency="0.008 0.013" numOctaves="2" seed="7" result="noise" />
-          <feDisplacementMap data-liqmap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" />
         </filter>
       </defs>
     </svg>
@@ -653,16 +723,17 @@ function Stat({ value, label, small }) {
   );
 }
 
-function ContactRow({ icon, href, children, onClick }) {
+function ContactRow({ icon, href, children, onClick, compact }) {
+  const d = compact ? 34 : 42;
   const inner = (
     <>
-      <span aria-hidden="true" style={{ width: 42, height: 42, borderRadius: "50%", background: "var(--color-accent-2-200)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+      <span aria-hidden="true" style={{ width: d, height: d, borderRadius: "50%", background: "var(--color-accent-2-200)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none", fontSize: compact ? 14 : undefined }}>
         {icon}
       </span>
       <span>{children}</span>
     </>
   );
-  const style = { display: "flex", alignItems: "center", gap: 14, color: "var(--color-text)" };
+  const style = { display: "flex", alignItems: "center", gap: compact ? 12 : 14, color: "var(--color-text)" };
   return href ? (
     <a href={href} onClick={onClick} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" style={style}>
       {inner}
@@ -779,6 +850,24 @@ function KineticFaq({ items, motionRef }) {
 // children, and a parent re-render would undo that.
 function ContactForm({ motionRef }) {
   const [status, setStatus] = useState(null); // null | 'sending' | 'ok' | 'err'
+  // Which opener chip is picked. The textarea itself stays uncontrolled —
+  // typing must not re-render this component, because motion.js writes the
+  // fields' transforms straight onto the DOM.
+  const [topic, setTopic] = useState(null);
+  const msgRef = useRef(null);
+
+  const pickTopic = (i) => {
+    const el = msgRef.current;
+    if (!el) return;
+    const [, line] = contactTopics[i];
+    // Only overwrite an opener we put there ourselves — never someone's
+    // own words.
+    const owned = contactTopics.some(([, l]) => l === el.value.trim());
+    if (!el.value.trim() || owned) el.value = line;
+    setTopic(i);
+    el.focus();
+    el.setSelectionRange(el.value.length, el.value.length);
+  };
 
   const sendEmail = (e) => {
     e.preventDefault();
@@ -792,6 +881,7 @@ function ContactForm({ motionRef }) {
         () => {
           setStatus("ok");
           form.reset();
+          setTopic(null);
           // GA4 conversion: only on a genuinely successful send.
           trackContactFormSubmit("home_contact");
           // and only then does the bloom play (the design fired it on click,
@@ -803,15 +893,48 @@ function ContactForm({ motionRef }) {
   };
 
   return (
-    <div data-cform style={{ flex: 1, position: "relative", background: "color-mix(in srgb,var(--color-bg) 55%,#fff)", borderRadius: 32, padding: 40, boxShadow: "var(--shadow-lg)", overflow: "hidden" }}>
-      <form onSubmit={sendEmail} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <div data-cform style={{ flex: 1, position: "relative", background: "color-mix(in srgb,var(--color-bg) 55%,#fff)", borderRadius: 32, padding: 34, boxShadow: "var(--shadow-lg)", overflow: "hidden" }}>
+      <form onSubmit={sendEmail} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        <div data-cf>
+          <div id="topic-label" style={{ fontSize: 15, fontWeight: 700, marginBottom: 10, color: "var(--color-accent-2-800)" }}>
+            מה מביא אתכם? <span style={{ fontWeight: 400, color: "color-mix(in srgb,var(--color-text) 62%,transparent)" }}>(אפשר לבחור, ואפשר פשוט לכתוב)</span>
+          </div>
+          <div data-ctopics role="group" aria-labelledby="topic-label" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {contactTopics.map(([label], i) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => pickTopic(i)}
+                aria-pressed={topic === i}
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontSize: 14.5,
+                  fontWeight: 600,
+                  padding: "8px 15px",
+                  borderRadius: 999,
+                  cursor: "pointer",
+                  background: topic === i ? "var(--color-accent-2)" : "color-mix(in srgb,var(--color-accent-2) 9%,transparent)",
+                  color: topic === i ? "var(--color-bg)" : "var(--color-accent-2-800)",
+                  border: `1.5px solid color-mix(in srgb,var(--color-accent-2) ${topic === i ? 100 : 28}%,transparent)`,
+                  transition: "background .2s ease, color .2s ease, border-color .2s ease",
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
         <input data-cf className="fin" type="text" name="name" aria-label="שם מלא" placeholder="שם מלא" required />
         <input data-cf className="fin" type="tel" name="phone" aria-label="טלפון" placeholder="טלפון" required />
         <input data-cf className="fin" type="email" name="email" aria-label="אימייל" placeholder="אימייל" />
-        <textarea data-cf className="fin" name="message" rows={4} aria-label="הודעה" placeholder="כמה מילים על מה שמביא אתכם (לא חובה)" style={{ resize: "vertical" }} />
+        <textarea ref={msgRef} data-cf className="fin" name="message" rows={3} aria-label="הודעה" placeholder="כמה מילים על מה שמביא אתכם (לא חובה)" style={{ resize: "vertical" }} />
         <button data-cf type="submit" disabled={status === "sending"} className="pill" style={{ position: "relative", background: status === "sending" ? "var(--color-accent-2-600)" : "var(--color-accent-2)", color: "var(--color-bg)", border: "none", cursor: status === "sending" ? "progress" : "pointer", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 18, padding: 17, borderRadius: 999, boxShadow: "var(--shadow-md)", marginTop: 4 }}>
           {status === "sending" ? "שולח..." : "שליחה ←"}
         </button>
+        <p data-cf style={{ margin: 0, fontSize: 13.5, lineHeight: 1.5, textAlign: "center", color: "color-mix(in srgb,var(--color-text) 62%,transparent)" }}>
+          הפרטים מגיעים אליי בלבד ונשמרים בדיסקרטיות מלאה. בדרך כלל אחזור
+          אליכם באותו יום.
+        </p>
         <div role="status" aria-live="polite">
           {status === "err" && (
             <p style={{ margin: 0, color: "var(--color-accent-700)", fontWeight: 600 }}>
