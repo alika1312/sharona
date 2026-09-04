@@ -32,17 +32,20 @@ const services = [
 ];
 
 const steps = [
-  ["1", "פגישת היכרות", "נכיר, נבין מה מביא אתכם ונראה יחד אם הדרך מתאימה.", "var(--color-accent-2)"],
-  ["2", "הבנת התמונה", "נמפה יחד את הדפוסים, הצרכים והנקודות הכואבות.", "var(--color-accent)"],
-  ["3", "עבודה משותפת", "כלים מעשיים לעיבוד, להקשבה ולשינוי — בקצב שנכון לכם.", "var(--color-accent-2)"],
-  ["4", "צמיחה מתמשכת", "התמודדות בריאה ומיטיבה שממשיכה איתכם גם אחרי התהליך.", "var(--color-accent)"],
+  ["1", "פנייה ראשונית", "שולחים לי הודעת WhatsApp או מייל קצר עם כמה מילים על סיבת הפנייה.", "var(--color-accent-2)"],
+  ["2", "שיחת היכרות קצרה", "נשוחח טלפונית, אבין באופן ראשוני את סיבת הפנייה, תוכלו לשאול אותי שאלות ונתאם פגישה בקליניקה או אונליין.", "var(--color-accent)"],
+  ["3", "מתחילים לעבוד כבר בפגישה הראשונה", "נבין מה מביא אתכם ומה הייתם רוצים לשנות, נתחיל בעבודה טיפולית ונקבל כיוון ראשוני להמשך.", "var(--color-accent-2)"],
+  ["4", "תהליך טיפולי ממוקד", "נשלב הבנה, מודעות ועומק עם כלים מעשיים לכאן ועכשיו ויישום בחיי היומיום.", "var(--color-accent)"],
+  ["5", "לקראת סיום התהליך", "נבסס את השינוי ואת הכלים שנרכשו, כדי לאפשר המשך עצמאי ותחושת ביטחון גם לאחר סיום התהליך.", "var(--color-accent-2)"],
 ];
 
 // Right-to-left, matching the RTL step order: step 1 is the rightmost disc.
 // Sits on y≈46, the vertical centre of the 92px box, so it threads between
-// the number discs rather than floating above them.
+// the number discs rather than floating above them. Its box spans centre to
+// centre of the outer discs (see the inset below), so the five nodes are the
+// even fifths of the viewBox: 1000, 750, 500, 250, 0.
 const STEP_PATH =
-  "M 905 46 C 830 -6 730 98 655 46 S 480 -6 405 46 S 230 98 155 46";
+  "M 1000 46 C 925 -6 825 98 750 46 S 575 -6 500 46 S 325 98 250 46 S 75 -6 0 46";
 
 const marqueeWords = ["הקשבה", "חמלה", "כבוד", "נוכחות", "אמון", "צמיחה"];
 
@@ -318,18 +321,20 @@ function HomePage() {
       </section>
 
       {/* ============================= APPROACH ============================= */}
-      <section id="approach" data-pin-sec style={{ position: "relative", height: "380vh", background: "var(--color-surface)" }}>
+      <section id="approach" data-pin-sec style={{ position: "relative", height: "460vh", background: "var(--color-surface)" }}>
         <div data-pin-inner style={pinInner}>
           {/* huge ghost numeral behind the active step */}
           <div data-ghost aria-hidden="true" style={{ position: "absolute", insetInlineStart: "50%", top: "50%", transform: "translate(50%,-50%)", fontFamily: HEAD, fontSize: "min(64vh,520px)", lineHeight: 0.78, color: "color-mix(in srgb,var(--color-accent-2) 12%,transparent)", pointerEvents: "none", userSelect: "none", opacity: 0 }} />
           <div data-spot aria-hidden="true" style={{ position: "absolute", top: 0, left: 0, width: 540, height: 540, transform: "translate(-50%,-50%)", borderRadius: "50%", background: "radial-gradient(circle,color-mix(in srgb,var(--color-accent) 22%,transparent),transparent 66%)", filter: "blur(4px)", pointerEvents: "none", opacity: 0 }} />
 
           <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto", width: "100%" }}>
-            <div style={{ textAlign: "center", marginBottom: 76 }}>
-              <Kicker>הדרך שלנו יחד</Kicker>
-              <h2 style={{ ...h2Style, margin: "0 auto", maxWidth: "20ch" }}>
-                ארבעה צעדים, בקצב שנכון לכם
+            <div style={{ textAlign: "center", marginBottom: 68 }}>
+              <h2 style={{ ...h2Style, margin: "0 auto 14px", maxWidth: "20ch" }}>
+                הדרך שלנו יחד
               </h2>
+              <p style={{ margin: 0, fontSize: 19, lineHeight: 1.6, color: "var(--color-text)", opacity: 0.78 }}>
+                מהפנייה הראשונה ועד לסיום התהליך
+              </p>
             </div>
 
             <div data-m="steps" style={{ position: "relative", display: "flex", gap: 26 }}>
@@ -337,8 +342,12 @@ function HomePage() {
                   centred on the disc row, not sitting above it. Positioned
                   with physical left/right: the SVG viewBox and `translate`
                   are both LTR, so RTL logical props would send the dot the
-                  wrong way (which is exactly what used to happen). */}
-              <div aria-hidden="true" style={{ position: "absolute", top: 0, left: 40, right: 40, height: 92, pointerEvents: "none" }}>
+                  wrong way (which is exactly what used to happen).
+                  The inset is half a column — (W - 4*26)/10, i.e.
+                  calc(10% - 10.4px) — so the box runs centre-to-centre of the
+                  first and last disc at every width, and the path's five
+                  nodes land on the discs rather than only at 1200px. */}
+              <div aria-hidden="true" style={{ position: "absolute", top: 0, left: "calc(10% - 10.4px)", right: "calc(10% - 10.4px)", height: 92, pointerEvents: "none" }}>
                 <svg data-path viewBox="0 0 1000 92" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}>
                   <defs>
                     <linearGradient id="pathgrad" x1="1" y1="0" x2="0" y2="0">
@@ -389,8 +398,10 @@ function HomePage() {
                     {/* swaps in for the numeral once the step is behind you */}
                     <span data-numdone aria-hidden="true" style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, opacity: 0 }}>✓</span>
                   </div>
-                  <div style={{ fontFamily: HEAD, fontSize: 23, marginBottom: 10 }}>{title}</div>
-                  <p style={{ margin: 0, fontSize: 16, lineHeight: 1.62, color: "var(--color-text)" }}>{text}</p>
+                  {/* five columns, so the type steps down a notch from the
+                      four-step layout to keep each card's copy readable */}
+                  <div style={{ fontFamily: HEAD, fontSize: 20.5, lineHeight: 1.24, marginBottom: 10 }}>{title}</div>
+                  <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.6, color: "var(--color-text)" }}>{text}</p>
                 </div>
               ))}
             </div>

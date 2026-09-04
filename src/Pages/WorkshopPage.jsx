@@ -42,13 +42,25 @@ const OrgWorkshopCard = ({ workshop, delay }) => {
         >
           {workshop.description.trim()}
         </p>
-        <button
-          onClick={() => setOpen((v) => !v)}
-          className="pill-cta"
-          style={{ alignSelf: "flex-start", background: "color-mix(in srgb,var(--color-accent-2) 16%,transparent)", color: "var(--color-accent-2-800)", border: "none", cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 15, padding: "9px 20px", borderRadius: 999 }}
-        >
-          {open ? "קרא/י פחות" : "קרא/י עוד"}
-        </button>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="pill-cta"
+            style={{ background: "color-mix(in srgb,var(--color-accent-2) 16%,transparent)", color: "var(--color-accent-2-800)", border: "none", cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 15, padding: "9px 20px", borderRadius: 999 }}
+          >
+            {open ? "קרא/י פחות" : "קרא/י עוד"}
+          </button>
+          {/* Some workshops carry their own closing call-to-action. */}
+          {workshop.ctaLabel && (
+            <Link
+              to="/#contact"
+              className="pill-cta"
+              style={{ background: "var(--color-accent)", color: "#fff", fontWeight: 700, fontSize: 15, padding: "9px 20px", borderRadius: 999, boxShadow: "var(--shadow-sm)" }}
+            >
+              {workshop.ctaLabel} ←
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -64,7 +76,7 @@ const WorkshopsPage = () => {
         <title>סדנאות – זוגיות, חמש שפות האהבה, חזון אישי ועוד | שרונה קדושאי בר-נס</title>
         <meta
           name="description"
-          content="סדנאות חווייתיות בהנחיית שרונה קדושאי בר-נס: סדנה זוגית, חמש שפות האהבה, חזון אישי, הילד/ה הפנימי/ת, ופרשת השבוע – ליחידים, זוגות, קבוצות וארגונים."
+          content="סדנאות חווייתיות בהנחיית שרונה קדושאי בר-נס: סדנה זוגית, לדבר בשפת האהבה (חמש שפות האהבה), תקשורת זוגית, חזון אישי, הילד/ה הפנימי/ת ופרשת השבוע – ליחידים, זוגות, קבוצות וארגונים."
         />
         <link rel="canonical" href="https://sharona-bar-nes.com/workshops/" />
         <meta property="og:title" content="סדנאות – שרונה קדושאי בר-נס" />

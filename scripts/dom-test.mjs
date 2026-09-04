@@ -176,7 +176,7 @@ for (const [label, file] of contentPages) {
 // ---- schema values must match what the page actually says ----
 
 // Article: headline == the page's h1, mainEntityOfPage == the canonical.
-for (const id of [1, 2, 3, 4, 5, 6]) {
+for (const id of [1, 2, 3, 4, 5, 6, 7]) {
   const d = await dom(`article/${id}/index.html`);
   const art = [...d.querySelectorAll('script[type="application/ld+json"]')]
     .map((s) => JSON.parse(s.textContent))
