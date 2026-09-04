@@ -33,7 +33,7 @@ export const ArticlesPage = () => {
 
       {/* ============ HEADER ============ */}
       <section
-        className="org-section"
+        className="org-section org-pagehead"
         style={{
           position: "relative",
           padding: "84px 54px 70px",
@@ -66,10 +66,10 @@ export const ArticlesPage = () => {
                 className="svc"
                 style={{ background: "var(--color-surface)", borderRadius: 28, overflow: "hidden", boxShadow: "var(--shadow-sm)", display: "flex", flexDirection: "column", color: "var(--color-text)" }}
               >
-                <div style={{ height: 240, overflow: "hidden" }}>
+                <div className="card-media" style={{ height: 240, overflow: "hidden" }}>
                   <img src={article.image} alt={article.title} loading="lazy" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
-                <div style={{ padding: 30, display: "flex", flexDirection: "column", flex: 1 }}>
+                <div className="card-pad" style={{ padding: 30, display: "flex", flexDirection: "column", flex: 1 }}>
                   <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 25, lineHeight: 1.3, margin: "0 0 12px", color: "var(--color-accent-2-800)" }}>
                     {article.title}
                   </h2>

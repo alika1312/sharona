@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { trackClickToCall } from "../lib/analytics";
+import { trackClickToCall, trackWhatsappClick } from "../lib/analytics";
+import { PhoneIcon, WaIcon } from "./Icons";
 
 const links = [
   { label: "אודות", to: "/about" },
@@ -12,6 +13,9 @@ const links = [
 
 const TEL = "tel:+972587250990";
 const PHONE_LABEL = "058-725-0990";
+const WHATSAPP =
+  "https://wa.me/972587250990?text=" +
+  encodeURIComponent("היי שרונה, הגעתי דרך האתר ואשמח לתאם שיחה 🙂");
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -73,12 +77,32 @@ export const Header = () => {
   }, [location.pathname]);
 
   // The drawer owns the page scroll while it's open.
+  //
+  // `overflow:hidden` on <html> alone does not hold on iOS Safari — the page
+  // behind still rubber-bands, and dismissing the drawer used to leave you
+  // somewhere else on the page. Pinning the body at its current offset does
+  // hold, so long as we put the offset back on close.
   useEffect(() => {
     if (!menuOpen) return;
-    const prev = document.documentElement.style.overflow;
+    const y = window.scrollY;
+    const b = document.body.style;
+    const prev = {
+      position: b.position,
+      top: b.top,
+      width: b.width,
+      overflow: document.documentElement.style.overflow,
+    };
     document.documentElement.style.overflow = "hidden";
+    b.position = "fixed";
+    b.top = `-${y}px`;
+    b.width = "100%";
     return () => {
-      document.documentElement.style.overflow = prev;
+      document.documentElement.style.overflow = prev.overflow;
+      b.position = prev.position;
+      b.top = prev.top;
+      b.width = prev.width;
+      // instant, or smooth-scroll would animate the restore
+      window.scrollTo({ top: y, behavior: "instant" });
     };
   }, [menuOpen]);
 
@@ -101,9 +125,10 @@ export const Header = () => {
         .getElementById("contact")
         ?.scrollIntoView({ behavior: "smooth" });
     if (location.pathname === "/") {
-      // one tick, so the drawer's scroll lock is released first — scrolling a
-      // locked document is a no-op
-      setTimeout(scrollToContact, 0);
+      // The drawer's scroll lock pins the body and puts the offset back when
+      // it releases, which happens in an effect cleanup after paint — scroll
+      // before that and the restore overwrites us. 80ms clears it.
+      setTimeout(scrollToContact, 80);
     } else {
       navigate("/");
       setTimeout(scrollToContact, 350);
@@ -261,7 +286,10 @@ export const Header = () => {
             flexDirection: "column",
             padding: "22px 26px calc(26px + env(safe-area-inset-bottom,0px))",
             overflowY: "auto",
-            textAlign: "center",
+            // start-aligned: a centred column of five nav items reads as a
+            // list of unrelated words, and the eye has no left edge to
+            // return to between them
+            textAlign: "start",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 30 }}>
@@ -332,15 +360,35 @@ export const Header = () => {
           >
             קביעת פגישה
           </button>
-          <div style={{ marginTop: 16, fontSize: 14, lineHeight: 1.7, color: "color-mix(in srgb,var(--color-text) 58%,transparent)" }}>
+          <a
+            href={TEL}
+            onClick={() => trackClickToCall("mobile_drawer")}
+            style={{
+              marginTop: 14,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 9,
+              minHeight: 44,
+              fontWeight: 700,
+              fontSize: 16,
+              color: "var(--color-accent-2-800)",
+            }}
+          >
+            <PhoneIcon size={17} />
             {PHONE_LABEL}
-            <br />
+          </a>
+          <div style={{ fontSize: 13.5, lineHeight: 1.6, color: "color-mix(in srgb,var(--color-text) 58%,transparent)" }}>
             מבשרת ציון · צור הדסה · אונליין
           </div>
         </nav>
       </div>
 
-      {/* ================= mobile bottom action bar ================= */}
+      {/* ================= mobile bottom action bar =================
+          One bar carries all three ways to reach Sharona: the primary
+          "book a session" action plus WhatsApp and call as icon buttons.
+          The floating WhatsApp bubble used to live on top of this and sat
+          over the page copy on every screen — it's hidden below 900px now
+          (see .org-fabs in organic.css) and folded in here instead. */}
       <div
         data-mobar
         style={{
@@ -348,10 +396,11 @@ export const Header = () => {
           bottom: 0,
           insetInline: 0,
           zIndex: 88,
-          gridTemplateColumns: "1.35fr 1fr",
-          gap: 10,
-          padding: "10px 16px calc(10px + env(safe-area-inset-bottom,0px))",
-          background: "color-mix(in srgb,var(--color-bg) 86%,#fff)",
+          gridTemplateColumns: "1fr auto auto",
+          alignItems: "center",
+          gap: 9,
+          padding: "9px 14px calc(9px + env(safe-area-inset-bottom,0px))",
+          background: "color-mix(in srgb,var(--color-bg) 88%,#fff)",
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
           borderTop: "1px solid color-mix(in srgb,var(--color-text) 9%,transparent)",
@@ -359,47 +408,61 @@ export const Header = () => {
           transition: "transform .45s cubic-bezier(.2,.7,.2,1)",
         }}
       >
-        <button
-          onClick={handleContact}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: 52,
-            border: "none",
-            borderRadius: 999,
-            background: "var(--color-accent-2)",
-            color: "var(--color-bg)",
-            fontFamily: "var(--font-body)",
-            fontWeight: 700,
-            fontSize: 17,
-            boxShadow: "var(--shadow-sm)",
-            cursor: "pointer",
-          }}
-        >
+        <button onClick={handleContact} style={barPrimary}>
           קביעת פגישה
         </button>
         <a
+          href={WHATSAPP}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => trackWhatsappClick("mobile_action_bar")}
+          aria-label="שליחת הודעה בוואטסאפ"
+          style={{ ...barIcon, background: "#25D366", color: "#fff", border: "none" }}
+        >
+          <WaIcon size={23} />
+        </a>
+        <a
           href={TEL}
           onClick={() => trackClickToCall("mobile_action_bar")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
-            minHeight: 52,
-            borderRadius: 999,
-            border: "1.5px solid color-mix(in srgb,var(--color-accent-2) 40%,transparent)",
-            color: "var(--color-accent-2-800)",
-            fontWeight: 700,
-            fontSize: 17,
-          }}
+          aria-label={`חיוג לשרונה, ${PHONE_LABEL}`}
+          style={barIcon}
         >
-          <span aria-hidden="true">✆</span> חיוג
+          <PhoneIcon size={21} />
         </a>
       </div>
     </>
   );
+};
+
+// ---- mobile action-bar slots ----
+const barPrimary = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  minHeight: 50,
+  padding: "0 18px",
+  border: "none",
+  borderRadius: 999,
+  background: "var(--color-accent-2)",
+  color: "var(--color-bg)",
+  fontFamily: "var(--font-body)",
+  fontWeight: 700,
+  fontSize: 16.5,
+  boxShadow: "var(--shadow-sm)",
+  cursor: "pointer",
+};
+
+const barIcon = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: 50,
+  height: 50,
+  flex: "none",
+  borderRadius: 999,
+  border: "1.5px solid color-mix(in srgb,var(--color-accent-2) 38%,transparent)",
+  background: "color-mix(in srgb,var(--color-bg) 60%,#fff)",
+  color: "var(--color-accent-2-800)",
 };
 
 const ctaStyle = {

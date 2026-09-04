@@ -14,6 +14,7 @@ function FaqItem({ q, a, todo, headingLevel = 3 }) {
   return (
     <div
       data-reveal
+      className="faq-row"
       style={{
         background: "var(--color-surface)",
         borderRadius: 20,
@@ -27,6 +28,7 @@ function FaqItem({ q, a, todo, headingLevel = 3 }) {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls={panelId}
+          className="faq-row-q"
           style={{
             width: "100%",
             display: "flex",
@@ -57,7 +59,7 @@ function FaqItem({ q, a, todo, headingLevel = 3 }) {
               color: "var(--color-accent)",
             }}
           >
-            ＋
+            +
           </span>
         </button>
       </H>
@@ -66,6 +68,7 @@ function FaqItem({ q, a, todo, headingLevel = 3 }) {
         role="region"
         aria-labelledby={btnId}
         hidden={!open}
+        className="faq-row-a"
         style={{ padding: "0 26px 24px", fontSize: 17, lineHeight: 1.72, color: muted(78) }}
       >
         <p style={{ margin: 0 }}>{a}</p>

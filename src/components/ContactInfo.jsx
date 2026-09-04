@@ -1,6 +1,11 @@
 import { trackWhatsappClick, trackClickToCall } from "../lib/analytics";
 
-// Always-visible floating quick-contact: WhatsApp (primary) + one-tap call.
+// Desktop floating quick-contact: WhatsApp (primary) + one-tap call.
+//
+// Hidden below 900px (see .org-fabs in organic.css). On a phone the fixed
+// bottom action bar already carries WhatsApp and call, and this stack sat on
+// top of the page copy in every section — it was the single worst offender
+// for covering text on mobile.
 const WHATSAPP =
   "https://wa.me/972587250990?text=" +
   encodeURIComponent("היי שרונה, הגעתי דרך האתר ואשמח לתאם שיחה 🙂");

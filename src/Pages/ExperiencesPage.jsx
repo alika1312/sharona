@@ -28,7 +28,7 @@ export const ExperiencesPage = () => {
 
       {/* ============ HEADER ============ */}
       <section
-        className="org-section"
+        className="org-section org-pagehead"
         style={{
           position: "relative",
           padding: "84px 54px 70px",
@@ -65,7 +65,7 @@ export const ExperiencesPage = () => {
                   </div>
                 </div>
                 <div style={{ flex: 1.18 }}>
-                  <div data-reveal style={{ display: "inline-block", fontFamily: "var(--font-heading)", fontSize: 22, color: "var(--color-accent-2-300)", marginBottom: 6 }}>
+                  <div data-reveal style={{ display: "inline-block", fontFamily: "var(--font-heading)", fontSize: 20, color: "var(--color-accent-2-600)", letterSpacing: ".08em", marginBottom: 6 }}>
                     {String(index + 1).padStart(2, "0")}
                   </div>
                   <h2 data-reveal data-reveal-delay="80" style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 30, lineHeight: 1.25, margin: "0 0 18px", color: "var(--color-accent-2-800)" }}>

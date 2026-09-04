@@ -144,6 +144,11 @@ class HomeMotion {
     this.deck = this.qa("[data-deck]");
     this.grid = this.q('[data-m="grid"]');
     this.portrait = this.q("[data-ab-portrait]");
+    // aboutStep morphs the portrait blob by writing border-radius straight
+    // onto the element — the same style attribute the JSX authored it in.
+    // Keep the authored value so a reset can put it back rather than
+    // blanking it into a rectangle.
+    if (this.portrait) this.portrait._r0 = this.portrait.style.borderRadius;
     this.abStats = this.q("[data-ab-stats]");
     this.cform = this.q("[data-cform]");
     this.cfs = this.qa("[data-cf]");
@@ -214,11 +219,11 @@ class HomeMotion {
       document.documentElement.style.setProperty("--progress", this.prog(this.sySm));
       this.blobField(t, vh);
       this.marqueeStep(dt);
-      this.aboutStep();
-      this.contactStep();
       if (this.narrow) {
         this.mobileReset();
       } else {
+        this.aboutStep();
+        this.contactStep();
         this.stepsStep();
         this.servicesStep();
         this.collageStep();
@@ -278,28 +283,61 @@ class HomeMotion {
      wrote has to be handed back (this also covers a desktop→mobile
      resize mid-session). */
 
+  /* Pagination for the mobile reviews rail.
+     There are eighteen reviews. A dot per card put eighteen 8px targets in
+     one 350px row — unreadable as a position indicator and untappable as a
+     control. Past DOTS_MAX the rail gets a progress bar and a "3 / 18"
+     counter instead, which is what that many items actually needs; a short
+     set still gets real dots. */
   mobileDots() {
-    const dots = this.q("[data-mdots]");
+    const host = this.q("[data-mdots]");
     const stack = this.stack || this.q("[data-stack]");
-    if (!dots || !stack) return;
+    if (!host || !stack) return;
     const cards = this.cards && this.cards.length ? this.cards : this.qa("[data-card]");
     if (!cards.length) return;
-    dots.textContent = "";
-    cards.forEach((card, i) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.setAttribute("aria-label", `המלצה ${i + 1}`);
-      if (i === 0) b.dataset.on = "1";
-      b.addEventListener("click", () => {
-        stack.scrollTo({
-          left: card.offsetLeft - (stack.clientWidth - card.offsetWidth) / 2,
-          behavior: "smooth",
+
+    const DOTS_MAX = 8;
+    const asDots = cards.length <= DOTS_MAX;
+    host.textContent = "";
+    host.dataset.mode = asDots ? "dots" : "bar";
+
+    let dotEls = [];
+    let fill = null;
+    let count = null;
+
+    if (asDots) {
+      cards.forEach((card, i) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.setAttribute("aria-label", `המלצה ${i + 1}`);
+        if (i === 0) b.dataset.on = "1";
+        b.addEventListener("click", () => {
+          stack.scrollTo({
+            left: card.offsetLeft - (stack.clientWidth - card.offsetWidth) / 2,
+            behavior: "smooth",
+          });
         });
+        host.appendChild(b);
       });
-      dots.appendChild(b);
-    });
-    this.dotsHost = dots;
-    const dotEls = [...dots.children];
+      dotEls = [...host.children];
+    } else {
+      const track = document.createElement("div");
+      track.dataset.mtrack = "";
+      track.setAttribute("aria-hidden", "true");
+      fill = document.createElement("div");
+      fill.dataset.mfill = "";
+      track.appendChild(fill);
+      count = document.createElement("div");
+      count.dataset.mcount = "";
+      // "1 / 18" in an RTL context reorders to "18 / 1" — isolate the run
+      count.dir = "ltr";
+      count.setAttribute("role", "status");
+      count.setAttribute("aria-live", "polite");
+      count.textContent = `1 / ${cards.length}`;
+      host.append(track, count);
+    }
+
+    this.dotsHost = host;
     let tick = 0;
     this.onStackScroll = () => {
       cancelAnimationFrame(tick);
@@ -314,9 +352,19 @@ class HomeMotion {
             best = i;
           }
         });
-        dotEls.forEach((d, i) => (d.dataset.on = i === best ? "1" : ""));
+        if (asDots) {
+          dotEls.forEach((d, i) => (d.dataset.on = i === best ? "1" : ""));
+          return;
+        }
+        // One card of travel is the minimum bar width, so the fill always
+        // reads as a position rather than vanishing on the first card.
+        const pct = ((best + 1) / cards.length) * 100;
+        fill.style.inlineSize = `${Math.max(100 / cards.length, pct).toFixed(2)}%`;
+        const label = `${best + 1} / ${cards.length}`;
+        if (count.textContent !== label) count.textContent = label;
       });
     };
+    this.onStackScroll();
     stack.addEventListener("scroll", this.onStackScroll, { passive: true });
     this.stackScroller = stack;
   }
@@ -336,6 +384,19 @@ class HomeMotion {
         if (el.hasAttribute("data-card")) el.removeAttribute("aria-hidden");
       }
     );
+    // The about/contact scrubs write straight onto these. Their opacity and
+    // transform are overridden by the mobile rules, but the portrait's
+    // border-radius is not — a desktop→mobile resize mid-session used to
+    // leave the blob frozen as whatever near-circle the scrub last wrote.
+    this.qa(
+      "[data-ab-portrait],[data-ab-stats],[data-cform],[data-cf],[data-plabel],[data-stagetext]"
+    ).forEach((el) => {
+      el.style.opacity = "";
+      el.style.transform = "";
+      el.style.filter = "";
+      if (el._r0 !== undefined) el.style.borderRadius = el._r0;
+      delete el.dataset.on;
+    });
   }
 
   /* Hide the animated elements. Done from JS so the served HTML stays
@@ -704,7 +765,7 @@ class HomeMotion {
   /* ============================ intro ============================ */
 
   runIntro() {
-    if (this.props.showIntro === false || this.reduce) {
+    if (this.props.showIntro === false || this.reduce || this.narrow) {
       this.startReveals();
       return;
     }
@@ -806,6 +867,7 @@ class HomeMotion {
   /* ============================ rail / parallax ============================ */
 
   railStep(vh) {
+    if (this.narrow) return;
     if (this.tick % 4) return;
     if (!this.dots) {
       this.dots = this.qa("[data-dot-nav]");
@@ -830,7 +892,7 @@ class HomeMotion {
   }
 
   parallaxStep(vh) {
-    if (this.amp === 0) return;
+    if (this.narrow || this.amp === 0) return;
     this.plx.forEach(({ el, s }) => {
       const r = el.getBoundingClientRect();
       if (r.bottom < -100 || r.top > vh + 100) return;
@@ -842,6 +904,7 @@ class HomeMotion {
   /* ============================ hero ============================ */
 
   blobField(t, vh) {
+    if (this.narrow) return;
     if (!this.blobs.length || this.amp === 0) return;
     const hero = this.hero || (this.hero = this.q("#top"));
     if (!hero) return;

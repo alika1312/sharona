@@ -5,6 +5,7 @@ import emailjs from "@emailjs/browser";
 import { aboutInformation, testimonials } from "../information/information";
 import { faqs } from "../information/faq";
 import { createHomeMotion } from "../design/motion";
+import { PhoneIcon, MailIcon, PinIcon } from "../components/Icons";
 import {
   trackContactFormSubmit,
   trackWhatsappClick,
@@ -48,6 +49,14 @@ const STEP_PATH =
   "M 1000 46 C 925 -6 825 98 750 46 S 575 -6 500 46 S 325 98 250 46 S 75 -6 0 46";
 
 const marqueeWords = ["הקשבה", "חמלה", "כבוד", "נוכחות", "אמון", "צמיחה"];
+
+// The hero's three areas of work, kept as separate strings so each one can
+// be an unbreakable chip (see the hero kicker).
+const heroAreas = [
+  "טיפול וייעוץ זוגי",
+  "טיפול רגשי במצבי משבר",
+  "הדרכת הורים",
+];
 
 // The contact section's three beats: what happens after you press send. Not
 // knowing is most of what stops people from writing in the first place.
@@ -226,8 +235,18 @@ function HomePage() {
 
         <div data-m="stack" style={{ position: "relative", maxWidth: 1200, margin: "0 auto", width: "100%", display: "flex", alignItems: "center", gap: 56 }}>
           <div style={{ flex: 1.08 }}>
-            <div style={{ ...kickerStyle, fontSize: 15, marginBottom: 8 }}>
-              טיפול וייעוץ זוגי · טיפול רגשי במצבי משבר · הדרכת הורים
+            {/* Each area is its own nowrap chip with the separator between
+                them, so a narrow screen breaks at the dots instead of
+                through the middle of "במצבי משבר". */}
+            <div data-herokicker style={{ ...kickerStyle, fontSize: 15, marginBottom: 8, display: "flex", flexWrap: "wrap", gap: "2px 0" }}>
+              {heroAreas.map((a, i) => (
+                <span key={a} style={{ whiteSpace: "nowrap" }}>
+                  {a}
+                  {i < heroAreas.length - 1 && (
+                    <span aria-hidden="true" style={{ opacity: 0.45, padding: "0 9px" }}>·</span>
+                  )}
+                </span>
+              ))}
             </div>
             <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: ".04em", color: "var(--color-accent-2-700)", marginBottom: 24 }}>
               לישראלים בארץ ובחו״ל — בקליניקה ובאונליין
@@ -239,11 +258,11 @@ function HomePage() {
             <p style={{ fontSize: 21, lineHeight: 1.62, maxWidth: "44ch", margin: "30px 0 36px", color: "var(--color-text)" }}>
               לפעמים כל מה שצריך זה מקום אחד, שקט ובטוח, להניח בו את מה שכבד ולהתחיל להקשיב מחדש — לעצמכם, לזוגיות ולמשפחה.
             </p>
-            <div style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
+            <div data-heroctas style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
               <a href="#contact" className="pill" data-magnet style={{ background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 18, padding: "17px 36px", borderRadius: 999, boxShadow: "var(--shadow-md)" }}>
                 בואו נדבר ←
               </a>
-              <Link to="/about" style={{ fontWeight: 700, fontSize: 18, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
+              <Link to="/about" className="ulink" style={{ fontWeight: 700, fontSize: 18, color: "var(--color-accent-2-800)" }}>
                 קצת עליי
               </Link>
             </div>
@@ -254,9 +273,9 @@ function HomePage() {
               <div data-m="portrait" style={{ width: 400, height: "min(470px,56vh)", borderRadius: "52% 48% 46% 54%/58% 56% 44% 42%", overflow: "hidden", boxShadow: "var(--shadow-lg)", animation: "floaty 11s ease-in-out infinite" }}>
                 <img src="/sharona.jpeg" alt="שרונה קדושאי בר-נס, יועצת ומטפלת רגשית" width="400" height="470" fetchpriority="high" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </div>
-              <div aria-hidden="true" style={{ position: "absolute", top: -14, insetInlineEnd: 26, width: 58, height: 58, borderRadius: "50%", background: "var(--color-accent)", animation: "floaty2 7s ease-in-out infinite", boxShadow: "var(--shadow-sm)" }} />
-              <div aria-hidden="true" style={{ position: "absolute", bottom: 24, insetInlineStart: -22, width: 40, height: 40, borderRadius: "50%", background: "var(--color-accent-2)", animation: "floaty 6s ease-in-out infinite" }} />
-              <div aria-hidden="true" style={{ position: "absolute", top: "38%", insetInlineStart: -40, width: 96, height: 96, border: "2px dashed color-mix(in srgb,var(--color-accent-2) 50%,transparent)", borderRadius: "50%", animation: "spinSlow 30s linear infinite" }} />
+              <div data-deco="dot" aria-hidden="true" style={{ position: "absolute", top: -14, insetInlineEnd: 26, width: 58, height: 58, borderRadius: "50%", background: "var(--color-accent)", animation: "floaty2 7s ease-in-out infinite", boxShadow: "var(--shadow-sm)" }} />
+              <div data-deco="dot" aria-hidden="true" style={{ position: "absolute", bottom: 24, insetInlineStart: -22, width: 40, height: 40, borderRadius: "50%", background: "var(--color-accent-2)", animation: "floaty 6s ease-in-out infinite" }} />
+              <div data-deco="ring" aria-hidden="true" style={{ position: "absolute", top: "38%", insetInlineStart: -40, width: 96, height: 96, border: "2px dashed color-mix(in srgb,var(--color-accent-2) 50%,transparent)", borderRadius: "50%", animation: "spinSlow 30s linear infinite" }} />
             </div>
           </div>
         </div>
@@ -292,7 +311,7 @@ function HomePage() {
                   <img src="/sharona-portrait.png" alt="שרונה קדושאי בר-נס" width="553" height="659" loading="lazy" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
               </div>
-              <div aria-hidden="true" style={{ position: "absolute", bottom: 10, insetInlineEnd: 0, width: 52, height: 52, borderRadius: "50%", background: "var(--color-accent)", animation: "floaty2 7s ease-in-out infinite" }} />
+              <div data-deco="dot" aria-hidden="true" style={{ position: "absolute", bottom: 10, insetInlineEnd: 0, width: 52, height: 52, borderRadius: "50%", background: "var(--color-accent)", animation: "floaty2 7s ease-in-out infinite" }} />
             </div>
 
             <div style={{ flex: 1.08 }}>
@@ -306,12 +325,12 @@ function HomePage() {
                 </p>
               ))}
               <div style={{ marginBottom: 30 }}>
-                <Link to="/about" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
+                <Link to="/about" className="ulink" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)" }}>
                   להמשך הקריאה ←
                 </Link>
               </div>
               <div data-ab-stats data-m="stats" style={{ display: "flex", gap: 44, flexWrap: "wrap", paddingTop: 18, borderTop: "1.5px solid color-mix(in srgb,var(--color-text) 12%,transparent)" }}>
-                <Stat value={<span data-count="20" data-suffix="+">20+</span>} label="שנות ניסיון" />
+                <Stat value={<span data-count="20" data-suffix="+" dir="ltr" style={{ display: "inline-block" }}>20+</span>} label="שנות ניסיון" />
                 <Stat value="יחידים · זוגות · קבוצות" label="ליווי מותאם אישית" small />
                 <Stat value="עברית · אנגלית" label="שפות הטיפול" small />
               </div>
@@ -512,9 +531,9 @@ function HomePage() {
           a running carousel you can drag or step through. */}
       <section id="voices" data-pin-sec style={{ position: "relative", height: "520vh", background: "var(--color-accent-2-800)", color: "var(--color-bg)" }}>
         <div data-pin-inner style={pinInner}>
-          <div aria-hidden="true" style={{ position: "absolute", top: -90, insetInlineStart: -60, width: 320, height: 320, borderRadius: "50%", background: "color-mix(in srgb,#fff 7%,transparent)", filter: "blur(10px)", animation: "drift 26s ease-in-out infinite" }} />
-          <div aria-hidden="true" style={{ position: "absolute", bottom: -110, insetInlineEnd: -70, width: 260, height: 260, borderRadius: "50%", background: "color-mix(in srgb,var(--color-accent) 22%,transparent)", filter: "blur(14px)", animation: "drift2 30s ease-in-out infinite" }} />
-          <div aria-hidden="true" style={{ position: "absolute", bottom: "8%", insetInlineStart: "12%", width: 180, height: 180, borderRadius: "50%", border: "2px dashed color-mix(in srgb,#fff 20%,transparent)", animation: "spinSlow 44s linear infinite" }} />
+          <div data-deco="blur" aria-hidden="true" style={{ position: "absolute", top: -90, insetInlineStart: -60, width: 320, height: 320, borderRadius: "50%", background: "color-mix(in srgb,#fff 7%,transparent)", filter: "blur(10px)", animation: "drift 26s ease-in-out infinite" }} />
+          <div data-deco="blur" aria-hidden="true" style={{ position: "absolute", bottom: -110, insetInlineEnd: -70, width: 260, height: 260, borderRadius: "50%", background: "color-mix(in srgb,var(--color-accent) 22%,transparent)", filter: "blur(14px)", animation: "drift2 30s ease-in-out infinite" }} />
+          <div data-deco="ring" aria-hidden="true" style={{ position: "absolute", bottom: "8%", insetInlineStart: "12%", width: 180, height: 180, borderRadius: "50%", border: "2px dashed color-mix(in srgb,#fff 20%,transparent)", animation: "spinSlow 44s linear infinite" }} />
 
           <div style={{ position: "relative", maxWidth: 1100, margin: "0 auto", width: "100%" }}>
             <div data-vhead style={{ textAlign: "center", marginBottom: 40 }}>
@@ -595,7 +614,7 @@ function HomePage() {
                 לא מצאתם תשובה? כתבו לי ואשמח לענות.
               </p>
               <div>
-                <Link to="/faq" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
+                <Link to="/faq" className="ulink" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)" }}>
                   לכל השאלות הנפוצות ←
                 </Link>
               </div>
@@ -662,14 +681,14 @@ function HomePage() {
                   data-magnet
                   style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "color-mix(in srgb,var(--color-bg) 70%,#fff)", color: "var(--color-accent-2-800)", border: "1.5px solid color-mix(in srgb,var(--color-accent-2) 34%,transparent)", fontWeight: 700, fontSize: 16.5, padding: "13px 24px", borderRadius: 999 }}
                 >
-                  <span aria-hidden="true">✆</span>
+                  <PhoneIcon size={17} />
                   {PHONE_LABEL}
                 </a>
               </div>
 
               <div data-crows style={{ display: "flex", flexDirection: "column", gap: 11, fontSize: 16 }}>
-                <ContactRow icon="✉" href={`mailto:${EMAIL}`} compact>{EMAIL}</ContactRow>
-                <ContactRow icon="⌂" compact>מבשרת ציון · צור הדסה · אונליין מכל הארץ</ContactRow>
+                <ContactRow icon={<MailIcon />} href={`mailto:${EMAIL}`} compact>{EMAIL}</ContactRow>
+                <ContactRow icon={<PinIcon />} compact>מבשרת ציון · צור הדסה · אונליין מכל הארץ</ContactRow>
               </div>
             </div>
 
@@ -738,7 +757,7 @@ function ContactRow({ icon, href, children, onClick, compact }) {
   const d = compact ? 34 : 42;
   const inner = (
     <>
-      <span aria-hidden="true" style={{ width: d, height: d, borderRadius: "50%", background: "var(--color-accent-2-200)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none", fontSize: compact ? 14 : undefined }}>
+      <span aria-hidden="true" style={{ width: d, height: d, borderRadius: "50%", background: "var(--color-accent-2-200)", color: "var(--color-accent-2-800)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
         {icon}
       </span>
       <span>{children}</span>
@@ -908,7 +927,10 @@ function ContactForm({ motionRef }) {
       <form onSubmit={sendEmail} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div data-cf>
           <div id="topic-label" style={{ fontSize: 15, fontWeight: 700, marginBottom: 10, color: "var(--color-accent-2-800)" }}>
-            מה מביא אתכם? <span style={{ fontWeight: 400, color: "color-mix(in srgb,var(--color-text) 62%,transparent)" }}>(אפשר לבחור, ואפשר פשוט לכתוב)</span>
+            מה מביא אתכם?
+            <span style={{ display: "block", fontWeight: 400, fontSize: 14, marginTop: 3, color: "color-mix(in srgb,var(--color-text) 62%,transparent)" }}>
+              אפשר לבחור, ואפשר פשוט לכתוב
+            </span>
           </div>
           <div data-ctopics role="group" aria-labelledby="topic-label" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {contactTopics.map(([label], i) => (
@@ -938,7 +960,7 @@ function ContactForm({ motionRef }) {
         <input data-cf className="fin" type="text" name="name" aria-label="שם מלא" placeholder="שם מלא" required />
         <input data-cf className="fin" type="tel" name="phone" aria-label="טלפון" placeholder="טלפון" required />
         <input data-cf className="fin" type="email" name="email" aria-label="אימייל" placeholder="אימייל" />
-        <textarea ref={msgRef} data-cf className="fin" name="message" rows={3} aria-label="הודעה" placeholder="כמה מילים על מה שמביא אתכם (לא חובה)" style={{ resize: "vertical" }} />
+        <textarea ref={msgRef} data-cf className="fin" name="message" rows={3} aria-label="הודעה" placeholder="כמה מילים על מה שמביא אתכם — לא חובה" style={{ resize: "vertical" }} />
         <button data-cf type="submit" disabled={status === "sending"} className="pill" style={{ position: "relative", background: status === "sending" ? "var(--color-accent-2-600)" : "var(--color-accent-2)", color: "var(--color-bg)", border: "none", cursor: status === "sending" ? "progress" : "pointer", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 18, padding: 17, borderRadius: 999, boxShadow: "var(--shadow-md)", marginTop: 4 }}>
           {status === "sending" ? "שולח..." : "שליחה ←"}
         </button>

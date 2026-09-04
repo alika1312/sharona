@@ -27,6 +27,17 @@ export function useReveal() {
     };
 
     const items = [...root.querySelectorAll("[data-reveal], [data-count]")];
+
+    // Safety net. `reveal-on` gates every [data-reveal] behind opacity:0, so
+    // if the observer never delivers — an old engine, a restored scroll
+    // position, a jump straight to a deep anchor — the page reads as blank.
+    // Nothing is worth that, so a stalled reveal shows itself anyway.
+    const bail = setTimeout(() => {
+      root
+        .querySelectorAll("[data-reveal]:not(.is-in)")
+        .forEach((el) => el.classList.add("is-in"));
+    }, 2200);
+
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -44,10 +55,19 @@ export function useReveal() {
     );
     items.forEach((el) => io.observe(el));
 
-    const plx = [...root.querySelectorAll("[data-parallax]")].map((el) => ({
-      el,
-      speed: +el.dataset.parallax,
-    }));
+    // Parallax is a desktop affordance. Below 900px the sections are short
+    // and the drifting element is usually a decorative blob, so the drift
+    // just walks it over the copy — and it costs a layout read per element
+    // per scroll frame on the slowest devices.
+    const narrow =
+      window.matchMedia("(max-width: 900px)").matches ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const plx = narrow
+      ? []
+      : [...root.querySelectorAll("[data-parallax]")].map((el) => ({
+          el,
+          speed: +el.dataset.parallax,
+        }));
     let raf = null;
     const onScroll = () => {
       if (raf) return;
@@ -65,6 +85,7 @@ export function useReveal() {
     onScroll();
 
     return () => {
+      clearTimeout(bail);
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
     };

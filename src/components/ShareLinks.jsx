@@ -66,6 +66,7 @@ export default function ShareLinks({
 
   return (
     <div
+      className="share-row"
       style={{
         display: "flex",
         flexWrap: "wrap",

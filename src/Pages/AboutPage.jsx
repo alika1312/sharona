@@ -77,7 +77,7 @@ function AboutPage() {
             <div data-reveal style={kicker}>קצת עליי</div>
             <h1 className="org-h1" style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 56, lineHeight: 1.12, margin: "0 0 26px" }}>
               <span data-reveal style={{ display: "block" }}>שרונה קדושאי בר-נס</span>
-              <span data-reveal data-reveal-delay="120" style={{ display: "block", fontSize: 30, color: "var(--color-accent-2-700)", marginTop: 8 }}>
+              <span data-reveal data-reveal-delay="120" className="org-h1-sub" style={{ display: "block", fontSize: 30, color: "var(--color-accent-2-700)", marginTop: 8 }}>
                 יועצת ומטפלת רגשית
               </span>
             </h1>
@@ -104,7 +104,7 @@ function AboutPage() {
           </div>
           <div className="org-services-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 26, alignItems: "start" }}>
             {/* education card */}
-            <div data-reveal style={{ background: "var(--color-surface)", borderRadius: 28, padding: 38, boxShadow: "var(--shadow-sm)" }}>
+            <div data-reveal className="card-pad" style={{ background: "var(--color-surface)", borderRadius: 28, padding: 38, boxShadow: "var(--shadow-sm)" }}>
               <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 26, margin: "0 0 22px", color: "var(--color-accent-2-800)" }}>
                 השכלה אקדמית והכשרות
               </h3>
@@ -122,7 +122,7 @@ function AboutPage() {
               </div>
             </div>
             {/* details card */}
-            <div data-reveal data-reveal-delay="140" style={{ background: "var(--color-surface)", borderRadius: 28, padding: 38, boxShadow: "var(--shadow-sm)" }}>
+            <div data-reveal data-reveal-delay="140" className="card-pad" style={{ background: "var(--color-surface)", borderRadius: 28, padding: 38, boxShadow: "var(--shadow-sm)" }}>
               <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 26, margin: "0 0 22px", color: "var(--color-accent-2-800)" }}>
                 פרטים מקצועיים
               </h3>
@@ -137,7 +137,7 @@ function AboutPage() {
               <div style={{ marginTop: 26, display: "flex", gap: 34, flexWrap: "wrap", paddingTop: 22, borderTop: "1.5px solid color-mix(in srgb,var(--color-text) 12%,transparent)" }}>
                 <div>
                   <div style={{ fontFamily: "var(--font-heading)", fontSize: 40, color: "var(--color-accent-2-700)", lineHeight: 1 }}>
-                    <span data-count="20" data-suffix="+">20+</span>
+                    <span data-count="20" data-suffix="+" dir="ltr" style={{ display: "inline-block" }}>20+</span>
                   </div>
                   <div style={{ fontSize: 14.5, color: muted(62), marginTop: 6 }}>שנות ניסיון</div>
                 </div>

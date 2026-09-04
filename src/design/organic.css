@@ -112,6 +112,21 @@
 .gitem { transition: transform 0.5s cubic-bezier(0.2,0.7,0.2,1); }
 .gitem:hover { transform: scale(1.03) rotate(-1deg); }
 
+/* ---- underlined text link ("להמשך הקריאה ←") ----
+   These were hand-rolled per instance as border-bottom + padding-bottom on
+   an inline <a>. An inline box's border follows every line box, so once the
+   label wrapped the rule broke into two pieces at different widths — and it
+   ran the full inline width rather than the text. A text-decoration
+   underline tracks the glyphs instead. */
+.ulink {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-accent-2) 45%, transparent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+  transition: text-decoration-color 0.3s ease;
+}
+.ulink:hover { text-decoration-color: var(--color-accent-2); }
+
 .fin {
   width: 100%;
   border: 1.5px solid color-mix(in srgb, var(--color-text) 14%, transparent);
@@ -237,35 +252,155 @@ select:focus-visible,
   .org-desktop-nav .navlink { font-size: 15px; }
 }
 
+/* =====================================================================
+   MOBILE (<=900px) — shared layer.
+   One scale for every page. The inner pages used to inherit the desktop
+   sizes and get a couple of !important overrides on top (a 52px h1 on a
+   360px screen; the 54px gutters cut to 22px but 110px of section
+   padding left alone), so every page ended up spaced differently. These
+   tokens are what the rest of the mobile CSS reads.
+   ===================================================================== */
 @media (max-width: 900px) {
+  :root {
+    --m-pad: 20px;   /* page gutter */
+    --m-sec: 60px;   /* section padding-block */
+    --m-h1: clamp(30px, 8.2vw, 40px);
+    --m-h2: clamp(25px, 6.6vw, 31px);
+    --m-h3: clamp(19px, 5vw, 22px);
+    --m-body: 16.5px;
+    --m-lead: 17.5px;
+    --m-radius: 22px;
+    /* the fixed action bar's height — anything that has to clear it says
+       so once, in these terms */
+    --m-bar: calc(68px + env(safe-area-inset-bottom, 0px));
+  }
+
   * { -webkit-tap-highlight-color: transparent; }
+
+  /* ---- nav ---- */
   [data-navlinks] { display: none !important; }
   [data-navtoggle] { display: flex !important; }
   [data-drawer] { display: block !important; }
   [data-mobar] { display: grid !important; }
-  .org-header { background: color-mix(in srgb, var(--color-bg) 84%, #fff) !important; }
-  .org-nav-inner { padding: 11px 16px !important; }
+  .org-header { background: color-mix(in srgb, var(--color-bg) 90%, #fff) !important; }
+  .org-nav-inner { padding: 10px var(--m-pad) !important; }
   .org-wordmark {
-    font-size: 19px !important;
+    font-size: 18px !important;
     min-height: 44px;
     display: flex;
     align-items: center;
   }
+
+  /* The floating WhatsApp + call stack is folded into the bottom action
+     bar (see Header.jsx). Two fixed 56px discs sitting on top of a fixed
+     bar put three overlapping CTAs in one corner, and the discs covered
+     the page copy in every single section — the worst offender on the
+     site for blocking text. */
+  .org-fabs { display: none !important; }
+
+  /* An in-page anchor must not land underneath the action bar. */
+  html { scroll-padding-bottom: calc(var(--m-bar) + 14px); }
+
+  /* ---- stacked layouts ---- */
   .org-hero,
   .org-about,
-  .org-contact { flex-direction: column !important; }
-  .org-services-grid { grid-template-columns: 1fr !important; }
-  .org-voices-grid { grid-template-columns: 1fr !important; }
-  /* gallery is a flex row on desktop — stack it so tiles don't squish */
+  .org-contact { flex-direction: column !important; gap: 32px !important; }
+  .org-services-grid,
+  .org-voices-grid { grid-template-columns: 1fr !important; gap: 18px !important; }
+  /* the gallery is a flex row on desktop — stack it so tiles don't squish */
   .org-gallery { flex-direction: column !important; }
   .org-gallery > div { margin-top: 0 !important; }
   .org-steps { flex-direction: column !important; gap: 34px !important; }
   .org-steps-line { display: none !important; }
-  .org-section { padding-left: 22px !important; padding-right: 22px !important; }
-  .org-h1 { font-size: 52px !important; }
-  .org-h2 { font-size: 34px !important; }
-  .org-portrait { width: 78vw !important; height: 92vw !important; max-width: 360px; max-height: 430px; }
+
+  /* ---- gutters + type ---- */
+  .org-section {
+    padding-left: var(--m-pad) !important;
+    padding-right: var(--m-pad) !important;
+    padding-top: var(--m-sec) !important;
+    padding-bottom: var(--m-sec) !important;
+  }
+  .org-h1 {
+    font-size: var(--m-h1) !important;
+    line-height: 1.15 !important;
+    text-wrap: balance;
+  }
+  .org-h2 {
+    font-size: var(--m-h2) !important;
+    line-height: 1.2 !important;
+    text-wrap: balance;
+  }
+  .org-portrait {
+    width: min(70vw, 300px) !important;
+    height: min(82vw, 348px) !important;
+  }
+  .org-h1-sub { font-size: clamp(18px, 4.8vw, 22px) !important; margin-top: 6px !important; }
+
+  /* /experiences: a 350px square feature image per area, eight of them,
+     meant a screenful of picture before each block of copy. Capped to a
+     feature size; the per-area border-radius (a blob on every third one,
+     a rounded rectangle otherwise) is left alone. */
+  .organic:not(.organic-v2) .org-about .gitem { max-width: 240px !important; }
+
+  /* Page heads (every inner page but /about) were centred as a block. A
+     centred four-line Hebrew paragraph gives the eye no left edge to
+     return to; start-aligning the head also lets the h1 keep its own
+     ragged edge instead of being balanced about a centre line. */
+  .org-pagehead { text-align: start !important; }
+  .org-pagehead > div { max-width: none !important; }
+  .org-pagehead > div > div:first-child { margin-inline: 0 !important; }
+  .org-pagehead p { margin-inline: 0 !important; max-width: 34ch !important; }
+
+  /* The article hero is the one .org-section that has to keep zero
+     padding-block — its frame hangs off the bottom of the header. */
+  .art-hero { padding-block: 0 !important; }
+  .art-hero-frame {
+    height: min(66vw, 310px) !important;
+    border-radius: 0 0 var(--m-radius) var(--m-radius) !important;
+  }
+  .art-hero-copy { padding: 20px var(--m-pad) !important; }
+
+  /* ---- inner-page cards ----
+     38px of padding inside a 350px card left about 270px of measure. */
+  .organic:not(.organic-v2) .org-services-grid > * { border-radius: var(--m-radius) !important; }
+  .organic:not(.organic-v2) .card-pad { padding: 24px 20px !important; }
+  /* Fixed 240px image caps made a card read as a photo with a caption
+     glued underneath. */
+  .organic:not(.organic-v2) .card-media { height: min(46vw, 190px) !important; }
+
+  /* ---- /faq accordion ----
+     26px of padding either side of a 20px heading-face question left
+     about a two-word measure on a 360px screen. */
+  .faq-row { border-radius: var(--m-radius) !important; }
+  .faq-row-q {
+    padding: 16px 18px !important;
+    font-size: 17.5px !important;
+    line-height: 1.35 !important;
+  }
+  .faq-row-a { padding: 0 18px 18px !important; font-size: var(--m-body) !important; }
+
+  /* ---- tap targets ----
+     A standalone underlined link ("להמשך הקריאה ←") is a control, not a
+     link inside a sentence, and at the body line-height it was a 25px
+     target. Padding gets it to 44 without moving the text. */
+  .ulink,
+  a.tap {
+    display: inline-block;
+    padding-block: 10px;
+  }
+  footer a { min-height: 44px !important; }
+  /* the form's topic chips and the compact contact rows */
+  .organic-v2 [data-ctopics] button { min-height: 44px; }
+  .organic-v2 [data-crows] > * { min-height: 44px; }
+
+  /* ---- share row ----
+     A label, three buttons and a status message on one wrapping flex
+     line produced a different ragged shape on every page it appeared. */
+  .share-row { flex-direction: column !important; align-items: stretch !important; gap: 10px !important; }
+  .share-row > span:first-child { text-align: start; }
+  .share-row .share-btn { justify-content: center; }
 }
+
 
 /* =====================================================================
    Organic v2 — scroll-pinned homepage
@@ -382,64 +517,71 @@ select:focus-visible,
 }
 
 /* ---------------------------------------------------------------
-   Mobile (Kinetic mobile pass, ≤900px). Nothing pins, so every
-   section is re-laid-out here rather than scrubbed: the steps hang
-   as beads on a dashed thread, the services zigzag down the page,
-   the gallery is an organic mosaic and the reviews become a
-   swipeable rail with pagination dots.
+   Mobile (≤900px) — the homepage.
+   Nothing pins here, so every section is re-laid-out rather than
+   scrubbed. The pass this replaces centred every element on the page
+   (`[data-pin-inner] { text-align: center }`) and then patched the
+   consequences: centred body paragraphs, centred FAQ answers, centred
+   text inside the form's own inputs, and a spacer pseudo-element to
+   fake the FAQ row back into balance. Everything below is
+   start-aligned instead — the ordinary reading shape for Hebrew — and
+   the only things still centred are display lines short enough to sit
+   on one or two lines.
    --------------------------------------------------------------- */
 @keyframes mrise { from { opacity: 0; transform: translateY(28px) } to { opacity: 1; transform: none } }
 @keyframes mthread { from { transform: scaleY(.02) } to { transform: scaleY(1) } }
 
 @media (max-width: 900px) {
+  /* Pointer-driven and scroll-scrubbed decoration has no counterpart on a
+     touch screen. [data-goo] joins the list: four 110-330px circles under
+     an feGaussianBlur, sized for a 1440px hero, which on a phone landed
+     squarely on top of the headline and dropped the frame rate doing it.
+     motion.js stops driving them too (see blobField). */
   .organic-v2 [data-rail],
   .organic-v2 [data-cursor-dot],
   .organic-v2 [data-hint],
   .organic-v2 [data-path],
   .organic-v2 [data-ghost],
   .organic-v2 [data-spot],
+  .organic-v2 [data-goo],
+  .organic-v2 [data-deco="ring"],
   .organic-v2 [data-carrow] { display: none !important; }
 
+  /* The soft blurred washes stay, but pulled inside the section so the
+     viewport edge can't crop one into a hard-edged half circle. */
+  .organic-v2 [data-deco="blur"] {
+    inset-inline: auto !important;
+    opacity: .5;
+    max-width: 60vw;
+    max-height: 60vw;
+  }
+  .organic-v2 [data-deco="dot"] { transform: scale(.72); }
+  /* The hero's dots live inside the portrait's own wrapper, so they hug it.
+     The about section's is a sibling of the whole column — once that column
+     is full width it detaches and floats at the far edge on its own. */
+  .organic-v2 #about [data-deco="dot"] { display: none !important; }
+
+  /* ---- section shell ---- */
   .organic-v2 [data-pin-sec] { height: auto !important; }
   .organic-v2 [data-pin-inner] {
     position: static !important;
     height: auto !important;
     overflow: visible !important;
     display: block !important;
-    padding: 74px 20px !important;
-    text-align: center !important;
+    padding: var(--m-sec) var(--m-pad) !important;
+    text-align: start !important;
   }
-  .organic-v2 [data-pin-inner] > div { max-width: 440px !important; margin-inline: auto !important; }
+  .organic-v2 [data-pin-inner] > div {
+    max-width: 560px !important;
+    margin-inline: auto !important;
+  }
   .organic-v2 [data-cf],
   .organic-v2 [data-ab-portrait],
   .organic-v2 [data-ab-stats],
   .organic-v2 [data-cform] { opacity: 1 !important; transform: none !important; }
   .organic-v2 [data-card] { z-index: auto !important; }
 
-  /* hero */
-  .organic-v2 #top { padding: 96px 20px 66px !important; min-height: 0 !important; text-align: center !important; }
-  .organic-v2 #top > a[href="#about"] { display: none !important; }
-  .organic-v2 #top h1 { font-size: clamp(37px, 10.8vw, 52px) !important; }
-  .organic-v2 #top p { font-size: 17.5px !important; margin: 22px auto 30px !important; max-width: 32ch !important; }
-  .organic-v2 #top .pill { font-size: 17px !important; padding: 16px 32px !important; }
-  .organic-v2 #top [data-reveal-delay="760"] { justify-content: center !important; }
-  .organic-v2 [data-m="stack"] {
-    flex-direction: column !important;
-    gap: 36px !important;
-    align-items: center !important;
-    text-align: center !important;
-  }
-  .organic-v2 [data-m="stack"] > div { width: 100% !important; flex: 1 1 auto !important; }
-  .organic-v2 [data-m="portrait"] {
-    width: min(74vw, 292px) !important;
-    height: min(88vw, 346px) !important;
-    margin: 0 auto !important;
-  }
-
-  .organic-v2 [data-marquee] { font-size: 25px !important; }
-  .organic-v2 [data-marquee] span { padding: 0 19px !important; }
-
-  /* about + shared headings */
+  /* Section headings, one rule for all of them. */
   .organic-v2 #about h2,
   .organic-v2 #approach h2,
   .organic-v2 #services h2,
@@ -447,119 +589,261 @@ select:focus-visible,
   .organic-v2 #voices h2,
   .organic-v2 #contact h2,
   .organic-v2 #faq h2 {
-    font-size: clamp(28px, 7.6vw, 36px) !important;
-    max-width: none !important;
-    margin-inline: auto !important;
+    font-size: var(--m-h2) !important;
+    line-height: 1.2 !important;
+    max-width: 22ch !important;
+    margin-inline: 0 !important;
+    text-wrap: balance;
   }
-  .organic-v2 #about p,
-  .organic-v2 #contact p:not([data-cf]) { font-size: 17.5px !important; max-width: 34ch !important; margin-inline: auto !important; }
-  .organic-v2 [data-m="stats"] { gap: 20px !important; justify-content: center !important; padding-top: 22px !important; }
-  .organic-v2 [data-m="stats"] > div { flex: 1 1 92px; }
-  .organic-v2 [data-m="stats"] > div > div:first-child { font-size: 31px !important; }
+  .organic-v2 [data-pin-inner] p { font-size: var(--m-lead) !important; }
+  .organic-v2 #approach [data-pin-inner] > div > div:first-child {
+    text-align: start !important;
+    margin-bottom: 30px !important;
+  }
+  .organic-v2 #approach [data-pin-inner] h2 { margin-inline: 0 !important; }
 
-  /* approach — numbered beads hung on a dashed thread */
-  .organic-v2 [data-m="steps"] {
+  /* ---- hero ---- */
+  .organic-v2 #top {
+    padding: 52px var(--m-pad) 52px !important;
+    min-height: 0 !important;
+    text-align: start !important;
+  }
+  /* The subtitle was heavier and larger than the kicker above it, which put
+     the hierarchy the wrong way round. */
+  .organic-v2 #top [data-herokicker] + div {
+    font-size: 14.5px !important;
+    margin-bottom: 18px !important;
+  }
+  .organic-v2 #top h1 {
+    font-size: clamp(36px, 10.4vw, 52px) !important;
+    line-height: 1.08 !important;
+  }
+  .organic-v2 #top p {
+    font-size: var(--m-lead) !important;
+    margin: 20px 0 28px !important;
+    max-width: 34ch !important;
+  }
+  /* Three areas of work, each an unbreakable chip, so a narrow screen
+     wraps at the separators instead of through "במצבי משבר". */
+  .organic-v2 [data-herokicker] {
+    font-size: 12.5px !important;
+    letter-spacing: .1em !important;
+    line-height: 1.7;
+  }
+  /* Primary action full width, secondary link underneath. Side by side
+     they had ~150px each and the pill's own label wrapped. */
+  .organic-v2 [data-heroctas] {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 8px !important;
+  }
+  .organic-v2 [data-heroctas] .pill {
+    text-align: center;
+    font-size: 17px !important;
+    padding: 16px 24px !important;
+  }
+  .organic-v2 [data-heroctas] > a:last-child {
+    justify-self: start;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .organic-v2 [data-m="stack"] {
     flex-direction: column !important;
-    gap: 50px !important;
-    max-width: 344px !important;
+    gap: 34px !important;
+    align-items: stretch !important;
+    text-align: start !important;
+  }
+  .organic-v2 [data-m="stack"] > div { width: 100% !important; flex: 1 1 auto !important; }
+  .organic-v2 [data-m="portrait"] {
+    width: min(72vw, 290px) !important;
+    height: min(86vw, 344px) !important;
     margin: 0 auto !important;
-    padding-top: 6px;
+  }
+
+  .organic-v2 [data-marquee] { font-size: 23px !important; }
+  .organic-v2 [data-marquee] span { padding: 0 16px !important; }
+
+  /* ---- about ----
+     Three columns of 92px turned "יחידים · זוגות · קבוצות" into three
+     stacked words at heading size, each column a different height. One
+     row per fact instead, on hairlines, label and figure sharing a
+     baseline. */
+  .organic-v2 [data-m="stats"] {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    padding-top: 4px !important;
+    border-top: none !important;
+  }
+  .organic-v2 [data-m="stats"] > div {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 13px 0;
+    border-top: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+  }
+  .organic-v2 [data-m="stats"] > div > div:first-child {
+    order: 2;
+    font-size: 20px !important;
+    line-height: 1.25 !important;
+    text-align: end;
+  }
+  .organic-v2 [data-m="stats"] > div > div:last-child {
+    margin-top: 0 !important;
+    font-size: 15px !important;
+    color: color-mix(in srgb, var(--color-text) 66%, transparent) !important;
+    white-space: nowrap;
+  }
+
+  /* ---- approach: a vertical timeline ----
+     The thread runs down the inline-start edge with the numbers sitting
+     on it and each step's copy beside its number. (It used to be a
+     centre thread with centred cards — fine on its own, but it fought
+     the start-aligned everything else.) */
+  .organic-v2 [data-m="steps"] {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 26px !important;
+    max-width: 460px !important;
+    margin: 0 auto !important;
+    padding-top: 8px;
   }
   .organic-v2 [data-m="steps"] > div:first-child {
     position: absolute !important;
     top: 30px !important;
-    bottom: 26px !important;
+    bottom: 30px !important;
     inset-inline: auto !important;
-    inset-inline-start: 50% !important;
+    inset-inline-start: 25px !important;
     width: 2px !important;
     height: auto !important;
     margin-inline-start: -1px;
     transform-origin: top;
     background: repeating-linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--color-accent-2) 55%, transparent) 0 7px,
-      transparent 7px 15px
+      color-mix(in srgb, var(--color-accent-2) 55%, transparent) 0 6px,
+      transparent 6px 13px
     );
   }
   .organic-v2 [data-step] {
-    display: block !important;
+    display: grid !important;
+    grid-template-columns: 52px 1fr;
+    column-gap: 16px;
+    row-gap: 5px;
+    align-items: start;
     flex: 0 0 auto !important;
     position: relative;
-    text-align: center !important;
-    padding: 46px 22px 26px !important;
-    border-radius: 30px;
-    box-shadow: var(--shadow-sm);
+    text-align: start !important;
+    padding: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
   }
-  .organic-v2 [data-step]:nth-child(even) { background: color-mix(in srgb, var(--color-accent-2-100) 76%, #fff); }
-  .organic-v2 [data-step]:nth-child(odd) { background: color-mix(in srgb, var(--color-accent-100) 70%, #fff); }
   .organic-v2 [data-step] [data-num] {
-    position: absolute !important;
-    top: -27px;
-    inset-inline-start: 50% !important;
-    transform: translateX(50%);
-    width: 54px !important;
-    height: 54px !important;
-    font-size: 25px !important;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    position: relative !important;
+    inset: auto !important;
+    width: 52px !important;
+    height: 52px !important;
+    font-size: 23px !important;
     margin: 0 !important;
-    box-shadow: var(--shadow-sm) !important;
+    transform: none !important;
+    /* punches a hole in the dashed thread behind it */
+    box-shadow: 0 0 0 7px var(--color-surface) !important;
   }
-  .organic-v2 [data-step] > div:nth-child(2) { font-size: 20px !important; margin-bottom: 9px !important; }
-  .organic-v2 [data-step] p { font-size: 16.5px !important; max-width: 25ch; margin: 0 auto !important; }
+  .organic-v2 [data-step] > div:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: var(--m-h3) !important;
+    line-height: 1.25 !important;
+    padding-top: 9px;
+    margin-bottom: 0 !important;
+  }
+  .organic-v2 [data-step] p {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: var(--m-body) !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
 
-  /* services — offset cards zigzagging down, icon discs popping out */
+  /* ---- services ----
+     The icon disc used to be absolutely positioned over the card's top
+     edge; on odd-numbered cards it landed on the inline-start of the
+     title and covered the first word outright. The card is a small grid
+     now: disc and title share the first row, the copy spans both
+     columns. No rotation and no 86%-wide zigzag either — the offset
+     cards clipped each other's shadows and made the column look
+     accidental rather than composed. */
   .organic-v2 #services [data-pin-inner] [data-m="grid"] {
     display: flex !important;
     flex-direction: column !important;
     grid-template-columns: none !important;
-    gap: 38px !important;
+    gap: 12px !important;
     max-width: none !important;
     margin: 0 !important;
-    padding-top: 14px;
+    padding-top: 22px;
   }
   .organic-v2 [data-deck] {
     position: relative;
-    width: 86% !important;
-    max-width: 322px;
-    padding: 34px 24px 26px !important;
-    border-radius: 36px !important;
+    display: grid !important;
+    grid-template-columns: 52px 1fr;
+    column-gap: 14px;
+    row-gap: 9px;
+    align-items: center;
+    width: auto !important;
+    max-width: none !important;
+    align-self: stretch !important;
+    padding: 18px 18px 20px !important;
+    border-radius: var(--m-radius) !important;
     box-shadow: var(--shadow-sm) !important;
     text-align: start !important;
     opacity: 1 !important;
-  }
-  .organic-v2 [data-deck]:nth-child(odd) {
-    align-self: flex-start;
-    transform: rotate(-1.1deg);
-    border-end-start-radius: 12px !important;
+    transform: none !important;
   }
   .organic-v2 [data-deck]:nth-child(even) {
-    align-self: flex-end;
-    transform: rotate(1.1deg);
-    border-end-end-radius: 12px !important;
     background-color: color-mix(in srgb, var(--color-accent-2-100) 60%, #fff) !important;
   }
   .organic-v2 [data-deck] > div:first-child {
-    position: absolute;
-    top: -20px;
-    width: 64px !important;
-    height: 64px !important;
-    font-size: 29px !important;
+    grid-column: 1;
+    grid-row: 1;
+    position: static;
+    width: 52px !important;
+    height: 52px !important;
+    font-size: 24px !important;
     margin: 0 !important;
-    box-shadow: 0 0 0 7px var(--color-bg) !important;
+    box-shadow: none !important;
   }
-  .organic-v2 [data-deck]:nth-child(odd) > div:first-child { inset-inline-end: 20px; }
-  .organic-v2 [data-deck]:nth-child(even) > div:first-child { inset-inline-start: 20px; }
-  .organic-v2 [data-deck] > div:nth-child(2) { font-size: 22px !important; margin-bottom: 8px !important; }
-  .organic-v2 [data-deck] p { font-size: 16.5px !important; margin: 0 !important; }
+  .organic-v2 [data-deck] > div:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: var(--m-h3) !important;
+    line-height: 1.24 !important;
+    margin-bottom: 0 !important;
+  }
+  .organic-v2 [data-deck] p {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-size: var(--m-body) !important;
+    margin: 0 !important;
+  }
 
-  /* gallery — the collage flattens into a vertical organic mosaic, copy
-     first, plates below it. No pointer proximity on a touch screen. */
-  .organic-v2 [data-collage] [data-pin-inner] { padding: 74px 20px !important; }
+  /* ---- gallery ----
+     The collage flattens into a mosaic. `order: -1` is the fix that
+     matters: the copy is last in the DOM (it is the still centre of the
+     desktop assembly) and so it used to end up buried under all four
+     photographs — the section opened on an unexplained photo and its
+     heading and CTA arrived only after you had scrolled past them. */
+  .organic-v2 [data-collage] [data-pin-inner] { padding: var(--m-sec) var(--m-pad) !important; }
   .organic-v2 [data-collage] [data-stage] {
     display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 14px !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
     width: auto !important;
-    max-width: 520px !important;
+    max-width: 560px !important;
     height: auto !important;
     margin: 0 auto !important;
   }
@@ -569,27 +853,56 @@ select:focus-visible,
     top: auto !important;
     width: 100% !important;
     height: auto !important;
-    aspect-ratio: 4 / 3;
+    /* uniform radius: the two ellipse plates cropped their photographs
+       to an oval and threw away most of the room in them */
+    border-radius: var(--m-radius) !important;
+    aspect-ratio: 1 / 1;
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
     box-shadow: var(--shadow-sm) !important;
-    padding: 12px !important;
+    padding: 0 !important;
+  }
+  /* first and last plate run full width — a mosaic, not a contact sheet */
+  .organic-v2 [data-plate]:first-of-type,
+  .organic-v2 [data-plate]:last-of-type {
+    grid-column: 1 / -1;
+    aspect-ratio: 4 / 3;
   }
   /* the labels are decoration for a hover that doesn't exist here */
   .organic-v2 [data-plabel] { display: none !important; }
   .organic-v2 [data-stagetext] {
     position: static !important;
+    order: -1;
     grid-column: 1 / -1;
-    padding-bottom: 22px;
+    display: block !important;
+    padding-bottom: 20px;
+    text-align: start !important;
     opacity: 1 !important;
     transform: none !important;
+    pointer-events: auto !important;
   }
+  /* On desktop this copy floats over the plates and needs a ground of its
+     own; here it sits on the section, so the glass panel is just a box. */
+  .organic-v2 [data-stagetext] > div {
+    display: block !important;
+    background: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+  .organic-v2 [data-stagetext] p { margin: 14px 0 22px !important; max-width: 34ch !important; }
 
-  /* voices — a swipeable carousel, one review at a time */
-  .organic-v2 #voices [data-pin-inner] { padding: 74px 0 !important; }
+  /* ---- voices: a swipeable rail, one review at a time ---- */
+  .organic-v2 #voices [data-pin-inner] { padding: var(--m-sec) 0 !important; }
   .organic-v2 #voices [data-pin-inner] > div { padding-inline: 0 !important; }
-  .organic-v2 #voices [data-pin-inner] > div > div:first-child { padding-inline: 20px; margin-bottom: 30px !important; }
+  .organic-v2 #voices [data-vhead] {
+    padding-inline: var(--m-pad);
+    margin-bottom: 24px !important;
+    text-align: start !important;
+  }
   .organic-v2 #voices [data-vhint],
   .organic-v2 #voices [data-vhint2] { display: none !important; }
   .organic-v2 #voices [data-mhint] { display: block !important; }
@@ -600,33 +913,51 @@ select:focus-visible,
     margin: 0 !important;
     padding: 6px 0 4px !important;
     display: flex !important;
-    gap: 14px;
+    gap: 12px;
     overflow-x: auto !important;
     scroll-snap-type: x mandatory;
-    scroll-padding-inline: 20px;
+    scroll-padding-inline: var(--m-pad);
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
   }
   .organic-v2 [data-stack]::-webkit-scrollbar { display: none; }
   .organic-v2 [data-stack]::before,
-  .organic-v2 [data-stack]::after { content: ""; flex: 0 0 20px; }
+  .organic-v2 [data-stack]::after { content: ""; flex: 0 0 var(--m-pad); }
   .organic-v2 [data-card] {
     position: relative !important;
     inset: auto !important;
-    flex: 0 0 82% !important;
+    flex: 0 0 84% !important;
     width: auto !important;
-    max-width: 330px;
+    max-width: 340px;
     scroll-snap-align: center;
-    padding: 30px 24px !important;
-    border-radius: 32px !important;
+    padding: 26px 22px !important;
+    border-radius: 26px !important;
     text-align: start !important;
     display: flex !important;
     flex-direction: column;
   }
-  .organic-v2 [data-card] > div:first-child { font-size: 50px !important; margin-bottom: 16px !important; }
-  .organic-v2 [data-card] p { font-size: 17.5px !important; margin: 0 0 22px !important; flex: 1 1 auto; }
-  .organic-v2 [data-mdots] { display: flex !important; }
-  .organic-v2 [data-mdots] button {
+  .organic-v2 [data-card] > div:first-child { font-size: 44px !important; margin-bottom: 12px !important; }
+  .organic-v2 [data-card] p {
+    font-size: var(--m-lead) !important;
+    margin: 0 0 20px !important;
+    flex: 1 1 auto;
+    -webkit-line-clamp: 10;
+  }
+
+  /* Pagination. Eighteen reviews got eighteen 8px dots crammed into one
+     350px row — useless as an indicator, untappable as a control. Past
+     eight cards motion.js builds a progress bar and an "n / 18" counter
+     in here instead (see mobileDots). */
+  .organic-v2 [data-mdots] {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px !important;
+    padding-inline: var(--m-pad) !important;
+  }
+  .organic-v2 [data-mdots][data-mode="dots"] { justify-content: center; gap: 9px; }
+  .organic-v2 [data-mdots][data-mode="dots"] button {
     width: 8px;
     height: 8px;
     padding: 0;
@@ -636,61 +967,94 @@ select:focus-visible,
     cursor: pointer;
     transition: width .35s cubic-bezier(.2,.7,.2,1), background .35s ease;
   }
-  .organic-v2 [data-mdots] button[data-on="1"] { width: 26px; background: var(--color-accent-300); }
-
-  /* faq + contact */
-  .organic-v2 #faq [data-m="stack"] > div:first-child p { max-width: 30ch; margin: 0 auto !important; }
-  .organic-v2 [data-faq-q] {
-    justify-content: center !important;
-    text-align: center !important;
-    gap: 12px !important;
-    padding: 18px 20px !important;
+  .organic-v2 [data-mdots][data-mode="dots"] button[data-on="1"] { width: 26px; background: var(--color-accent-300); }
+  .organic-v2 [data-mtrack] {
+    flex: 1 1 auto;
+    height: 3px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-bg) 26%, transparent);
+    overflow: hidden;
   }
-  .organic-v2 [data-faq-q]::before { content: ""; flex: 0 0 30px; }
+  .organic-v2 [data-mfill] {
+    height: 100%;
+    inline-size: 8%;
+    border-radius: 999px;
+    background: var(--color-accent-300);
+    transition: inline-size .35s cubic-bezier(.2,.7,.2,1);
+  }
+  .organic-v2 [data-mcount] {
+    flex: none;
+    font-size: 13.5px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-accent-300);
+  }
+
+  /* ---- faq ----
+     The row was centred with a 30px ::before spacer standing in for the
+     toggle on the opposite side, which left every question looking
+     slightly mis-centred and set the answers as centred paragraphs.
+     Question start-aligned, toggle pinned to the inline-end, answer an
+     ordinary paragraph. */
+  .organic-v2 #faq [data-m="stack"] { align-items: stretch !important; }
+  .organic-v2 #faq [data-m="stack"] > div:first-child p { max-width: 34ch; margin: 0 0 14px !important; }
+  .organic-v2 [data-faq-q] {
+    justify-content: space-between !important;
+    text-align: start !important;
+    gap: 14px !important;
+    padding: 16px 18px !important;
+    font-size: 17px !important;
+    line-height: 1.35;
+  }
   .organic-v2 [data-faq-a] p,
   .organic-v2 [role="region"] > p {
-    text-align: center !important;
-    max-width: 31ch;
-    margin: 0 auto !important;
-    padding: 0 20px 20px !important;
-  }
-  .organic-v2 [data-cform] { padding: 26px 22px !important; border-radius: 28px !important; }
-  .organic-v2 .fin { text-align: center !important; }
-  .organic-v2 #contact [data-cbeats] { align-items: center !important; }
-  .organic-v2 #contact [data-cbeats] li { max-width: 34ch; text-align: start; }
-  .organic-v2 #contact [data-cactions] { justify-content: center !important; }
-  .organic-v2 #contact [data-crows] { align-items: center !important; }
-  .organic-v2 #contact [data-ctopics] { justify-content: center !important; }
-  .organic-v2 #top > div [data-reveal] a[href="/about"] {
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    padding-bottom: 0 !important;
+    text-align: start !important;
+    max-width: none;
+    margin: 0 !important;
+    padding: 0 18px 18px !important;
+    font-size: var(--m-body) !important;
   }
 
-  /* the action bar carries the call CTA, so the FAB stack keeps only
-     WhatsApp — lifted clear of the bar */
-  .org-fab-call { display: none !important; }
-  .org-fabs {
-    bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important;
-    inset-inline-end: 14px !important;
+  /* ---- contact ---- */
+  .organic-v2 [data-cform] { padding: 22px 18px !important; border-radius: var(--m-radius) !important; }
+  /* Centred text inside a text field is the wrong affordance twice over:
+     the placeholder reads as a label, and what you type drifts sideways
+     as you type it. */
+  .organic-v2 .fin { text-align: start !important; }
+  .organic-v2 #contact [data-cbeats] { align-items: stretch !important; }
+  .organic-v2 #contact [data-cbeats] li { max-width: none; text-align: start; }
+  .organic-v2 #contact [data-cactions] { flex-direction: column !important; }
+  .organic-v2 #contact [data-cactions] > a {
+    justify-content: center;
+    min-height: 52px;
+    font-size: 16.5px !important;
   }
+  .organic-v2 #contact [data-crows] { align-items: stretch !important; }
+  .organic-v2 #contact [data-ctopics] { justify-content: flex-start !important; }
+  /* the send-disclaimer under the button was the last centred paragraph on
+     the page */
+  .organic-v2 [data-cform] form > p { text-align: start !important; }
+  /* The last section sits above the action bar, so its own bottom padding
+     has to clear it, the way the footer's does below. */
+  .organic-v2 #contact [data-pin-inner] { padding-bottom: calc(var(--m-sec) + 10px) !important; }
 
-  /* footer: centred, and its bottom padding clears the fixed action bar */
-  footer {
-    padding: 30px 20px calc(100px + env(safe-area-inset-bottom, 0px)) !important;
-    text-align: center !important;
+  /* ---- footer ----
+     Start-aligned, to match the rest of the page, and its bottom padding
+     clears the fixed action bar. */
+  footer.org-section {
+    padding: 34px var(--m-pad) calc(var(--m-bar) + 26px) !important;
+    text-align: start !important;
   }
   footer > div:first-of-type {
     flex-direction: column;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 16px !important;
+    align-items: flex-start !important;
+    gap: 20px !important;
   }
-  footer > div:first-of-type > nav { justify-content: center !important; gap: 2px 18px !important; }
-  footer a { min-height: 40px; display: flex; align-items: center; justify-content: center; }
-  footer > div:last-of-type { flex-direction: column; align-items: center; justify-content: center !important; gap: 6px !important; }
+  footer > div:first-of-type > nav { justify-content: flex-start !important; gap: 4px 20px !important; }
+  footer a { min-height: 38px; display: flex; align-items: center; }
+  footer > div:last-of-type { flex-direction: column; align-items: flex-start; gap: 6px !important; }
 }
+
 
 /* Scroll-driven reveals where the browser supports them; a plain
    "already visible" fallback everywhere else. */

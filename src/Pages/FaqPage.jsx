@@ -38,7 +38,7 @@ function FaqPage() {
 
       {/* ============ HEADER ============ */}
       <section
-        className="org-section"
+        className="org-section org-pagehead"
         style={{
           position: "relative",
           padding: "84px 54px 60px",

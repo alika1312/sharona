@@ -59,18 +59,22 @@ export const ArticlePage = () => {
       </Head>
 
       {/* ============ HERO ============ */}
-      <section className="org-section" style={{ position: "relative", padding: "0 54px", background: "var(--color-bg)" }}>
+      {/* The title used to be laid over the photo at a fixed 40px inside a
+          fixed 380px frame. On a phone a three-line Hebrew headline filled
+          the whole frame and pressed against both edges, so the type now
+          scales with the viewport and the frame grows with it. */}
+      <section className="org-section art-hero" style={{ position: "relative", padding: "0 54px", background: "var(--color-bg)" }}>
         <div style={{ position: "relative", maxWidth: 980, margin: "0 auto" }}>
-          <div style={{ position: "relative", height: 380, borderRadius: "0 0 34px 34px", overflow: "hidden", boxShadow: "var(--shadow-md)" }}>
+          <div className="art-hero-frame" style={{ position: "relative", height: 380, borderRadius: "0 0 34px 34px", overflow: "hidden", boxShadow: "var(--shadow-md)" }}>
             <img src={image} alt={title} fetchpriority="high" decoding="async" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(39,46,27,.82),rgba(39,46,27,.12))" }} />
-            <div style={{ position: "absolute", insetInlineStart: 0, insetInlineEnd: 0, bottom: 0, padding: "34px 40px" }}>
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(39,46,27,.86),rgba(39,46,27,.42) 52%,rgba(39,46,27,.1))" }} />
+            <div className="art-hero-copy" style={{ position: "absolute", insetInlineStart: 0, insetInlineEnd: 0, bottom: 0, padding: "34px 40px" }}>
               {article.readTime && (
                 <div style={{ fontSize: 14, color: "var(--color-accent-300)", marginBottom: 10, fontWeight: 600 }}>
                   🕒 {article.readTime}
                 </div>
               )}
-              <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 1.2, margin: 0, color: "#fff" }}>
+              <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: "clamp(26px,5.4vw,40px)", lineHeight: 1.22, margin: 0, color: "#fff", textWrap: "balance" }}>
                 {title}
               </h1>
             </div>
@@ -111,7 +115,7 @@ export const ArticlePage = () => {
           </div>
 
           <div style={{ marginTop: 34, display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
-            <Link to="/articles" style={{ fontWeight: 700, fontSize: 16, color: "var(--color-accent-2-700)" }}>
+            <Link to="/articles" className="ulink" style={{ fontWeight: 700, fontSize: 16, color: "var(--color-accent-2-700)" }}>
               → חזרה לכל המאמרים
             </Link>
             <Link to="/#contact" className="pill-cta" style={{ marginInlineStart: "auto", background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 16, padding: "13px 28px", borderRadius: 999, boxShadow: "var(--shadow-sm)" }}>

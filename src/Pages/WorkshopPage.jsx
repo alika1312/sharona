@@ -16,14 +16,14 @@ const OrgWorkshopCard = ({ workshop, delay }) => {
       data-reveal
       data-reveal-delay={delay}
       className="svc"
-      style={{ background: "var(--color-surface)", borderRadius: 28, overflow: "hidden", boxShadow: "var(--shadow-sm)", display: "flex", flexDirection: "column", textAlign: "right" }}
+      style={{ background: "var(--color-surface)", borderRadius: 28, overflow: "hidden", boxShadow: "var(--shadow-sm)", display: "flex", flexDirection: "column", textAlign: "start" }}
     >
       {workshop.image && (
-        <div style={{ height: 200, overflow: "hidden" }}>
+        <div className="card-media" style={{ height: 200, overflow: "hidden" }}>
           <img src={imgSrc(workshop.image)} alt={workshop.title.trim()} loading="lazy" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
       )}
-      <div style={{ padding: 30, display: "flex", flexDirection: "column", flex: 1 }}>
+      <div className="card-pad" style={{ padding: 30, display: "flex", flexDirection: "column", flex: 1 }}>
         <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 23, lineHeight: 1.3, margin: "0 0 14px", color: "var(--color-accent-2-800)" }}>
           {workshop.title.trim()}
         </h3>
@@ -90,7 +90,7 @@ const WorkshopsPage = () => {
 
       {/* ============ HEADER ============ */}
       <section
-        className="org-section"
+        className="org-section org-pagehead"
         style={{
           position: "relative",
           padding: "84px 54px 70px",
