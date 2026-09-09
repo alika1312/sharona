@@ -4,9 +4,10 @@
 //
 // NOTE: the `description` field inside articles.js is NOT used — in the existing
 // data it is duplicated across articles (#1/#4 and #5/#6 share one string) and
-// two of them describe a different topic than the article. The first paragraph of
-// the article itself is the only truthful, per-article summary available, so it is
-// what we trim here. Nothing is invented.
+// two of them describe a different topic than the article. `abstract` is the
+// per-article summary Sharona wrote herself (it also renders above the article
+// body), so it is preferred; where it is missing we fall back to trimming the
+// article's own first paragraph. Nothing is invented.
 
 const BRAND = "שרונה קדושאי בר-נס";
 const MAX_DESC = 155;
@@ -27,8 +28,10 @@ export function trimToWord(text, max = MAX_DESC) {
 }
 
 export function articleDescription(article) {
-  const first = normalize(article.content?.[0]?.sectionFirstText || "");
-  return first ? trimToWord(first) : `מאמר מאת ${BRAND} בנושא ${normalize(article.title)}.`;
+  const source =
+    normalize(article.abstract || "") ||
+    normalize(article.content?.[0]?.sectionFirstText || "");
+  return source ? trimToWord(source) : `מאמר מאת ${BRAND} בנושא ${normalize(article.title)}.`;
 }
 
 export function articlePageTitle(article) {

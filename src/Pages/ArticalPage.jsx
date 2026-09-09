@@ -20,7 +20,7 @@ export const ArticlePage = () => {
     );
   }
 
-  const { title, image, content } = article;
+  const { title, image, content, abstract } = article;
 
   // First paragraph, trimmed on a word boundary (see articleMeta.js for why).
   const description = articleDescription(article);
@@ -85,6 +85,23 @@ export const ArticlePage = () => {
       {/* ============ BODY ============ */}
       <section className="org-section" style={{ padding: "70px 54px 100px", background: "var(--color-bg)" }}>
         <article style={{ maxWidth: 760, margin: "0 auto" }}>
+          {/* Sharona's own summary of the article, set above the body. */}
+          {abstract && (
+            <p
+              data-reveal
+              style={{
+                fontSize: 19.5,
+                lineHeight: 1.75,
+                margin: "0 0 44px",
+                paddingInlineStart: 22,
+                borderInlineStart: "3px solid var(--color-accent-2)",
+                color: muted(76),
+                fontWeight: 500,
+              }}
+            >
+              {abstract}
+            </p>
+          )}
           {content.map((section, index) => (
             <div key={index} data-reveal data-reveal-delay={Math.min(index, 3) * 90} style={{ marginBottom: 40 }}>
               {section.sectionTitle && (
