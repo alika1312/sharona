@@ -11,6 +11,24 @@ export function useReveal() {
     const root = rootRef.current;
     if (!root) return;
     root.classList.add("reveal-on");
+    // Everything scheduled below is tracked so leaving the page cancels it,
+    // instead of letting it fire against a detached tree.
+    const timers = new Set();
+    const frames = new Set();
+    const later = (fn, ms) => {
+      const t = setTimeout(() => {
+        timers.delete(t);
+        fn();
+      }, ms);
+      timers.add(t);
+    };
+    const nextFrame = (fn) => {
+      const f = requestAnimationFrame((t) => {
+        frames.delete(f);
+        fn(t);
+      });
+      frames.add(f);
+    };
 
     const animateCount = (el) => {
       const target = +el.dataset.count;
@@ -21,9 +39,9 @@ export function useReveal() {
         const p = Math.min((t - t0) / dur, 1);
         const e = 1 - Math.pow(1 - p, 3);
         el.textContent = Math.round(target * e) + suf;
-        if (p < 1) requestAnimationFrame(step);
+        if (p < 1) nextFrame(step);
       };
-      requestAnimationFrame(step);
+      nextFrame(step);
     };
 
     const items = [...root.querySelectorAll("[data-reveal], [data-count]")];
@@ -34,7 +52,7 @@ export function useReveal() {
           const el = e.target;
           if (el.hasAttribute("data-reveal")) {
             const d = +(el.dataset.revealDelay || 0);
-            setTimeout(() => el.classList.add("is-in"), d);
+            later(() => el.classList.add("is-in"), d);
           }
           if (el.hasAttribute("data-count")) animateCount(el);
           io.unobserve(el);
@@ -48,11 +66,12 @@ export function useReveal() {
       el,
       speed: +el.dataset.parallax,
     }));
-    let raf = null;
+    let pending = false;
     const onScroll = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = null;
+      if (pending) return;
+      pending = true;
+      nextFrame(() => {
+        pending = false;
         const vh = window.innerHeight;
         plx.forEach(({ el, speed }) => {
           const r = el.getBoundingClientRect();
@@ -67,6 +86,8 @@ export function useReveal() {
     return () => {
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
+      timers.forEach(clearTimeout);
+      frames.forEach(cancelAnimationFrame);
     };
   }, []);
 

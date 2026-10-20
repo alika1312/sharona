@@ -19,6 +19,9 @@ export const Header = () => {
   // Written straight to the DOM: as state it re-rendered the whole header
   // (nav, drawer, action bar) on every scroll event.
   const progressRef = useRef(null);
+  const toggleRef = useRef(null);
+  const panelRef = useRef(null);
+  const closeRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -83,10 +86,34 @@ export const Header = () => {
     };
   }, [menuOpen]);
 
-  // Escape closes it, as a dialog-ish overlay should.
+  // While open the drawer behaves like a dialog: focus moves into it, Tab
+  // stays inside it, Escape closes it, and closing hands focus back to the
+  // toggle (otherwise it was left on the now-hidden panel and dropped to
+  // <body>, or still sitting on the page behind the backdrop).
   useEffect(() => {
-    if (!menuOpen) return;
-    const onKey = (e) => e.key === "Escape" && setMenuOpen(false);
+    const panel = panelRef.current;
+    if (!menuOpen) {
+      if (panel?.contains(document.activeElement)) toggleRef.current?.focus();
+      return;
+    }
+    closeRef.current?.focus();
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        return;
+      }
+      if (e.key !== "Tab" || !panel) return;
+      const items = [...panel.querySelectorAll("a[href],button")];
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
@@ -202,6 +229,7 @@ export const Header = () => {
             aria-label={menuOpen ? "סגירת תפריט" : "פתיחת תפריט"}
             aria-expanded={menuOpen}
             aria-controls="org-drawer"
+            ref={toggleRef}
             data-navtoggle
             style={{
               width: 46,
@@ -244,6 +272,7 @@ export const Header = () => {
         />
         <nav
           aria-label="ניווט נייד"
+          ref={panelRef}
           data-drawer-p
           style={{
             position: "absolute",
@@ -271,6 +300,7 @@ export const Header = () => {
               שרונה בר-נס
             </span>
             <button
+              ref={closeRef}
               data-drawer-x
               onClick={() => setMenuOpen(false)}
               aria-label="סגירת תפריט"

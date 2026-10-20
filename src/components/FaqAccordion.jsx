@@ -1,15 +1,27 @@
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { muted } from "../design/ui";
 
 // Accessible disclosure item: <button aria-expanded aria-controls> + labelled panel.
 // The panel stays in the DOM (hidden) so its text is present in the prerendered
-// HTML for crawlers and in-page search.
+// HTML for crawlers. Once mounted, a closed panel becomes hidden="until-found",
+// so the browser's find-in-page can reach it and open it on a match (React 18
+// can only render a boolean `hidden`, hence the effect).
 function FaqItem({ q, a, todo, headingLevel = 3 }) {
   const H = `h${headingLevel}`;
   const [open, setOpen] = useState(false);
   const id = useId();
   const panelId = `faq-panel-${id}`;
   const btnId = `faq-btn-${id}`;
+  const panelRef = useRef(null);
+
+  useEffect(() => {
+    const el = panelRef.current;
+    if (!el || !("onbeforematch" in el)) return;
+    if (!open) el.setAttribute("hidden", "until-found");
+    const onMatch = () => setOpen(true);
+    el.addEventListener("beforematch", onMatch);
+    return () => el.removeEventListener("beforematch", onMatch);
+  }, [open]);
 
   return (
     <div
@@ -62,6 +74,7 @@ function FaqItem({ q, a, todo, headingLevel = 3 }) {
         </button>
       </H>
       <div
+        ref={panelRef}
         id={panelId}
         role="region"
         aria-labelledby={btnId}

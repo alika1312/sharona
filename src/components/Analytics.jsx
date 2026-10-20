@@ -23,7 +23,9 @@ const bootstrap = [
 ].join("");
 
 export default function Analytics() {
-  const { pathname, search, hash } = useLocation();
+  // Not `hash`: jumping to #contact is a scroll within the page, not a new
+  // page view (GA4's own history tracking ignores hash changes too).
+  const { pathname, search } = useLocation();
   const firstRender = useRef(true);
 
   useEffect(() => {
@@ -34,11 +36,11 @@ export default function Analytics() {
     }
     // Defer one tick so react-helmet-async has swapped <title> for the new route.
     const t = setTimeout(
-      () => trackPageView(`${pathname}${search}${hash}`, document.title),
+      () => trackPageView(`${pathname}${search}`, document.title),
       0
     );
     return () => clearTimeout(t);
-  }, [pathname, search, hash]);
+  }, [pathname, search]);
 
   return (
     <Head>

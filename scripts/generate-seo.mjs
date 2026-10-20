@@ -63,16 +63,14 @@ const articlePages = articles.map((a) => ({
 }));
 
 const allPages = [...staticPages, ...articlePages];
-const today = new Date().toISOString().slice(0, 10);
 
 // ---- sitemap.xml ----
+// No <lastmod>: stamping every URL with the build date claimed every page
+// changed on every deploy, which teaches search engines to ignore the field.
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${allPages
-  .map(
-    (p) =>
-      `  <url>\n    <loc>${BASE}${p.path}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`
-  )
+  .map((p) => `  <url>\n    <loc>${BASE}${p.path}</loc>\n  </url>`)
   .join("\n")}
 </urlset>
 `;

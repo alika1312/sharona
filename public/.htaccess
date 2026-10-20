@@ -3,3 +3,10 @@
 # Anything else is a genuine 404: serve the prerendered 404 page with a 404
 # status, rather than the homepage with a 200 (a "soft 404" to search engines).
 ErrorDocument 404 /404/index.html
+
+# Old (typo'd) addresses: permanent redirects, so search engines move their
+# ranking to the real page and visitors without JS still land somewhere. The
+# client-side <Redirect> stubs in src/routes.jsx remain as a fallback.
+RedirectMatch 301 ^/home/?$ /
+RedirectMatch 301 ^/workshop/?$ /workshops/
+RedirectMatch 301 ^/articals?/?$ /articles/

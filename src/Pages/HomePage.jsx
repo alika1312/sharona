@@ -658,8 +658,8 @@ function HomePage() {
               </div>
 
               <div data-crows style={{ display: "flex", flexDirection: "column", gap: 11, fontSize: 16 }}>
-                <ContactRow icon="✉" href={`mailto:${EMAIL}`} compact>{EMAIL}</ContactRow>
-                <ContactRow icon="⌂" compact>מבשרת ציון · צור הדסה · אונליין מכל הארץ</ContactRow>
+                <ContactRow icon="✉" href={`mailto:${EMAIL}`}>{EMAIL}</ContactRow>
+                <ContactRow icon="⌂">מבשרת ציון · צור הדסה · אונליין מכל הארץ</ContactRow>
               </div>
             </div>
 
@@ -724,19 +724,18 @@ function Stat({ value, label, small }) {
   );
 }
 
-function ContactRow({ icon, href, children, onClick, compact }) {
-  const d = compact ? 34 : 42;
+function ContactRow({ icon, href, children }) {
   const inner = (
     <>
-      <span aria-hidden="true" style={{ width: d, height: d, borderRadius: "50%", background: "var(--color-accent-2-200)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none", fontSize: compact ? 14 : undefined }}>
+      <span aria-hidden="true" style={{ width: 34, height: 34, borderRadius: "50%", background: "var(--color-accent-2-200)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none", fontSize: 14 }}>
         {icon}
       </span>
       <span>{children}</span>
     </>
   );
-  const style = { display: "flex", alignItems: "center", gap: compact ? 12 : 14, color: "var(--color-text)" };
+  const style = { display: "flex", alignItems: "center", gap: 12, color: "var(--color-text)" };
   return href ? (
-    <a href={href} onClick={onClick} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" style={style}>
+    <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" style={style}>
       {inner}
     </a>
   ) : (
@@ -925,9 +924,9 @@ function ContactForm({ motionRef }) {
             ))}
           </div>
         </div>
-        <input data-cf className="fin" type="text" name="name" aria-label="שם מלא" placeholder="שם מלא" required />
-        <input data-cf className="fin" type="tel" name="phone" aria-label="טלפון" placeholder="טלפון" required />
-        <input data-cf className="fin" type="email" name="email" aria-label="אימייל" placeholder="אימייל" />
+        <input data-cf className="fin" type="text" name="name" autoComplete="name" aria-label="שם מלא" placeholder="שם מלא" required />
+        <input data-cf className="fin" type="tel" name="phone" autoComplete="tel" inputMode="tel" aria-label="טלפון" placeholder="טלפון" required />
+        <input data-cf className="fin" type="email" name="email" autoComplete="email" aria-label="אימייל" placeholder="אימייל" />
         <textarea ref={msgRef} data-cf className="fin" name="message" rows={3} aria-label="הודעה" placeholder="כמה מילים על מה שמביא אתכם (לא חובה)" style={{ resize: "vertical" }} />
         <button data-cf type="submit" disabled={status === "sending"} className="pill" style={{ position: "relative", background: status === "sending" ? "var(--color-accent-2-600)" : "var(--color-accent-2)", color: "var(--color-bg)", border: "none", cursor: status === "sending" ? "progress" : "pointer", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 18, padding: 17, borderRadius: 999, boxShadow: "var(--shadow-md)", marginTop: 4 }}>
           {status === "sending" ? "שולח..." : "שליחה ←"}
