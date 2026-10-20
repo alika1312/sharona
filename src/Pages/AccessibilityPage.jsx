@@ -1,10 +1,7 @@
 import { Head } from "vite-react-ssg";
 import { useReveal } from "../hooks/useReveal";
 import { kicker, muted } from "../design/ui";
-
-const TEL = "tel:+972587250990";
-const EMAIL = "sharonabar5@gmail.com";
-const WHATSAPP = "https://wa.me/972587250990";
+import { EMAIL, PHONE_LABEL, SITE, TEL, WHATSAPP } from "../information/contact";
 
 const measures = [
   "מבנה סמנטי ותקין (כותרות, אזורי תוכן וניווט) המותאם לקוראי מסך",
@@ -40,11 +37,11 @@ function AccessibilityPage() {
           name="description"
           content="הצהרת הנגישות של אתר שרונה קדושאי בר-נס: המחויבות לנגישות, ההתאמות שבוצעו לפי תקן ישראלי 5568 (WCAG 2.0 AA) ודרכי פנייה לדיווח על בעיות נגישות."
         />
-        <link rel="canonical" href="https://sharona-bar-nes.com/accessibility/" />
+        <link rel="canonical" href={`${SITE}/accessibility/`} />
         <meta property="og:title" content="הצהרת נגישות | שרונה קדושאי בר-נס" />
         <meta property="og:description" content="המחויבות לנגישות, ההתאמות שבוצעו ודרכי פנייה לדיווח." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://sharona-bar-nes.com/accessibility/" />
+        <meta property="og:url" content={`${SITE}/accessibility/`} />
       </Head>
 
       {/* ============ HEADER ============ */}
@@ -101,7 +98,7 @@ function AccessibilityPage() {
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
               <li>
                 <strong style={{ color: "var(--color-accent-2-800)" }}>טלפון: </strong>
-                <a href={TEL} style={{ color: "var(--color-accent-2-700)", fontWeight: 600 }}>058-725-0990</a>
+                <a href={TEL} style={{ color: "var(--color-accent-2-700)", fontWeight: 600 }}>{PHONE_LABEL}</a>
               </li>
               <li>
                 <strong style={{ color: "var(--color-accent-2-800)" }}>דוא״ל: </strong>

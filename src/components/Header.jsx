@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { trackClickToCall } from "../lib/analytics";
+import { PHONE_LABEL, TEL } from "../information/contact";
 
 const links = [
   { label: "אודות", to: "/about" },
@@ -10,15 +11,14 @@ const links = [
   { label: "שאלות נפוצות", to: "/faq" },
 ];
 
-const TEL = "tel:+972587250990";
-const PHONE_LABEL = "058-725-0990";
-
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [atContact, setAtContact] = useState(false);
-  const [progress, setProgress] = useState(0);
+  // Written straight to the DOM: as state it re-rendered the whole header
+  // (nav, drawer, action bar) on every scroll event.
+  const progressRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,7 +31,8 @@ export const Header = () => {
       const y = window.scrollY;
       setScrolled(y > 30);
       const h = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(h > 0 ? y / h : 0);
+      if (progressRef.current)
+        progressRef.current.style.width = `${h > 0 ? (y / h) * 100 : 0}%`;
 
       if (y < 140) {
         ref = y;
@@ -96,17 +97,17 @@ export const Header = () => {
   // "צרו קשר" — scroll to the contact section on the homepage.
   const handleContact = () => {
     setMenuOpen(false);
-    const scrollToContact = () =>
-      document
-        .getElementById("contact")
-        ?.scrollIntoView({ behavior: "smooth" });
     if (location.pathname === "/") {
       // one tick, so the drawer's scroll lock is released first — scrolling a
       // locked document is a no-op
-      setTimeout(scrollToContact, 0);
+      setTimeout(
+        () => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }),
+        0
+      );
     } else {
-      navigate("/");
-      setTimeout(scrollToContact, 350);
+      // <ScrollRestoration> (Layout) scrolls to the hash once the homepage has
+      // rendered, so there's no delay to guess.
+      navigate("/#contact");
     }
   };
 
@@ -142,9 +143,10 @@ export const Header = () => {
           }}
         >
           <div
+            ref={progressRef}
             style={{
               height: "100%",
-              width: `${progress * 100}%`,
+              width: 0,
               background:
                 "linear-gradient(90deg,var(--color-accent-2),var(--color-accent))",
             }}

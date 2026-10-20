@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 import { articles } from "../information/articles";
+import { trimToWord } from "../information/articleMeta";
 import { useReveal } from "../hooks/useReveal";
 import { kicker, muted } from "../design/ui";
+import { SITE } from "../information/contact";
 
-const preview = (article) => {
-  const first = article.content?.[0]?.sectionFirstText || "";
-  return first.trim().slice(0, 150);
-};
+// Cut on a word boundary (a bare slice split Hebrew words in half), with the
+// ellipsis only when something was actually cut.
+const preview = (article) => trimToWord(article.content?.[0]?.sectionFirstText || "", 150);
 
 export const ArticlesPage = () => {
   const rootRef = useReveal();
@@ -21,14 +22,14 @@ export const ArticlesPage = () => {
           name="description"
           content="מאמרים מאת שרונה קדושאי בר-נס בנושאי התמודדות עם משבר וטראומה, טראומות ילדות והשפעתן על הזוגיות, חירות פנימית, ייעוץ קריירה, גירושין בכבוד הדדי ואבל ואובדן."
         />
-        <link rel="canonical" href="https://sharona-bar-nes.com/articles/" />
+        <link rel="canonical" href={`${SITE}/articles/`} />
         <meta property="og:title" content="מאמרים – שרונה קדושאי בר-נס" />
         <meta
           property="og:description"
           content="מאמרים בנושאי משבר, טראומה, זוגיות, גירושין, אובדן וצמיחה אישית."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://sharona-bar-nes.com/articles/" />
+        <meta property="og:url" content={`${SITE}/articles/`} />
       </Head>
 
       {/* ============ HEADER ============ */}
@@ -74,7 +75,7 @@ export const ArticlesPage = () => {
                     {article.title}
                   </h2>
                   <p style={{ margin: "0 0 20px", fontSize: 16.5, lineHeight: 1.66, color: muted(70), flex: 1 }}>
-                    {preview(article)}…
+                    {preview(article)}
                   </p>
                   <span style={{ fontWeight: 700, fontSize: 16, color: "var(--color-accent-2-700)" }}>קרא/י עוד ←</span>
                 </div>

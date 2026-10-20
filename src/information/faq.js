@@ -10,6 +10,8 @@
 // Single source of truth for /faq (full list + FAQPage JSON-LD) and for the
 // short teaser on the homepage.
 
+import { SITE } from "./contact.js";
+
 // Ordered — this is the reading order on /faq.
 export const faqCategories = [
   "כללי",
@@ -27,19 +29,16 @@ export const faqs = [
     category: "כללי",
     q: "באילו תחומים את מטפלת?",
     a: "אני עוסקת בטיפול רגשי, בייעוץ ובטיפול זוגי, בהדרכת הורים, בטיפול במצבי משבר, בחרדה ובטראומה, וכן בייעוץ תעסוקתי וקריירה. בנוסף אני מלווה ישראלים המתגוררים בחו״ל במפגשים אונליין בעברית, ומעבירה סדנאות ליחידים, זוגות, קבוצות וארגונים.",
-    teaser: true,
   },
   {
     category: "כללי",
     q: "היכן מתקיימים המפגשים?",
     a: "המפגשים מתקיימים בקליניקה שלי בצור הדסה, וכן באזור ירושלים, הרי ירושלים, מבשרת ציון, בית שמש וגוש עציון. בימים מסוימים אני מגיעה לפגישות וייעוצים באזור המרכז, בתיאום מראש. כמו כן ניתן לקיים מפגשים אונליין מכל הארץ ומחוץ לישראל.",
-    teaser: true,
   },
   {
     category: "כללי",
     q: "האם אפשר לקבל טיפול אונליין?",
     a: "כן. אני מקיימת פגישות אונליין כבר למעלה משבע שנים, עם מטופלים מרחבי הארץ ומחוץ לישראל, וניתן גם לשלב מפגשים פרונטליים ואונליין באותו תהליך.",
-    teaser: true,
   },
   {
     category: "כללי",
@@ -210,7 +209,7 @@ export const faqsByCategory = faqCategories
 export const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  "@id": "https://sharona-bar-nes.com/faq/#faq",
+  "@id": `${SITE}/faq/#faq`,
   inLanguage: "he",
   mainEntity: faqs
     .filter((f) => !f.todo)

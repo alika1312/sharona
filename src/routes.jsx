@@ -4,10 +4,11 @@ import HomePage from "./Pages/HomePage";
 import AboutPage from "./Pages/AboutPage";
 import { ArticlesPage } from "./Pages/ArticlesPage";
 import { ExperiencesPage } from "./Pages/ExperiencesPage";
-import { ArticlePage } from "./Pages/ArticalPage";
-import WorkshopsPage from "./Pages/WorkshopPage";
+import { ArticlePage } from "./Pages/ArticlePage";
+import WorkshopsPage from "./Pages/WorkshopsPage";
 import FaqPage from "./Pages/FaqPage";
 import AccessibilityPage from "./Pages/AccessibilityPage";
+import NotFoundPage from "./Pages/NotFoundPage";
 import { articles } from "./information/articles";
 
 // react-router data routes, consumed by vite-react-ssg for static generation.
@@ -35,6 +36,10 @@ export const routes = [
       { path: "workshop", element: <Redirect to="/workshops" /> },
       { path: "articals", element: <Redirect to="/articles" /> },
       { path: "artical", element: <Redirect to="/articles" /> },
+      // vite-react-ssg skips "*" routes, so the 404 page is also given a real
+      // path to be prerendered at (dist/404/index.html, the Apache ErrorDocument).
+      { path: "404", element: <NotFoundPage /> },
+      { path: "*", element: <NotFoundPage /> },
     ],
   },
 ];

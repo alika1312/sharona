@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve, join } from "node:path";
 import { JSDOM } from "jsdom";
+import { faqs } from "../src/information/faq.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const dist = resolve(__dirname, "..", "dist");
@@ -116,25 +117,30 @@ for (const [label, file] of contentPages) {
   check(d.querySelector('img[fetchpriority="high"]'), "home: hero image not prioritized");
 }
 
-// /faq: all 8 Q&As on the page, FAQPage schema with only the 6 grounded answers,
-// schema values actually present in the rendered text, share control, TODO flags.
+// /faq: every Q&A on the page, FAQPage schema with only the grounded (non-TODO)
+// answers, schema values actually present in the rendered text, share control,
+// TODO flags. Counts come from the data file so adding a question can't break this.
+const grounded = faqs.filter((f) => !f.todo);
 {
   const d = await dom("faq/index.html");
   // scoped to <main> so the header's mobile-menu toggle isn't counted
   const btns = [...d.querySelectorAll("main button[aria-expanded]")];
-  check(btns.length === 8, `faq: expected 8 FAQ toggles, found ${btns.length}`);
+  check(btns.length === faqs.length, `faq: expected ${faqs.length} FAQ toggles, found ${btns.length}`);
   for (const b of btns) {
     const panel = d.getElementById(b.getAttribute("aria-controls") || "");
     check(panel, `faq: aria-controls target missing for "${flat(b.textContent).slice(0, 24)}"`);
-    // /faq questions are the top-level sections under the page h1 → h2 (no skipped level)
-    check(b.closest("h2"), `faq: question "${flat(b.textContent).slice(0, 24)}" not inside an h2`);
+    // /faq: categories are the h2s, their questions the h3s (no skipped level)
+    check(b.closest("h3"), `faq: question "${flat(b.textContent).slice(0, 24)}" not inside an h3`);
   }
 
   const faqLd = [...d.querySelectorAll('script[type="application/ld+json"]')]
     .map((s) => JSON.parse(s.textContent))
     .find((j) => j["@type"] === "FAQPage");
   check(faqLd, "faq: FAQPage schema missing");
-  check(faqLd?.mainEntity?.length === 6, `faq: FAQPage schema should have 6 Q&As, found ${faqLd?.mainEntity?.length}`);
+  check(
+    faqLd?.mainEntity?.length === grounded.length,
+    `faq: FAQPage schema should have ${grounded.length} Q&As, found ${faqLd?.mainEntity?.length}`
+  );
 
   // schema must not drift from what the page actually says
   const text = flat(d.body.textContent);
@@ -147,7 +153,7 @@ for (const [label, file] of contentPages) {
   }
   // the TODO answers must NOT be asserted in schema
   check(
-    !(faqLd?.mainEntity || []).some((q) => /כמה עולה|כמה זמן נמשך/.test(q.name)),
+    !(faqLd?.mainEntity || []).some((q) => faqs.some((f) => f.todo && f.q === q.name)),
     "faq: a TODO question leaked into FAQPage schema"
   );
   check(/להשלמה על ידי שרונה/.test(text), "faq: TODO flag not visible on page");

@@ -39,10 +39,7 @@ export const Footer = () => {
           }}
         >
           <div style={{ maxWidth: "38ch" }}>
-            {/* On the homepage motion.js splits this into letters that
-                scatter away from the cursor; elsewhere it's plain text. */}
             <div
-              data-footer-name
               style={{
                 position: "relative",
                 fontFamily: "var(--font-heading)",
@@ -100,7 +97,9 @@ export const Footer = () => {
             color: "color-mix(in srgb, #fff 46%, transparent)",
           }}
         >
-          <span>
+          {/* The year is baked in at build time; after New Year the client's
+              clock disagrees until the next build, which is fine to ignore. */}
+          <span suppressHydrationWarning>
             © {new Date().getFullYear()} שרונה קדושאי בר-נס. כל הזכויות שמורות.
           </span>
           <span>האתר פותח על ידי אליקא נירקיס</span>

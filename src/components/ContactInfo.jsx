@@ -1,10 +1,8 @@
 import { trackWhatsappClick, trackClickToCall } from "../lib/analytics";
+import { TEL, whatsappWith } from "../information/contact";
 
 // Always-visible floating quick-contact: WhatsApp (primary) + one-tap call.
-const WHATSAPP =
-  "https://wa.me/972587250990?text=" +
-  encodeURIComponent("היי שרונה, הגעתי דרך האתר ואשמח לתאם שיחה 🙂");
-const TEL = "tel:+972587250990";
+const WHATSAPP = whatsappWith("היי שרונה, הגעתי דרך האתר ואשמח לתאם שיחה 🙂");
 
 export const ContactInfo = () => {
   return (

@@ -5,16 +5,13 @@ import emailjs from "@emailjs/browser";
 import { aboutInformation, testimonials } from "../information/information";
 import { faqs } from "../information/faq";
 import { createHomeMotion } from "../design/motion";
+import { kicker } from "../design/ui";
 import {
   trackContactFormSubmit,
   trackWhatsappClick,
   trackClickToCall,
 } from "../lib/analytics";
-
-const WHATSAPP = "https://wa.me/972587250990";
-const TEL = "tel:+972587250990";
-const PHONE_LABEL = "058-725-0990";
-const EMAIL = "sharonabar5@gmail.com";
+import { EMAIL, PHONE_LABEL, SITE, TEL, WHATSAPP } from "../information/contact";
 
 const HEAD = "var(--font-heading)";
 
@@ -123,15 +120,6 @@ const aboutLines = aboutInformation
 
 /* ------------------------------ shared bits ------------------------------ */
 
-const kickerStyle = {
-  fontSize: 14,
-  fontWeight: 700,
-  letterSpacing: ".14em",
-  color: "var(--color-accent-2-700)",
-  textTransform: "uppercase",
-  marginBottom: 16,
-};
-
 const h2Style = {
   fontFamily: HEAD,
   fontWeight: 400,
@@ -152,7 +140,9 @@ const pinInner = {
 
 function Kicker({ color, children }) {
   return (
-    <div style={{ ...kickerStyle, color }}>
+    // `color` only when given — spreading `color: undefined` would wipe the
+    // kicker's own olive and leave the label in body-text colour.
+    <div style={color ? { ...kicker, color } : kicker}>
       {children}
     </div>
   );
@@ -188,11 +178,11 @@ function HomePage() {
           name="description"
           content="שרונה קדושאי בר-נס – טיפול וייעוץ זוגי, טיפול רגשי במצבי משבר, חרדה וטראומה והדרכת הורים, לישראלים בארץ ובחו״ל. טיפול קצר מועד — בקליניקה בצור הדסה ובאזור ירושלים, ובמפגשים אונליין בעברית ובאנגלית."
         />
-        <link rel="canonical" href="https://sharona-bar-nes.com/" />
+        <link rel="canonical" href={`${SITE}/`} />
         <meta property="og:title" content="שרונה קדושאי בר-נס | טיפול וייעוץ זוגי, טיפול רגשי והדרכת הורים" />
         <meta property="og:description" content="טיפול וייעוץ זוגי, טיפול רגשי במצבי משבר, טראומה והדרכת הורים – לישראלים בארץ ובחו״ל, בקליניקה בצור הדסה ובאונליין." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://sharona-bar-nes.com/" />
+        <meta property="og:url" content={`${SITE}/`} />
       </Head>
 
       <Filters />
@@ -226,7 +216,7 @@ function HomePage() {
 
         <div data-m="stack" style={{ position: "relative", maxWidth: 1200, margin: "0 auto", width: "100%", display: "flex", alignItems: "center", gap: 56 }}>
           <div style={{ flex: 1.08 }}>
-            <div style={{ ...kickerStyle, fontSize: 15, marginBottom: 8 }}>
+            <div style={{ ...kicker, fontSize: 15, marginBottom: 8 }}>
               טיפול וייעוץ זוגי · טיפול רגשי במצבי משבר · הדרכת הורים
             </div>
             <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: ".04em", color: "var(--color-accent-2-700)", marginBottom: 24 }}>
@@ -289,7 +279,7 @@ function HomePage() {
             <div style={{ flex: 0.92, position: "relative", display: "flex", justifyContent: "center" }}>
               <div data-parallax="0.07">
                 <div data-ab-portrait data-m="portrait" style={{ width: 420, height: "min(500px,54vh)", borderRadius: "48% 52% 55% 45%/56% 46% 54% 44%", overflow: "hidden", boxShadow: "var(--shadow-lg)" }}>
-                  <img src="/sharona-portrait.png" alt="שרונה קדושאי בר-נס" width="553" height="659" loading="lazy" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img src="/sharona-portrait.webp" alt="שרונה קדושאי בר-נס" width="554" height="597" loading="lazy" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
               </div>
               <div aria-hidden="true" style={{ position: "absolute", bottom: 10, insetInlineEnd: 0, width: 52, height: 52, borderRadius: "50%", background: "var(--color-accent)", animation: "floaty2 7s ease-in-out infinite" }} />

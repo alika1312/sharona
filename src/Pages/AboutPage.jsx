@@ -3,6 +3,7 @@ import { Head } from "vite-react-ssg";
 import { aboutInformation } from "../information/information";
 import { useReveal } from "../hooks/useReveal";
 import { kicker, h2, muted } from "../design/ui";
+import { SITE } from "../information/contact";
 
 const education = [
   "בעלת תואר שני בייעוץ חינוכי, אוניברסיטת בר אילן",
@@ -44,14 +45,14 @@ function AboutPage() {
           name="description"
           content="על שרונה קדושאי בר-נס: תואר שני בייעוץ חינוכי ו-MBA, בוגרת קרן מנדל, כ-20 שנות ניסיון. גישה הוליסטית ומעשית לטיפול קצר מועד ליחידים, זוגות וקבוצות – בעברית ובאנגלית."
         />
-        <link rel="canonical" href="https://sharona-bar-nes.com/about/" />
+        <link rel="canonical" href={`${SITE}/about/`} />
         <meta property="og:title" content="קצת עליי – שרונה קדושאי בר-נס" />
         <meta
           property="og:description"
           content="השכלה, הכשרות והאני מאמין הטיפולי של שרונה קדושאי בר-נס."
         />
         <meta property="og:type" content="profile" />
-        <meta property="og:url" content="https://sharona-bar-nes.com/about/" />
+        <meta property="og:url" content={`${SITE}/about/`} />
       </Head>
 
       {/* ============ INTRO ============ */}

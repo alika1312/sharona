@@ -1,9 +1,9 @@
 import { Head } from "vite-react-ssg";
+import { EMAIL, PHONE_E164, SITE } from "../information/contact";
 
 // Site-wide Schema.org JSON-LD. Every value here must be truthful and match
 // on-page content (see AboutPage / ExperiencesPage / ContactInfo). Do not add
 // credentials, reviews, addresses or phone numbers that aren't real.
-const SITE = "https://sharona-bar-nes.com";
 
 const person = {
   "@type": "Person",
@@ -76,10 +76,10 @@ const practice = {
   "@id": `${SITE}/#practice`,
   name: "שרונה קדושאי בר-נס – ייעוץ וטיפול",
   url: `${SITE}/`,
-  image: `${SITE}/preview.png`,
+  image: `${SITE}/preview.jpg`,
   founder: { "@id": `${SITE}/#person` },
-  telephone: "+972587250990",
-  email: "sharonabar5@gmail.com",
+  telephone: PHONE_E164,
+  email: EMAIL,
   availableLanguage: ["he", "en"],
   areaServed,
   // Clinic locality is truthful (צור הדסה); no street address supplied by client.

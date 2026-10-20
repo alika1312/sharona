@@ -66,9 +66,6 @@
 @keyframes floaty2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-26px)} }
 @keyframes drift { 0%,100%{transform:translate(0,0) rotate(0deg)} 50%{transform:translate(26px,-30px) rotate(10deg)} }
 @keyframes drift2 { 0%,100%{transform:translate(0,0) rotate(0deg)} 50%{transform:translate(-30px,26px) rotate(-9deg)} }
-@keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(14px,16px) scale(1.06)} }
-@keyframes marquee { to { transform: translateX(-50%) } }
-@keyframes hintBob { 0%{transform:translateY(0);opacity:.85} 55%{transform:translateY(10px);opacity:.35} 100%{transform:translateY(0);opacity:.85} }
 @keyframes spinSlow { to { transform: rotate(360deg) } }
 
 /* ---- helper component classes ---- */
@@ -101,7 +98,6 @@
   transition: opacity 0.9s ease, transform 0.5s cubic-bezier(0.2,0.7,0.2,1), box-shadow 0.4s ease;
 }
 .svc:hover { transform: translateY(-10px) !important; box-shadow: var(--shadow-lg) !important; }
-.svc:hover .svc-ic { transform: scale(1.12) rotate(-6deg); }
 
 .pill-cta {
   transition: transform 0.3s cubic-bezier(0.2,0.7,0.2,1), box-shadow 0.3s ease, background 0.3s ease;
@@ -181,7 +177,7 @@
 /* ---- native scrollbar ----
    The document scrollbar is hidden by request; the page keeps its own
    indicators (the fixed scroll-progress bar and the homepage rail dots).
-   Deliberately NOT  — wheel, trackpad, touch, PgDn/PgUp,
+   Deliberately not `overflow: hidden` — wheel, trackpad, touch, PgDn/PgUp,
    Home/End, space and arrow keys all keep working exactly as before. Scoped to
    the document scroller only, so inner scrollers (e.g. the unpinned gallery
    track) keep whatever they already declare. */
@@ -251,16 +247,8 @@ select:focus-visible,
     display: flex;
     align-items: center;
   }
-  .org-hero,
-  .org-about,
-  .org-contact { flex-direction: column !important; }
+  .org-about { flex-direction: column !important; }
   .org-services-grid { grid-template-columns: 1fr !important; }
-  .org-voices-grid { grid-template-columns: 1fr !important; }
-  /* gallery is a flex row on desktop — stack it so tiles don't squish */
-  .org-gallery { flex-direction: column !important; }
-  .org-gallery > div { margin-top: 0 !important; }
-  .org-steps { flex-direction: column !important; gap: 34px !important; }
-  .org-steps-line { display: none !important; }
   .org-section { padding-left: 22px !important; padding-right: 22px !important; }
   .org-h1 { font-size: 52px !important; }
   .org-h2 { font-size: 34px !important; }
@@ -278,8 +266,6 @@ select:focus-visible,
   position: relative;
   overflow-x: clip;
 }
-
-@keyframes pulseRing { 0%{transform:scale(1);opacity:.5} 100%{transform:scale(1.9);opacity:0} }
 
 /* ---- pill CTA (v2 variant: no lift, just depth) ---- */
 .organic-v2 .pill {
@@ -394,7 +380,6 @@ select:focus-visible,
 @media (max-width: 900px) {
   .organic-v2 [data-rail],
   .organic-v2 [data-cursor-dot],
-  .organic-v2 [data-hint],
   .organic-v2 [data-path],
   .organic-v2 [data-ghost],
   .organic-v2 [data-spot],
@@ -418,11 +403,9 @@ select:focus-visible,
 
   /* hero */
   .organic-v2 #top { padding: 96px 20px 66px !important; min-height: 0 !important; text-align: center !important; }
-  .organic-v2 #top > a[href="#about"] { display: none !important; }
   .organic-v2 #top h1 { font-size: clamp(37px, 10.8vw, 52px) !important; }
   .organic-v2 #top p { font-size: 17.5px !important; margin: 22px auto 30px !important; max-width: 32ch !important; }
   .organic-v2 #top .pill { font-size: 17px !important; padding: 16px 32px !important; }
-  .organic-v2 #top [data-reveal-delay="760"] { justify-content: center !important; }
   .organic-v2 [data-m="stack"] {
     flex-direction: column !important;
     gap: 36px !important;
@@ -647,7 +630,6 @@ select:focus-visible,
     padding: 18px 20px !important;
   }
   .organic-v2 [data-faq-q]::before { content: ""; flex: 0 0 30px; }
-  .organic-v2 [data-faq-a] p,
   .organic-v2 [role="region"] > p {
     text-align: center !important;
     max-width: 31ch;
@@ -697,7 +679,6 @@ select:focus-visible,
 @supports (animation-timeline: view()) {
   @media (max-width: 900px) and (prefers-reduced-motion: no-preference) {
     .organic-v2 [data-reveal],
-    .organic-v2 [data-words],
     .organic-v2 [data-step],
     .organic-v2 [data-faq],
     .organic-v2 [data-ab-portrait],
@@ -762,11 +743,9 @@ select:focus-visible,
   }
 }
 
-/* Rail dots and in-page CTAs jump between sections; glide instead of teleport
-   (v2 homepage only in practice — no other page has in-page anchors). */
-@media (prefers-reduced-motion: no-preference) {
-  html { scroll-behavior: smooth; }
-}
+/* No global `scroll-behavior: smooth`: it made every route change (and
+   ScrollRestoration's jump to the top) visibly glide up from the previous
+   page's position. The homepage's in-page anchors are animated by motion.js. */
 
 /* Anchor landings clear the sticky header. Pinned sections are excluded —
    their top edge is the start of their scroll timeline, not a headline. */
@@ -791,11 +770,8 @@ select:focus-visible,
 }
 .organic-v2 [data-tilt][data-dealt="0"] { transition: none; }
 
-/* Magnetic CTAs and the footer wordmark are transformed every frame. */
-.organic-v2 [data-magnet],
-[data-footer-name] span { will-change: transform; }
-
-.organic-v2 [data-hint] { pointer-events: none; }
+/* Magnetic CTAs are transformed every frame. */
+.organic-v2 [data-magnet] { will-change: transform; }
 
 /* ---- FAQ rows (kinetic variant) ---- */
 .organic-v2 [data-faq-q]:hover [data-faq-i] {
@@ -843,8 +819,7 @@ select:focus-visible,
 @media (prefers-reduced-motion: reduce) {
   .organic-v2 [data-faq] { opacity: 1 !important; transform: none !important; }
   .organic-v2 [data-carrow],
-  .organic-v2 [data-vhint2],
-  .organic-v2 [data-hint] { display: none !important; }
+  .organic-v2 [data-vhint2] { display: none !important; }
 }
 
 /* The ring cursor only ever exists on wide, fine-pointer screens. */

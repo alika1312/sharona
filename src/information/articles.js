@@ -4,7 +4,7 @@ export const articles = [
     title: "טראומות ילדות והשפעתן על הזוגיות: בין טיפול לייעוץ זוגי",
     description:
       "למה אנחנו מוצאים את עצמנו שוב ושוב באותה מריבה זוגית? על הקשר בין חוויות ילדות, דפוסים זוגיים והתגובות שלנו בהווה — ועל שילוב עבודה רגשית עמוקה עם כלים מעשיים לשינוי.",
-    image: "/cauple.png",
+    image: "/cauple.webp",
     content: [
       {
         sectionTitle: ``,
@@ -81,7 +81,7 @@ export const articles = [
     title: "תפיסה קורבנית אל מול חירות פנימית",
     description:
       "מתח כתוצאה ממשבר חיצוני, כגון אירוע בטחוני, או משבר שמקורו באירוע חיים משמעותי כגון פגיעה, פרידה, אובדן, גירושין - משפיעים על איכות חיינו.",
-    image: "/running.png",
+    image: "/running.webp",
     content: [
       {
         sectionTitle: "מהי תפיסה קורבנית?",
@@ -108,7 +108,7 @@ export const articles = [
     title: "יעוץ במעברי קריירה - ניהול קריירה לאורך זמן",
     description:
       "כיצד להתמודד עם אתגרים משפחתיים ולקדם תקשורת חיובית בין בני הזוג והילדים.",
-    image: "/career1.png",
+    image: "/career1.webp",
     content: [
       {
         sectionTitle: ``,
@@ -152,7 +152,7 @@ export const articles = [
     title: "להתגרש בכבוד הדדי - ליווי מקצועי בתהליך הגירושים",
     description:
       "כיצד להסתכל על מערכת הזוגית מנקודת מבט חדשה ולחזק את הקשר תוך התמודדות עם קשיים.",
-    image: "/divors.png",
+    image: "/divors.webp",
     content: [
       {
         sectionTitle: ``,
@@ -197,7 +197,7 @@ export const articles = [
     title: "התמודדות עם משבר",
     description:
       "מתח כתוצאה ממשבר חיצוני, כגון אירוע בטחוני, או משבר שמקורו באירוע חיים משמעותי כגון פגיעה, פרידה, אובדן, גירושין - משפיעים על איכות חיינו.",
-    image: "/mashber.png",
+    image: "/mashber.webp",
     content: [
       {
         sectionTitle: ``,
@@ -247,7 +247,7 @@ export const articles = [
     title: "התמודדות משפחתית עם אבל ואובדן",
     description:
       "אבל ואובדן, מוות ושכול, מטלטלים ומערערים את עולמה של המשפחה האבלה ושל האדם האבל, והם ילוו אותם לאורך חייהם, באופן מודע או לא מודע.",
-    image: "/evel.png",
+    image: "/evel.webp",
     content: [
       {
         sectionTitle: ``,
@@ -284,7 +284,7 @@ export const articles = [
     title: "מסעות חיינו- אין תחנה מיותרת בדרך, אין מסע שהיה לשוא",
     description:
       "מסע החיים מורכב מתחנות, עליות, ירידות ועצירות שלא תמיד אפשר להבין בזמן אמת. פרשת 'מסעי' מציעה הסתכלות אחרת על הדרך ומזכירה שלפעמים דווקא מהמקומות המאתגרים מתחיל שינוי.",
-    image: "/shvil.png",
+    image: "/shvil.webp",
     content: [
       {
         sectionTitle: ``,

@@ -3,6 +3,7 @@ import { Head } from "vite-react-ssg";
 import { experiences } from "../information/experiences";
 import { useReveal } from "../hooks/useReveal";
 import { kicker, h2, muted } from "../design/ui";
+import { SITE } from "../information/contact";
 
 export const ExperiencesPage = () => {
   const rootRef = useReveal();
@@ -16,14 +17,14 @@ export const ExperiencesPage = () => {
           name="description"
           content="תחומי המומחיות של שרונה קדושאי בר-נס: טיפול במצבי משבר ולחץ, ייעוץ וטיפול זוגי, הדרכת הורים, גירושין בכבוד הדדי, טיפול בטראומה, ייעוץ תעסוקתי, ליווי מנהלים וייעוץ אונליין לישראלים בחו״ל."
         />
-        <link rel="canonical" href="https://sharona-bar-nes.com/experiences/" />
+        <link rel="canonical" href={`${SITE}/experiences/`} />
         <meta property="og:title" content="תחומי המומחיות שלי – שרונה קדושאי בר-נס" />
         <meta
           property="og:description"
           content="טיפול רגשי, זוגי, טראומה, הדרכת הורים, ייעוץ תעסוקתי, ליווי מנהלים וייעוץ אונליין לישראלים בחו״ל."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://sharona-bar-nes.com/experiences/" />
+        <meta property="og:url" content={`${SITE}/experiences/`} />
       </Head>
 
       {/* ============ HEADER ============ */}

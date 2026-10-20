@@ -6,14 +6,12 @@ import ShareLinks from "../components/ShareLinks";
 import { useReveal } from "../hooks/useReveal";
 import { kicker, h2, muted } from "../design/ui";
 import { trackWhatsappClick, trackClickToCall } from "../lib/analytics";
+import { PHONE_LABEL, SITE, TEL, WHATSAPP } from "../information/contact";
 
-const URL = "https://sharona-bar-nes.com/faq/";
+const PAGE_URL = `${SITE}/faq/`;
 const TITLE = "שאלות נפוצות | טיפול רגשי, ייעוץ זוגי והדרכת הורים – שרונה קדושאי בר-נס";
 const DESC =
   "תשובות לשאלות הנפוצות לפני שמתחילים: טיפול וייעוץ זוגי, טיפול רגשי אישי, חרדה וטראומה, הדרכת הורים, ליווי אונליין לישראלים בחו״ל, תהליך הטיפול ופרטים מעשיים — קליניקה בצור הדסה ואונליין.";
-
-const WHATSAPP = "https://wa.me/972587250990";
-const TEL = "tel:+972587250990";
 
 function FaqPage() {
   const rootRef = useReveal();
@@ -24,14 +22,14 @@ function FaqPage() {
         <html lang="he" dir="rtl" />
         <title>{TITLE}</title>
         <meta name="description" content={DESC} />
-        <link rel="canonical" href={URL} />
+        <link rel="canonical" href={PAGE_URL} />
         <meta property="og:title" content={TITLE} />
         <meta
           property="og:description"
           content="תשובות לשאלות הנפוצות: טיפול זוגי, טיפול רגשי, חרדה וטראומה, הדרכת הורים, ליווי אונליין לישראלים בחו״ל ופרטים מעשיים."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={URL} />
+        <meta property="og:url" content={PAGE_URL} />
         {/* FAQPage schema lives here (the canonical FAQ page), not on the homepage. */}
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Head>
@@ -86,7 +84,7 @@ function FaqPage() {
           ))}
 
           <div data-reveal style={{ marginTop: 48 }}>
-            <ShareLinks url={URL} title="שאלות נפוצות – שרונה קדושאי בר-נס" label="שיתוף העמוד:" />
+            <ShareLinks url={PAGE_URL} title="שאלות נפוצות – שרונה קדושאי בר-נס" label="שיתוף העמוד:" />
           </div>
         </div>
       </section>
@@ -131,7 +129,7 @@ function FaqPage() {
               className="share-btn"
               style={{ minHeight: 52, padding: "16px 28px", fontSize: 17 }}
             >
-              058-725-0990
+              {PHONE_LABEL}
             </a>
           </div>
         </div>

@@ -33,6 +33,11 @@ const CB = "cubic-bezier(.2,.7,.2,1)";
 // page moves, immediately.
 const BREAK = 340;
 
+// Below this width nothing pins and CSS lays the homepage out instead. Must
+// match the `max-width: 900px` media queries in organic.css.
+const MOBILE_MAX = 900;
+const isNarrow = () => window.innerWidth <= MOBILE_MAX;
+
 export function createHomeMotion(root, props = {}) {
   const m = new HomeMotion(root, props);
   m.mount();
@@ -95,9 +100,9 @@ class HomeMotion {
       this.my = e.clientY;
     };
     window.addEventListener("pointermove", this.onMove, { passive: true });
-    // Under 901px nothing pins: the sections are laid out by CSS and the
+    // At MOBILE_MAX and below nothing pins: the sections are laid out by CSS and the
     // scroll-driven choreography steps out of the way entirely.
-    this.narrow = window.innerWidth < 901;
+    this.narrow = isNarrow();
     this.onResize = () => {
       this.mqCycle = 0;
       this.deckM = null;
@@ -105,7 +110,7 @@ class HomeMotion {
       this._pathBox = null;
       (this.plates || []).forEach((pl) => (pl.ox = undefined));
       this._spotEl = null;
-      this.narrow = window.innerWidth < 901;
+      this.narrow = isNarrow();
       this._mreset = false;
     };
     window.addEventListener("resize", this.onResize, { passive: true });
@@ -153,7 +158,6 @@ class HomeMotion {
       w: +el.dataset.w || 1,
       ph: i * 1.7,
     }));
-    this.hint = this.q("[data-hint]");
     this.marquee = this.q("[data-marquee]");
     this.gallery = this.q("[data-collage]");
     this.stage = this.q("[data-stage]");
@@ -272,7 +276,7 @@ class HomeMotion {
   }
 
   /* ============================ mobile ============================
-     Under 901px the pinned choreography is off and CSS lays the
+     At MOBILE_MAX (900px) and below the pinned choreography is off and CSS lays the
      sections out instead. Two things still need JS: the reviews rail
      gets pagination dots, and any transform the desktop path already
      wrote has to be handed back (this also covers a desktop→mobile
@@ -397,7 +401,7 @@ class HomeMotion {
   measurePins() {
     const pins = this.pins || [];
     const vh = window.innerHeight;
-    const narrow = window.innerWidth < 900;
+    const narrow = isNarrow();
     pins.forEach((el) => {
       if (el.dataset.unpin) el.dataset.unpin = "";
     });
@@ -459,7 +463,7 @@ class HomeMotion {
       this.props.snapSections === false ||
       this.reduce ||
       !this.fine ||
-      window.innerWidth < 901
+      isNarrow()
     );
   }
 
@@ -778,13 +782,6 @@ class HomeMotion {
     // Reveal what is already on screen; the rAF loop picks up the rest as
     // they scroll in.
     this.revealPass(window.innerHeight, true);
-    // The "touch the portrait" nudge has done its job after a few seconds.
-    if (this.hint) {
-      this.later(() => {
-        this.hint.style.transition = "opacity .6s ease";
-        this.hint.style.opacity = "0";
-      }, 7000);
-    }
   }
 
   /* ============================ reveal ============================ */
@@ -1446,7 +1443,7 @@ class HomeMotion {
 
   setupDot() {
     if (this.props.cursorDot === false || this.reduce || !this.fine) return;
-    if (window.innerWidth < 901) return;
+    if (isNarrow()) return;
     const d = document.createElement("div");
     d.setAttribute("aria-hidden", "true");
     d.dataset.cursorDot = "";
