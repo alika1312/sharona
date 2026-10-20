@@ -79,21 +79,26 @@ function FaqItem({ q, a, todo, headingLevel = 3 }) {
         role="region"
         aria-labelledby={btnId}
         hidden={!open}
-        style={{ padding: "0 26px 24px", fontSize: 17, lineHeight: 1.72, color: muted(78) }}
+        style={{ fontSize: 17, lineHeight: 1.72, color: muted(78) }}
       >
-        <p style={{ margin: 0 }}>{a}</p>
-        {todo && (
-          <p
-            style={{
-              margin: "10px 0 0",
-              fontSize: 13.5,
-              fontWeight: 700,
-              color: "var(--color-accent-700)",
-            }}
-          >
-            ⚠ להשלמה על ידי שרונה
-          </p>
-        )}
+        {/* Padding lives on this inner box: hidden="until-found" collapses the
+            panel's content but not its own padding, which left a strip of
+            empty space under every closed question. */}
+        <div style={{ padding: "0 26px 24px" }}>
+          <p style={{ margin: 0 }}>{a}</p>
+          {todo && (
+            <p
+              style={{
+                margin: "10px 0 0",
+                fontSize: 13.5,
+                fontWeight: 700,
+                color: "var(--color-accent-700)",
+              }}
+            >
+              ⚠ להשלמה על ידי שרונה
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -296,7 +296,7 @@ function HomePage() {
                 </p>
               ))}
               <div style={{ marginBottom: 30 }}>
-                <Link to="/about" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
+                <Link to="/about" className="tap-link" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
                   להמשך הקריאה ←
                 </Link>
               </div>
@@ -585,7 +585,7 @@ function HomePage() {
                 לא מצאתם תשובה? כתבו לי ואשמח לענות.
               </p>
               <div>
-                <Link to="/faq" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
+                <Link to="/faq" className="tap-link" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
                   לכל השאלות הנפוצות ←
                 </Link>
               </div>

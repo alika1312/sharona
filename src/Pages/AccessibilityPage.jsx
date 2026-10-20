@@ -98,15 +98,15 @@ function AccessibilityPage() {
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
               <li>
                 <strong style={{ color: "var(--color-accent-2-800)" }}>טלפון: </strong>
-                <a href={TEL} style={{ color: "var(--color-accent-2-700)", fontWeight: 600 }}>{PHONE_LABEL}</a>
+                <a href={TEL} className="tap-link" style={{ color: "var(--color-accent-2-700)", fontWeight: 600 }}>{PHONE_LABEL}</a>
               </li>
               <li>
                 <strong style={{ color: "var(--color-accent-2-800)" }}>דוא״ל: </strong>
-                <a href={`mailto:${EMAIL}`} style={{ color: "var(--color-accent-2-700)", fontWeight: 600 }}>{EMAIL}</a>
+                <a href={`mailto:${EMAIL}`} className="tap-link" style={{ color: "var(--color-accent-2-700)", fontWeight: 600 }}>{EMAIL}</a>
               </li>
               <li>
                 <strong style={{ color: "var(--color-accent-2-800)" }}>וואטסאפ: </strong>
-                <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-accent-2-700)", fontWeight: 600 }}>שליחת הודעה</a>
+                <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="tap-link" style={{ color: "var(--color-accent-2-700)", fontWeight: 600 }}>שליחת הודעה</a>
               </li>
             </ul>
           </Section>

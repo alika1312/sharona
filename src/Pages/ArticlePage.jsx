@@ -106,7 +106,7 @@ export const ArticlePage = () => {
           </div>
 
           <div style={{ marginTop: 34, display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
-            <Link to="/articles" style={{ fontWeight: 700, fontSize: 16, color: "var(--color-accent-2-700)" }}>
+            <Link to="/articles" className="tap-link" style={{ fontWeight: 700, fontSize: 16, color: "var(--color-accent-2-700)" }}>
               → חזרה לכל המאמרים
             </Link>
             <Link to="/#contact" className="pill-cta" style={{ marginInlineStart: "auto", background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 16, padding: "13px 28px", borderRadius: 999, boxShadow: "var(--shadow-sm)" }}>
