@@ -893,3 +893,9 @@ select:focus-visible,
 @media (max-width: 900px) {
   .organic-v2 .ab-photo { display: none !important; }
 }
+
+/* ---- /about on a phone: credentials follow the about text closely ---- */
+@media (max-width: 900px) {
+  .about-intro { padding-bottom: 40px !important; }
+  .about-cred { padding-top: 36px !important; }
+}

@@ -57,10 +57,10 @@ function AboutPage() {
 
       {/* ============ INTRO ============ */}
       <section
-        className="org-section"
+        className="org-section about-intro"
         style={{
           position: "relative",
-          padding: "90px 54px 110px",
+          padding: "90px 54px 72px",
           background: "linear-gradient(155deg,#f5ecdb 0%,#eef0e0 55%,#f1ecdc 100%)",
           overflow: "hidden",
         }}
@@ -99,7 +99,9 @@ function AboutPage() {
       </section>
 
       {/* ============ CREDENTIALS + DETAILS ============ */}
-      <section className="org-section" style={{ padding: "110px 54px", background: "var(--color-bg)" }}>
+      {/* sits close under the about text — the credentials read as its
+          continuation, not a separate page section */}
+      <section className="org-section about-cred" style={{ padding: "64px 54px 110px", background: "var(--color-bg)" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={{ marginBottom: 52, maxWidth: "40ch" }}>
             <h2 data-reveal className="org-h2" style={{ ...h2, color: "var(--color-accent-2-800)" }}>רקע מקצועי</h2>
