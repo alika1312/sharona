@@ -203,7 +203,7 @@ export const Header = () => {
               whiteSpace: "nowrap",
             }}
           >
-            שרונה בר-נס
+            שרונה קדושאי בר-נס
           </Link>
 
           {/* desktop nav */}
@@ -297,7 +297,7 @@ export const Header = () => {
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 30 }}>
             <span style={{ fontFamily: "var(--font-heading)", fontSize: 21, color: "var(--color-accent-2-800)" }}>
-              שרונה בר-נס
+              שרונה קדושאי בר-נס
             </span>
             <button
               ref={closeRef}

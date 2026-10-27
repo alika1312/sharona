@@ -30,6 +30,9 @@ const services = [
 // What Israelis abroad come for — Sharona's own list for the online section.
 const onlineAreas = ["טיפול וייעוץ זוגי", "טיפול רגשי אישי", "הדרכת הורים", "רילוקיישן"];
 
+// The professional line under the hero headline, in Sharona's order.
+const heroAreas = ["טיפול רגשי", "ייעוץ וטיפול זוגי", "טיפול בטראומה", "הדרכת הורים"];
+
 const steps = [
   ["1", "פנייה ראשונית", "שולחים לי הודעת WhatsApp או מייל קצר עם כמה מילים על סיבת הפנייה.", "var(--color-accent-2)"],
   ["2", "שיחת היכרות קצרה", "נשוחח טלפונית, אבין באופן ראשוני את סיבת הפנייה, תוכלו לשאול אותי שאלות ונתאם פגישה בקליניקה או אונליין.", "var(--color-accent)"],
@@ -45,8 +48,6 @@ const steps = [
 // even fifths of the viewBox: 1000, 750, 500, 250, 0.
 const STEP_PATH =
   "M 1000 46 C 925 -6 825 98 750 46 S 575 -6 500 46 S 325 98 250 46 S 75 -6 0 46";
-
-const marqueeWords = ["הקשבה", "חמלה", "כבוד", "נוכחות", "אמון", "צמיחה"];
 
 // The contact section's three beats: what happens after you press send. Not
 // knowing is most of what stops people from writing in the first place.
@@ -228,28 +229,45 @@ function HomePage() {
         <div
           data-goo
           aria-hidden="true"
-          style={{ position: "absolute", inset: "-12%", filter: "url(#goo)", opacity: 0.5, pointerEvents: "none" }}
+          style={{ position: "absolute", inset: "-12%", filter: "url(#goo)", opacity: 0.7, pointerEvents: "none" }}
         >
-          <div data-blob data-w="1.4" style={{ position: "absolute", top: "14%", left: "4%", width: 330, height: 330, borderRadius: "50%", background: "#7a8a5e" }} />
-          <div data-blob data-w="-1" style={{ position: "absolute", bottom: "6%", right: "2%", width: 290, height: 290, borderRadius: "50%", background: "#c67139" }} />
-          <div data-blob data-w="2.2" style={{ position: "absolute", top: "44%", left: "40%", width: 150, height: 150, borderRadius: "50%", background: "#7a8a5e" }} />
-          <div data-blob data-w="-1.8" style={{ position: "absolute", top: "8%", left: "52%", width: 110, height: 110, borderRadius: "50%", background: "#c67139" }} />
+          {/* soft cream and warm-beige tones — Sharona found the olive and
+              terracotta too heavy for the opening */}
+          <div data-blob data-w="1.4" style={{ position: "absolute", top: "14%", left: "4%", width: 330, height: 330, borderRadius: "50%", background: "#e6d6ba" }} />
+          <div data-blob data-w="-1" style={{ position: "absolute", bottom: "6%", right: "2%", width: 290, height: 290, borderRadius: "50%", background: "#efdcc4" }} />
+          <div data-blob data-w="2.2" style={{ position: "absolute", top: "44%", left: "40%", width: 150, height: 150, borderRadius: "50%", background: "#e9dcc3" }} />
+          <div data-blob data-w="-1.8" style={{ position: "absolute", top: "8%", left: "52%", width: 110, height: 110, borderRadius: "50%", background: "#f0e2cd" }} />
         </div>
 
         <div data-m="stack" style={{ position: "relative", maxWidth: 1200, margin: "0 auto", width: "100%", display: "flex", alignItems: "center", gap: 56 }}>
           <div style={{ flex: 1.08 }}>
-            <div style={{ ...kicker, fontSize: 15, marginBottom: 8 }}>
-              טיפול וייעוץ זוגי · טיפול רגשי במצבי משבר · הדרכת הורים
-            </div>
-            <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: ".04em", color: "var(--color-accent-2-700)", marginBottom: 24 }}>
-              לישראלים בארץ ובחו״ל — בקליניקה ובאונליין
-            </div>
-            <h1 data-reveal data-reveal-delay="0" style={{ position: "relative", fontFamily: HEAD, fontWeight: 400, fontSize: "clamp(48px,6.4vw,84px)", lineHeight: 1.08, letterSpacing: "-.015em", margin: 0 }}>
-              <span style={{ display: "block", paddingBottom: ".09em" }}>מרחב לנשום בו,</span>
-              <span style={{ display: "block", paddingBottom: ".09em", color: "var(--color-accent-2-700)" }}>ולהתחיל מחדש.</span>
+            <h1 data-reveal data-reveal-delay="0" style={{ position: "relative", fontFamily: HEAD, fontWeight: 400, fontSize: "clamp(40px,4.5vw,66px)", lineHeight: 1.1, letterSpacing: "-.015em", margin: 0 }}>
+              <span style={{ display: "block", paddingBottom: ".09em" }}>מרחב לנשום, להתפתח</span>
+              <span style={{ display: "block", paddingBottom: ".09em", color: "var(--color-accent-2-700)" }}>ולהתחיל מחדש</span>
             </h1>
-            <p style={{ fontSize: 21, lineHeight: 1.62, maxWidth: "44ch", margin: "30px 0 36px", color: "var(--color-text)" }}>
-              לפעמים כל מה שצריך זה מקום אחד, שקט ובטוח, להניח בו את מה שכבד ולהתחיל להקשיב מחדש — לעצמכם, לזוגיות ולמשפחה.
+            {/* who and what, straight under the headline — each area stays on
+                one line, so on a phone they wrap whole rather than mid-phrase */}
+            <div className="hero-id" style={{ margin: "26px 0 0", paddingInlineStart: 18, borderInlineStart: "3px solid var(--color-accent)" }}>
+              <div style={{ fontFamily: HEAD, fontSize: "clamp(24px,2.6vw,32px)", lineHeight: 1.25, color: "var(--color-accent-2-800)", marginBottom: 8 }}>
+                שרונה קדושאי בר-נס
+              </div>
+              <div className="hero-areas" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px 10px", fontSize: "clamp(16.5px,1.5vw,19px)", fontWeight: 700, lineHeight: 1.5, color: "var(--color-text)" }}>
+                {heroAreas.map((a, i) => (
+                  <span key={a} className="hero-area" style={{ display: "inline-flex", alignItems: "center", gap: 10, whiteSpace: "nowrap" }}>
+                    {i > 0 && <span aria-hidden="true" className="hero-sep" style={{ color: "var(--color-accent)", fontWeight: 400 }}>|</span>}
+                    {a}
+                  </span>
+                ))}
+              </div>
+              <div style={{ fontSize: 15, fontWeight: 600, color: "var(--color-accent-2-700)", marginTop: 8 }}>
+                לישראלים בארץ ובחו״ל — בקליניקה ובאונליין
+              </div>
+            </div>
+            <p style={{ fontSize: 19.5, lineHeight: 1.65, maxWidth: "46ch", margin: "26px 0 14px", color: "var(--color-text)" }}>
+              לפעמים כל מה שצריך הוא מקום של שקט, אמון וביטחון.
+            </p>
+            <p style={{ fontSize: 19.5, lineHeight: 1.65, maxWidth: "46ch", margin: "0 0 34px", color: "var(--color-text)" }}>
+              מקום שבו אפשר לעצור לרגע, לעשות סדר במחשבות וברגשות, להבין איך חוויות העבר משפיעות עלינו היום, למצוא דרך להתמודד עם מה שכואב ולקבל כלים מעשיים לשינוי.
             </p>
             <div style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
               <a href="#contact" className="pill" data-magnet style={{ background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 18, padding: "17px 36px", borderRadius: 999, boxShadow: "var(--shadow-md)" }}>
@@ -275,21 +293,6 @@ function HomePage() {
 
       </section>
 
-      {/* ============================== MARQUEE ============================== */}
-      <div aria-hidden="true" style={{ background: "var(--color-accent-2-800)", color: "var(--color-bg)", overflow: "hidden", whiteSpace: "nowrap", padding: "26px 0" }}>
-        <div data-marquee style={{ display: "inline-flex", fontFamily: HEAD, fontSize: 34, willChange: "transform" }}>
-          {/* three copies: motion.js loops on scrollWidth / 3 */}
-          {[0, 1, 2].map((copy) =>
-            marqueeWords.map((w) => (
-              <span key={`${copy}-${w}`} style={{ display: "inline-flex" }}>
-                <span style={{ padding: "0 30px" }}>{w}</span>
-                <span style={{ padding: "0 30px", color: "var(--color-accent-300)" }}>✦</span>
-              </span>
-            ))
-          )}
-        </div>
-      </div>
-
       {/* =============================== ABOUT =============================== */}
       <section id="about" data-pin-sec style={{ position: "relative", height: "250vh", background: "var(--color-bg)" }}>
         <div data-pin-inner style={pinInner}>
@@ -309,9 +312,6 @@ function HomePage() {
 
             <div style={{ flex: 1.08 }}>
               <Kicker>קצת עליי</Kicker>
-              <h2 style={{ ...h2Style, fontSize: 46, lineHeight: 1.22, marginBottom: 26, maxWidth: "18ch" }}>
-                טיפול מתוך חמלה, כבוד והקשבה אמיתית.
-              </h2>
               {aboutLines.map((line, i) => (
                 <p key={i} style={{ fontSize: 19, lineHeight: 1.7, margin: i === aboutLines.length - 1 ? "0 0 26px" : "0 0 20px", color: "var(--color-text)" }}>
                   {line}

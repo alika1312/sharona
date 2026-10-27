@@ -68,6 +68,9 @@ export const ArticlePage = () => {
               <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 1.2, margin: 0, color: "#fff" }}>
                 {title}
               </h1>
+              <div style={{ marginTop: 12, fontSize: 16, fontWeight: 600, color: "color-mix(in srgb,#fff 82%,transparent)" }}>
+                מאת שרונה קדושאי בר-נס
+              </div>
             </div>
           </div>
         </div>

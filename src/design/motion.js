@@ -732,48 +732,49 @@ class HomeMotion {
       /* ignore */
     }
 
+    // A single soft cream circle breathes out from the centre and dissolves —
+    // no burst, no dark fill. The name settles in on top, then the veil lifts.
     const ov = document.createElement("div");
     ov.setAttribute("aria-hidden", "true");
     ov.style.cssText =
       "position:fixed;inset:0;z-index:200;background:var(--color-bg);display:flex;align-items:center;justify-content:center;overflow:hidden";
     ov.innerHTML =
-      '<div style="position:absolute;inset:0;filter:url(#goo);display:flex;align-items:center;justify-content:center">' +
-      '<div data-intro-a style="position:absolute;width:190px;height:190px;border-radius:50%;background:#7a8a5e;transform:translateX(-190px) scale(.6);transition:transform .85s cubic-bezier(.65,0,.35,1)"></div>' +
-      '<div data-intro-b style="position:absolute;width:150px;height:150px;border-radius:50%;background:#c67139;transform:translateX(190px) scale(.6);transition:transform .85s cubic-bezier(.65,0,.35,1),opacity .5s ease .35s"></div>' +
-      "</div>" +
-      '<div data-intro-name style="position:relative;font-family:var(--font-heading);font-size:clamp(30px,5vw,58px);color:var(--color-bg);opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .9s ' +
+      '<div data-intro-a style="position:absolute;width:220px;height:220px;border-radius:50%;' +
+      "background:radial-gradient(circle,#ead9bd 0%,#f1e5d1 55%,rgba(241,229,209,0) 72%);" +
+      'opacity:0;transform:scale(.55);transition:transform 2.2s cubic-bezier(.22,1,.36,1),opacity 1.1s ease"></div>' +
+      '<div data-intro-name style="position:relative;font-family:var(--font-heading);font-size:clamp(28px,4.6vw,54px);color:var(--color-accent-2-800);opacity:0;transform:translateY(10px);transition:opacity .9s ease,transform 1.1s ' +
       CB +
-      ';letter-spacing:.01em">שרונה בר-נס</div>';
+      ';letter-spacing:.01em;text-align:center;padding:0 20px">שרונה קדושאי בר-נס</div>';
     document.body.appendChild(ov);
     this.intro = ov;
 
     const a = ov.querySelector("[data-intro-a]");
-    const b = ov.querySelector("[data-intro-b]");
     const nm = ov.querySelector("[data-intro-name]");
     document.documentElement.style.overflow = "hidden";
     requestAnimationFrame(() => {
-      a.style.transform = "translateX(-34px) scale(1)";
-      b.style.transform = "translateX(34px) scale(1)";
+      a.style.opacity = "1";
+      a.style.transform = "scale(1.6)";
     });
     this.later(() => {
-      a.style.transition = "transform 1s cubic-bezier(.65,0,.35,1)";
-      a.style.transform = "translateX(0) scale(9)";
-      b.style.transform = "translateX(0) scale(1.1)";
-      b.style.opacity = "0";
       nm.style.opacity = "1";
       nm.style.transform = "translateY(0)";
-    }, 820);
+    }, 380);
     this.later(() => {
-      ov.style.transition = `opacity .8s ease, transform 1.1s ${CB}`;
+      // keep widening while it fades, so it melts into the page
+      a.style.transition = "transform 1.8s cubic-bezier(.22,1,.36,1),opacity 1.4s ease";
+      a.style.transform = "scale(4.2)";
+      a.style.opacity = "0";
+    }, 1300);
+    this.later(() => {
+      ov.style.transition = "opacity .9s ease";
       ov.style.opacity = "0";
-      ov.style.transform = "scale(1.08)";
       document.documentElement.style.overflow = "";
       this.startReveals();
-    }, 1980);
+    }, 2000);
     this.later(() => {
       ov.remove();
       this.intro = null;
-    }, 2900);
+    }, 2950);
   }
 
   /* ============================ reveals ============================
