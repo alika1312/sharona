@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 import { aboutInformation } from "../information/information";
 import { useReveal } from "../hooks/useReveal";
-import { kicker, h2, muted } from "../design/ui";
+import { h2, muted } from "../design/ui";
 import { SITE } from "../information/contact";
 
 const education = [
@@ -43,7 +43,7 @@ function AboutPage() {
         <title>קצת עליי – שרונה קדושאי בר-נס | השכלה, הכשרות וגישה טיפולית</title>
         <meta
           name="description"
-          content="על שרונה קדושאי בר-נס: תואר שני בייעוץ חינוכי ו-MBA, בוגרת קרן מנדל, כ-20 שנות ניסיון. גישה הוליסטית ומעשית לטיפול קצר מועד ליחידים, זוגות וקבוצות – בעברית ובאנגלית."
+          content="על שרונה קדושאי בר-נס: תואר שני בייעוץ חינוכי ו-MBA, בוגרת קרן מנדל, כ-20 שנות ניסיון. גישה הוליסטית ומעשית לטיפול קצר מועד ליחידים, זוגות, משפחות וקבוצות – בעברית (אפשרי גם בשילוב אנגלית)."
         />
         <link rel="canonical" href={`${SITE}/about/`} />
         <meta property="og:title" content="קצת עליי – שרונה קדושאי בר-נס" />
@@ -75,13 +75,15 @@ function AboutPage() {
             </div>
           </div>
           <div style={{ flex: 1.1 }}>
-            <div data-reveal style={kicker}>קצת עליי</div>
-            <h1 className="org-h1" style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 56, lineHeight: 1.12, margin: "0 0 26px" }}>
-              <span data-reveal style={{ display: "block" }}>שרונה קדושאי בר-נס</span>
-              <span data-reveal data-reveal-delay="120" style={{ display: "block", fontSize: 30, color: "var(--color-accent-2-700)", marginTop: 8 }}>
-                יועצת ומטפלת רגשית
-              </span>
+            {/* "קצת עליי" heads the text it belongs to; name and role sit
+                quietly under it, a line each so neither wraps mid-phrase */}
+            <h1 className="org-h1" style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 50, lineHeight: 1.14, margin: "0 0 10px", color: "var(--color-accent-2-800)" }}>
+              <span data-reveal style={{ display: "block" }}>קצת עליי</span>
             </h1>
+            <div data-reveal data-reveal-delay="80" style={{ margin: "0 0 22px", lineHeight: 1.45 }}>
+              <div style={{ fontSize: 19, fontWeight: 700, color: "var(--color-text)" }}>שרונה קדושאי בר-נס</div>
+              <div style={{ fontSize: 17, color: muted(70) }}>יועצת ומטפלת רגשית</div>
+            </div>
             {aboutParas.map((p, i) => (
               <p key={i} data-reveal data-reveal-delay={160 + i * 60} style={{ fontSize: 18.5, lineHeight: 1.72, margin: "0 0 18px", color: muted(80) }}>
                 {p}
@@ -100,8 +102,7 @@ function AboutPage() {
       <section className="org-section" style={{ padding: "110px 54px", background: "var(--color-bg)" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={{ marginBottom: 52, maxWidth: "40ch" }}>
-            <div data-reveal style={kicker}>רקע מקצועי</div>
-            <h2 data-reveal data-reveal-delay="120" className="org-h2" style={h2}>השכלה, הכשרות ופרטים מקצועיים</h2>
+            <h2 data-reveal className="org-h2" style={{ ...h2, color: "var(--color-accent-2-800)" }}>רקע מקצועי</h2>
           </div>
           <div className="org-services-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 26, alignItems: "start" }}>
             {/* education card */}
@@ -143,8 +144,8 @@ function AboutPage() {
                   <div style={{ fontSize: 14.5, color: muted(62), marginTop: 6 }}>שנות ניסיון</div>
                 </div>
                 <div>
-                  <div style={{ fontFamily: "var(--font-heading)", fontSize: 24, color: "var(--color-accent-2-700)", lineHeight: 1.2 }}>עברית · אנגלית</div>
-                  <div style={{ fontSize: 14.5, color: muted(62), marginTop: 6 }}>שפות הטיפול</div>
+                  <div style={{ fontFamily: "var(--font-heading)", fontSize: 24, color: "var(--color-accent-2-700)", lineHeight: 1.2 }}>עברית</div>
+                  <div style={{ fontSize: 14.5, color: muted(62), marginTop: 6 }}>אפשרי גם בשילוב אנגלית</div>
                 </div>
               </div>
             </div>

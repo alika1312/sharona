@@ -442,7 +442,7 @@ select:focus-visible,
   .organic-v2 #about p,
   .organic-v2 #contact p:not([data-cf]) { font-size: 17.5px !important; max-width: 34ch !important; margin-inline: auto !important; }
   .organic-v2 [data-m="stats"] { gap: 20px !important; justify-content: center !important; padding-top: 22px !important; }
-  /* two columns, with the long "יחידים · זוגות · קבוצות" on its own row
+  /* two columns, with the long "יחידים · זוגות · משפחות · קבוצות" on its own row
      so it reads on one line instead of stacking word by word */
   .organic-v2 [data-m="stats"] {
     display: grid !important;
@@ -450,8 +450,8 @@ select:focus-visible,
     row-gap: 22px !important;
   }
   .organic-v2 [data-m="stats"] > div:nth-child(2) { grid-column: 1 / -1; order: 3; }
-  .organic-v2 [data-m="stats"] > div > div:first-child { font-size: 25px !important; }
-  .organic-v2 [data-m="stats"] > div:first-child > div:first-child { font-size: 34px !important; }
+  .organic-v2 [data-m="stats"] > div > div:first-child { font-size: 18px !important; }
+  .organic-v2 [data-m="stats"] > div:first-child > div:first-child { font-size: 28px !important; }
 
   /* approach — numbered beads hung on a dashed thread */
   .organic-v2 [data-m="steps"] {

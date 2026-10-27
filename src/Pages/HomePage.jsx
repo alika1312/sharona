@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useId } from "react";
 import { Head } from "vite-react-ssg";
 import { Link } from "react-router-dom";
 import emailjs from "@emailjs/browser";
-import { aboutInformation, testimonials } from "../information/information";
+import { aboutIntro, testimonials } from "../information/information";
 import { faqs } from "../information/faq";
 import { createHomeMotion } from "../design/motion";
 import { kicker } from "../design/ui";
@@ -36,8 +36,8 @@ const heroAreas = ["טיפול רגשי", "ייעוץ וטיפול זוגי", "�
 const steps = [
   ["1", "פנייה ראשונית", "שולחים לי הודעת WhatsApp או מייל קצר עם כמה מילים על סיבת הפנייה.", "var(--color-accent-2)"],
   ["2", "שיחת היכרות קצרה", "נשוחח טלפונית, אבין באופן ראשוני את סיבת הפנייה, תוכלו לשאול אותי שאלות ונתאם פגישה בקליניקה או אונליין.", "var(--color-accent)"],
-  ["3", "מתחילים לעבוד כבר בפגישה הראשונה", "נבין מה מביא אתכם ומה הייתם רוצים לשנות, נתחיל בעבודה טיפולית ונקבל כיוון ראשוני להמשך.", "var(--color-accent-2)"],
-  ["4", "תהליך טיפולי ממוקד", "נשלב הבנה, מודעות ועומק עם כלים מעשיים לכאן ועכשיו ויישום בחיי היומיום.", "var(--color-accent)"],
+  ["3", "מתחילים לעבוד כבר בפגישה הראשונה", "נבין יחד מה מביא אתכם לטיפול ומה הייתם רוצים לשנות, נתחיל בעבודה טיפולית ואתן כיוון ראשוני להמשך התהליך.", "var(--color-accent-2)"],
+  ["4", "תהליך טיפולי ממוקד", "נשלב הבנה מעמיקה ומודעות עצמית עם כלים מעשיים שניתן ליישם בחיי היומיום, כדי להתמודד אחרת עם קשיים וליצור שינוי.", "var(--color-accent)"],
   ["5", "לקראת סיום התהליך", "נבסס את השינוי ואת הכלים שנרכשו, כדי לאפשר המשך עצמאי ותחושת ביטחון גם לאחר סיום התהליך.", "var(--color-accent-2)"],
 ];
 
@@ -118,12 +118,8 @@ const isLongVoice = (t) => Boolean(t.excerpt) || t.feedback.trim().length > 450;
 
 const homeFaqs = faqs.filter((f) => !f.todo).slice(0, 5);
 
-// The full text lives on /about; the homepage shows the opening two beats.
-const aboutLines = aboutInformation
-  .split("\n")
-  .map((l) => l.trim())
-  .filter(Boolean)
-  .slice(0, 2);
+// The full text lives on /about; the homepage shows Sharona's opening.
+const aboutLines = aboutIntro;
 
 /* ------------------------------ shared bits ------------------------------ */
 
@@ -199,7 +195,7 @@ function HomePage() {
         <title>שרונה קדושאי בר-נס | טיפול וייעוץ זוגי, טיפול רגשי והדרכת הורים</title>
         <meta
           name="description"
-          content="שרונה קדושאי בר-נס – טיפול וייעוץ זוגי, טיפול רגשי במצבי משבר, חרדה וטראומה והדרכת הורים, לישראלים בארץ ובחו״ל. טיפול קצר מועד — בקליניקה בצור הדסה ובאזור ירושלים, ובמפגשים אונליין בעברית ובאנגלית."
+          content="שרונה קדושאי בר-נס – טיפול וייעוץ זוגי, טיפול רגשי במצבי משבר, חרדה וטראומה והדרכת הורים, לישראלים בארץ ובחו״ל. טיפול קצר מועד — בקליניקה בצור הדסה ובאזור ירושלים, ובמפגשים אונליין בעברית (אפשרי גם בשילוב אנגלית)."
         />
         <link rel="canonical" href={`${SITE}/`} />
         <meta property="og:title" content="שרונה קדושאי בר-נס | טיפול וייעוץ זוגי, טיפול רגשי והדרכת הורים" />
@@ -311,7 +307,8 @@ function HomePage() {
             </div>
 
             <div style={{ flex: 1.08 }}>
-              <Kicker>קצת עליי</Kicker>
+              {/* a real heading, sat right on the text it introduces */}
+              <h2 style={{ ...h2Style, fontSize: 42, color: "var(--color-accent-2-800)", margin: "0 0 16px" }}>קצת עליי</h2>
               {aboutLines.map((line, i) => (
                 <p key={i} style={{ fontSize: 19, lineHeight: 1.7, margin: i === aboutLines.length - 1 ? "0 0 26px" : "0 0 20px", color: "var(--color-text)" }}>
                   {line}
@@ -324,8 +321,8 @@ function HomePage() {
               </div>
               <div data-ab-stats data-m="stats" style={{ display: "flex", gap: 44, flexWrap: "wrap", paddingTop: 18, borderTop: "1.5px solid color-mix(in srgb,var(--color-text) 12%,transparent)" }}>
                 <Stat value={<span data-count="20" data-suffix="+">20+</span>} label="שנות ניסיון" />
-                <Stat value="יחידים · זוגות · קבוצות" label="ליווי מותאם אישית" small />
-                <Stat value="עברית · אנגלית" label="שפות הטיפול" small />
+                <Stat value="יחידים · זוגות · משפחות · קבוצות" label="ליווי מותאם אישית" small />
+                <Stat value="עברית" label="אפשרי גם בשילוב אנגלית" small />
               </div>
             </div>
           </div>
@@ -842,8 +839,8 @@ function Rail() {
 function Stat({ value, label, small }) {
   return (
     <div>
-      <div style={{ fontFamily: HEAD, fontSize: small ? 24 : 44, color: "var(--color-accent-2-700)", lineHeight: 1.1 }}>{value}</div>
-      <div style={{ fontSize: 15, color: "var(--color-accent-2-800)", marginTop: 6 }}>{label}</div>
+      <div style={{ fontFamily: HEAD, fontSize: small ? 19 : 32, color: "var(--color-accent-2-800)", lineHeight: 1.2 }}>{value}</div>
+      <div style={{ fontSize: 14.5, color: "color-mix(in srgb,var(--color-text) 64%,transparent)", marginTop: 5 }}>{label}</div>
     </div>
   );
 }
