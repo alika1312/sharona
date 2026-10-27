@@ -297,7 +297,7 @@ function HomePage() {
           </div>
 
           <div data-m="stack" style={{ position: "relative", maxWidth: 1200, margin: "0 auto", display: "flex", gap: 70, alignItems: "center" }}>
-            <div style={{ flex: 0.92, position: "relative", display: "flex", justifyContent: "center" }}>
+            <div className="ab-photo" style={{ flex: 0.92, position: "relative", display: "flex", justifyContent: "center" }}>
               <div data-parallax="0.07">
                 <div data-ab-portrait data-m="portrait" style={{ width: 420, height: "min(500px,54vh)", borderRadius: "48% 52% 55% 45%/56% 46% 54% 44%", overflow: "hidden", boxShadow: "var(--shadow-lg)" }}>
                   <img src="/sharona-portrait.webp" alt="שרונה קדושאי בר-נס" width="554" height="597" loading="lazy" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />

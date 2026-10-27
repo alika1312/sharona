@@ -886,3 +886,10 @@ select:focus-visible,
     font-size: 16px;
   }
 }
+
+/* ---- about: one portrait on a phone ----
+   The hero photo ends right where this one would start, and two portraits
+   back to back read as a mistake. */
+@media (max-width: 900px) {
+  .organic-v2 .ab-photo { display: none !important; }
+}
