@@ -800,7 +800,12 @@ select:focus-visible,
 .organic-v2 [data-carnav]:hover {
   background: color-mix(in srgb, #fff 24%, transparent) !important;
 }
-.organic-v2 [data-stack] { touch-action: pan-y; }
+/* Desktop drags the deck itself, so touch may only pan the page vertically.
+   The mobile rail is a native horizontal scroller and needs both axes —
+   pan-y alone is what stopped a finger from swiping between reviews. */
+@media (min-width: 901px) {
+  .organic-v2 [data-stack] { touch-action: pan-y; }
+}
 
 /* ---- two service cards per row below ~1040px (see the 3-col step below) ---- */
 @media (min-width: 901px) and (max-width: 1039px) {

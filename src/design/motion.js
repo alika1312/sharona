@@ -37,6 +37,9 @@ const BREAK = 340;
 // match the `max-width: 900px` media queries in organic.css.
 const MOBILE_MAX = 900;
 const isNarrow = () => window.innerWidth <= MOBILE_MAX;
+// The full-review dialog on the homepage; while it's up, page-level wheel and
+// key handling stands down.
+const modalOpen = () => !!document.querySelector('[role="dialog"][aria-modal="true"]');
 
 export function createHomeMotion(root, props = {}) {
   const m = new HomeMotion(root, props);
@@ -617,7 +620,8 @@ class HomeMotion {
 
   setupSnapInput() {
     this.onWheel = (e) => {
-      if (this.snapOff()) return;
+      // A review opened in full scrolls on its own; the page stays put.
+      if (this.snapOff() || modalOpen()) return;
       const now = performance.now();
       if (this.jumpA || now < this.jumpCool) {
         e.preventDefault();
@@ -662,7 +666,7 @@ class HomeMotion {
 
     // Keyboard paging past a lock jumps rather than nudging.
     this.onKeyNav = (e) => {
-      if (this.snapOff() || !this.hold) return;
+      if (this.snapOff() || !this.hold || modalOpen()) return;
       const dn = ["ArrowDown", "PageDown", " ", "Spacebar"].includes(e.key);
       const upk = ["ArrowUp", "PageUp"].includes(e.key);
       if (!dn && !upk) return;
@@ -1279,12 +1283,22 @@ class HomeMotion {
       this.carTouched = true;
     };
     this.carNav.forEach((b) =>
-      b.addEventListener("click", () => this.carNudge(+b.dataset.carnav || 1))
+      b.addEventListener("click", () => {
+        // Before the deck has gathered, an arrow skips the one-at-a-time
+        // entrance and lands on the carousel itself.
+        if (this.carOn < 0.5 && this.voices && !isNarrow()) {
+          const r = this.voices.getBoundingClientRect();
+          const span = r.height - window.innerHeight;
+          if (span > 0) this.jump(Math.round(r.top + window.scrollY + span * 0.86), performance.now(), null);
+          return;
+        }
+        this.carNudge(+b.dataset.carnav || 1);
+      })
     );
     // Arrow keys work once the carousel is on screen — reading six reviews
     // shouldn't require a mouse.
     this.onCarKey = (e) => {
-      if (this.carOn < 0.4) return;
+      if (this.carOn < 0.4 || modalOpen()) return;
       if (e.target.closest && e.target.closest("input,textarea")) return;
       if (e.key === "ArrowRight") this.carNudge(1);
       else if (e.key === "ArrowLeft") this.carNudge(-1);
@@ -1410,9 +1424,11 @@ class HomeMotion {
       el.setAttribute("aria-hidden", op < 0.15 ? "true" : "false");
     });
 
+    // Always visible and live: before the deck gathers, a click skips
+    // ahead to the carousel (see setupStack).
     this.carNav.forEach((b) => {
-      b.style.opacity = (cB * 0.95).toFixed(3);
-      b.style.pointerEvents = cB > 0.15 ? "auto" : "none";
+      b.style.opacity = (0.6 + cB * 0.35).toFixed(3);
+      b.style.pointerEvents = "auto";
     });
     if (this.hint1) this.hint1.style.opacity = (1 - cB).toFixed(3);
     if (this.hint2) this.hint2.style.opacity = cB.toFixed(3);

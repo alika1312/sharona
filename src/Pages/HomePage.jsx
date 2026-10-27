@@ -161,11 +161,19 @@ function HomePage() {
   const motionRef = useRef(null);
   const [readVoice, setReadVoice] = useState(null);
 
+  // While a review is open the page underneath is frozen, so scrolling only
+  // ever moves the review text.
   useEffect(() => {
     if (!readVoice) return;
     const onKey = (e) => e.key === "Escape" && setReadVoice(null);
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    const html = document.documentElement;
+    const prev = html.style.overflow;
+    html.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      html.style.overflow = prev;
+    };
   }, [readVoice]);
 
   useEffect(() => {
@@ -758,23 +766,28 @@ function HomePage() {
           aria-modal="true"
           aria-label={`ההמלצה של ${readVoice.name.trim()}`}
           onClick={() => setReadVoice(null)}
-          style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(39,46,27,.62)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}
+          style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(39,46,27,.62)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, overscrollBehavior: "contain" }}
         >
+          {/* header and close stay put; only the text scrolls */}
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{ position: "relative", width: "100%", maxWidth: 680, maxHeight: "86vh", overflowY: "auto", background: "var(--color-bg)", color: "var(--color-text)", borderRadius: 28, padding: "40px 34px 32px", boxShadow: "var(--shadow-md)" }}
+            style={{ width: "100%", maxWidth: 680, maxHeight: "88vh", display: "flex", flexDirection: "column", background: "var(--color-bg)", color: "var(--color-text)", borderRadius: 28, boxShadow: "var(--shadow-md)", overflow: "hidden" }}
           >
-            <button
-              type="button"
-              autoFocus
-              onClick={() => setReadVoice(null)}
-              aria-label="סגירה"
-              style={{ position: "absolute", top: 14, insetInlineEnd: 14, width: 44, height: 44, borderRadius: "50%", border: "none", background: "color-mix(in srgb,var(--color-accent-2) 16%,transparent)", color: "var(--color-accent-2-800)", fontSize: 22, cursor: "pointer" }}
-            >
-              ✕
-            </button>
-            <p style={{ margin: "0 0 22px", fontSize: 18.5, lineHeight: 1.75, whiteSpace: "pre-line" }}>{readVoice.feedback.trim()}</p>
-            <div style={{ fontWeight: 700, fontSize: 16.5, color: "var(--color-accent-2-800)" }}>{readVoice.name.trim()}</div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "16px 22px 14px 16px", borderBottom: "1.5px solid color-mix(in srgb,var(--color-text) 10%,transparent)", flex: "none" }}>
+              <div style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)" }}>{readVoice.name.trim()}</div>
+              <button
+                type="button"
+                autoFocus
+                onClick={() => setReadVoice(null)}
+                aria-label="סגירה"
+                style={{ flex: "none", width: 44, height: 44, borderRadius: "50%", border: "none", background: "color-mix(in srgb,var(--color-accent-2) 16%,transparent)", color: "var(--color-accent-2-800)", fontSize: 20, cursor: "pointer" }}
+              >
+                ✕
+              </button>
+            </div>
+            <div style={{ overflowY: "auto", overscrollBehavior: "contain", WebkitOverflowScrolling: "touch", padding: "22px 26px 28px" }}>
+              <p style={{ margin: 0, fontSize: 18, lineHeight: 1.75, whiteSpace: "pre-line" }}>{readVoice.feedback.trim()}</p>
+            </div>
           </div>
         </div>
       )}
