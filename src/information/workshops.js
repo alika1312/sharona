@@ -19,7 +19,7 @@ export const workshops = [
   },
   {
     title: "לדבר, להקשיב, להתקרב",
-    image: "/sadnaot.webp",
+    image: "/couple-talk.webp",
     ctaLabel: "לפרטים ותיאום סדנה",
     description: `סדנה זוגית חווייתית לתקשורת טובה
 
@@ -51,7 +51,7 @@ export const workshops = [
   },
   {
     title: "אמא שבתוכי",
-    // No image yet — Sharona's AI image for this one is still to come.
+    image: "/ima-shebetochi.webp",
     ctaLabel: "לפרטים ותיאום סדנה",
     description: `על הקשר עם אמא והאופן בו הוא ממשיך לחיות בתוכנו
 סדנה לנשים
@@ -73,7 +73,7 @@ export const workshops = [
   },
   {
     title: "הילדה הפנימית",
-    image: "/workchild.webp",
+    image: "/inner-child.webp",
     ctaLabel: "לפרטים ותיאום סדנה",
     description: `סדנה חווייתית לנשים לחיבור לעצמנו, חמלה עצמית וצמיחה אישית
 
@@ -93,7 +93,7 @@ export const workshops = [
   },
   {
     title: "חזון אישי ובניית תמונת עתיד מיטבית",
-    image: "/workCom.webp",
+    image: "/vision.webp",
     ctaLabel: "לפרטים ותיאום סדנה",
     description: `סדנה חווייתית לבניית חזון אישי / זוגי / ארגוני
 
