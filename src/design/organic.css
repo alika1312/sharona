@@ -846,7 +846,7 @@ select:focus-visible,
   .organic-v2 [data-cursor-dot] { display: none !important; }
 }
 
-/* ---- Eight service cards: four across, dropping to two then one ---- */
+/* ---- Six service cards: three across, dropping to two then one ---- */
 @media (min-width: 1040px) and (max-width: 1279px) {
   .organic-v2 #services [data-m="grid"] { grid-template-columns: repeat(3, 1fr) !important; }
 }

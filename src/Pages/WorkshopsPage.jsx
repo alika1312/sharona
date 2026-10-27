@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Head } from "vite-react-ssg";
-import { workshops, workshopsToCEO } from "../information/workshops";
+import { workshops } from "../information/workshops";
 import { useReveal } from "../hooks/useReveal";
 import { kicker, h2, muted } from "../design/ui";
 import { SITE } from "../information/contact";
@@ -70,16 +70,16 @@ const WorkshopsPage = () => {
     <div ref={rootRef} className="organic" style={{ overflowX: "hidden", position: "relative" }}>
       <Head>
         <html lang="he" dir="rtl" />
-        <title>סדנאות – זוגיות, חמש שפות האהבה, חזון אישי ועוד | שרונה קדושאי בר-נס</title>
+        <title>סדנאות ומפגשים חווייתיים – זוגיות, אמא שבתוכי, הילדה הפנימית ועוד | שרונה קדושאי בר-נס</title>
         <meta
           name="description"
-          content="סדנאות חווייתיות בהנחיית שרונה קדושאי בר-נס: סדנה זוגית, לדבר בשפת האהבה (חמש שפות האהבה), תקשורת זוגית, חזון אישי, הילד/ה הפנימי/ת ופרשת השבוע – ליחידים, זוגות, קבוצות וארגונים."
+          content="סדנאות ומפגשים חווייתיים בהנחיית שרונה קדושאי בר-נס: לדבר בשפת האהבה (חמש שפות האהבה), לדבר, להקשיב, להתקרב – תקשורת זוגית, אמא שבתוכי, הילדה הפנימית, חזון אישי ופרשת השבוע – הרצאות וסדנאות לזוגות ולקבוצות."
         />
         <link rel="canonical" href={`${SITE}/workshops/`} />
         <meta property="og:title" content="סדנאות – שרונה קדושאי בר-נס" />
         <meta
           property="og:description"
-          content="סדנאות חווייתיות לזוגות, יחידים, קבוצות וארגונים – כלים מעשיים לתקשורת, קרבה וצמיחה."
+          content="סדנאות ומפגשים חווייתיים | הרצאות וסדנאות לקבוצות – כלים מעשיים לתקשורת, קרבה וצמיחה."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`${SITE}/workshops/`} />
@@ -102,7 +102,7 @@ const WorkshopsPage = () => {
             סדנאות
           </h1>
           <p data-reveal data-reveal-delay="220" style={{ fontSize: 19, lineHeight: 1.7, margin: 0, color: muted(74) }}>
-            סדנאות חווייתיות ומעשיות ליחידים, זוגות, קבוצות וארגונים — כלים לתקשורת, לקרבה ולצמיחה אישית.
+            סדנאות ומפגשים חווייתיים | הרצאות וסדנאות לקבוצות
           </p>
         </div>
       </section>
@@ -122,27 +122,12 @@ const WorkshopsPage = () => {
         </div>
       </section>
 
-      {/* ============ CEO WORKSHOPS ============ */}
-      <section className="org-section" style={{ padding: "96px 54px", background: "var(--color-surface)" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ marginBottom: 44 }}>
-            <div data-reveal style={kicker}>לארגונים ולמנהלים</div>
-            <h2 data-reveal data-reveal-delay="120" className="org-h2" style={h2}>סדנאות למנהלים ולארגונים</h2>
-          </div>
-          <div className="org-services-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 26 }}>
-            {workshopsToCEO.map((w, i) => (
-              <OrgWorkshopCard key={`ceo-${i}`} workshop={w} delay={(i % 3) * 120} />
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ============ CTA BAND ============ */}
       <section className="org-section" style={{ padding: "96px 54px", background: "var(--color-accent-2-800)", color: "var(--color-bg)", textAlign: "center" }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <h2 data-reveal className="org-h2" style={{ ...h2, fontSize: 40, marginBottom: 18 }}>רוצים לארגן סדנה?</h2>
           <p data-reveal data-reveal-delay="120" style={{ fontSize: 18.5, lineHeight: 1.7, margin: "0 0 30px", color: "color-mix(in srgb,#fff 78%,transparent)" }}>
-            הסדנאות מותאמות לקבוצה, לזוג או לארגון שלכם. דברו איתי ונתאים יחד את התוכן והמסגרת.
+            הסדנאות מותאמות לקבוצה או לזוג שלכם. דברו איתי ונתאים יחד את התוכן והמסגרת.
           </p>
           <Link to="/#contact" data-reveal data-reveal-delay="220" className="pill-cta" style={{ background: "var(--color-accent)", color: "#fff", fontWeight: 700, fontSize: 18, padding: "16px 38px", borderRadius: 999, boxShadow: "var(--shadow-md)", display: "inline-block" }}>
             לתיאום ולפרטים ←

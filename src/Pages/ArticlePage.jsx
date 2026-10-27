@@ -76,6 +76,12 @@ export const ArticlePage = () => {
       {/* ============ BODY ============ */}
       <section className="org-section" style={{ padding: "70px 54px 100px", background: "var(--color-bg)" }}>
         <article style={{ maxWidth: 760, margin: "0 auto" }}>
+          {/* Sharona's abstract, set above the body as a lead */}
+          {article.summary && (
+            <p data-reveal style={{ fontSize: 20.5, lineHeight: 1.75, margin: "0 0 48px", paddingInlineStart: 22, borderInlineStart: "3px solid var(--color-accent)", color: "var(--color-accent-2-800)", fontWeight: 500 }}>
+              {article.summary}
+            </p>
+          )}
           {content.map((section, index) => (
             <div key={index} data-reveal data-reveal-delay={Math.min(index, 3) * 90} style={{ marginBottom: 40 }}>
               {section.sectionTitle && (

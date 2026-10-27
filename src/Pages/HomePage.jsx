@@ -15,8 +15,9 @@ import { EMAIL, PHONE_LABEL, SITE, TEL, WHATSAPP } from "../information/contact"
 
 const HEAD = "var(--font-heading)";
 
-// The eight areas of work on /experiences. Workshops live on /workshops and
-// are not part of this grid.
+// The main areas of work, a selection of /experiences (which also covers
+// management coaching and Israelis abroad — an audience, not a topic, so it
+// isn't a card here). Workshops live on /workshops.
 const services = [
   { icon: "❤", title: "משבר, מתח ולחץ נפשי", to: "/experiences", bg: "var(--color-accent-2-200)", text: "תמיכה בהתמודדות היומיומית, חזרה לאיזון וכלים מעשיים לצמיחה מתוך המשבר." },
   { icon: "◐", title: "ייעוץ וטיפול זוגי", to: "/experiences", bg: "var(--color-accent-200)", text: "מרחב לשיפור התקשורת, לחיזוק הקרבה והאינטימיות ולצליחת משברים בזוגיות." },
@@ -24,9 +25,10 @@ const services = [
   { icon: "☾", title: "טיפול בטראומה", to: "/experiences", bg: "var(--color-accent-300)", text: "עיבוד ממוקד ורגיש של אירועים קשים, לחיזוק החוסן והחזרה לתפקוד." },
   { icon: "❋", title: "גירושין בכבוד הדדי", to: "/experiences", bg: "var(--color-accent-2-200)", text: "ליווי בתהליך פרידה מתוך כבוד, שמפחית מתחים ומאפשר הורות מיטיבה משותפת." },
   { icon: "◇", title: "כיוון תעסוקתי וקריירה", to: "/experiences", bg: "var(--color-accent-200)", text: "מיפוי נטיות וכישורים, שחרור תחושת תקיעות וליווי עד התפקיד הרצוי." },
-  { icon: "◈", title: "ליווי מנהלים וייעוץ ארגוני", to: "/experiences", bg: "var(--color-accent-2-300)", text: "פיתוח מנהיגות, הובלת תהליכי שינוי וליווי בכירים בארגונים, עמותות ורשויות." },
-  { icon: "◍", title: "ישראלים בחו״ל", to: "/experiences", bg: "var(--color-accent-2-200)", text: "מפגשים אונליין בעברית, בהתאמה לאזורי זמן — זוגיות, טיפול רגשי, הורות ורילוקיישן." },
 ];
+
+// What Israelis abroad come for — Sharona's own list for the online section.
+const onlineAreas = ["טיפול וייעוץ זוגי", "טיפול רגשי אישי", "הדרכת הורים", "רילוקיישן"];
 
 const steps = [
   ["1", "פנייה ראשונית", "שולחים לי הודעת WhatsApp או מייל קצר עם כמה מילים על סיבת הפנייה.", "var(--color-accent-2)"],
@@ -61,7 +63,6 @@ const contactTopics = [
   ["משבר או חרדה", "אני מרגיש/ה בתקופה קשה ורוצה לדבר על זה."],
   ["הורות", "אשמח להדרכה בהתמודדות עם הילדים שלי."],
   ["טראומה", "יש משהו מהעבר שאני רוצה לעבד."],
-  ["מחו״ל", "אני בחו״ל ומחפש/ת טיפול בעברית באונליין."],
   ["עוד לא יודע/ת", "עוד לא בטוח/ה מה בדיוק, אבל משהו צריך להשתנות."],
 ];
 
@@ -84,6 +85,7 @@ const railSections = [
   ["about", "אודות"],
   ["approach", "הגישה"],
   ["services", "תחומי הטיפול"],
+  ["online", "אונליין"],
   ["gallery", "המרחב"],
   ["voices", "המלצות"],
   ["faq", "שאלות נפוצות"],
@@ -109,6 +111,10 @@ const voices = [
 
 // The full set (and the FAQPage schema) lives on /faq; the homepage stack
 // holds five — grounded answers only, the same count as the design.
+// A card shows about 12 lines; anything longer (or cut to an `excerpt`) gets a
+// "read the full review" button that opens the whole text.
+const isLongVoice = (t) => Boolean(t.excerpt) || t.feedback.trim().length > 450;
+
 const homeFaqs = faqs.filter((f) => !f.todo).slice(0, 5);
 
 // The full text lives on /about; the homepage shows the opening two beats.
@@ -153,6 +159,14 @@ function Kicker({ color, children }) {
 function HomePage() {
   const rootRef = useRef(null);
   const motionRef = useRef(null);
+  const [readVoice, setReadVoice] = useState(null);
+
+  useEffect(() => {
+    if (!readVoice) return;
+    const onKey = (e) => e.key === "Escape" && setReadVoice(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [readVoice]);
 
   useEffect(() => {
     if (!rootRef.current) return;
@@ -395,6 +409,20 @@ function HomePage() {
                 </div>
               ))}
             </div>
+
+            <div style={{ textAlign: "center", marginTop: 44 }}>
+              <a
+                href={WHATSAPP}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackWhatsappClick("home_steps_cta")}
+                className="pill"
+                data-magnet
+                style={{ display: "inline-block", background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 17, padding: "15px 32px", borderRadius: 999, boxShadow: "var(--shadow-md)" }}
+              >
+                רוצים להתחיל? מוזמנים לשלוח לי הודעה ←
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -409,7 +437,7 @@ function HomePage() {
             </div>
             {/* cards start piled in the middle, get dealt into the grid, then
                 tilt under the pointer */}
-            <div data-m="grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18 }}>
+            <div data-m="grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }}>
               {services.map((s) => (
                 <Link
                   key={s.title}
@@ -425,6 +453,54 @@ function HomePage() {
                   <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: "var(--color-text)" }}>{s.text}</p>
                 </Link>
               ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================== ONLINE ============================== */}
+      <section id="online" data-pin-sec style={{ position: "relative", height: "180vh", background: "linear-gradient(160deg,#eef0e0,#f5ecdb)" }}>
+        <div data-pin-inner style={pinInner}>
+          <div data-m="stack" style={{ position: "relative", maxWidth: 1100, margin: "0 auto", width: "100%", display: "flex", gap: 64, alignItems: "center" }}>
+            <div style={{ flex: "0 0 40%" }}>
+              <Kicker>אונליין · בעברית</Kicker>
+              <h2 style={{ ...h2Style, fontSize: 44, margin: "0 0 22px", maxWidth: "16ch" }}>
+                ייעוץ וטיפול אונליין לישראלים בחו״ל
+              </h2>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                {onlineAreas.map((a) => (
+                  <span key={a} style={{ padding: "8px 16px", borderRadius: 999, background: "color-mix(in srgb,var(--color-accent-2) 14%,transparent)", color: "var(--color-accent-2-800)", fontWeight: 700, fontSize: 15 }}>
+                    {a}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 18.5, lineHeight: 1.72, margin: "0 0 16px", color: "var(--color-text)" }}>
+                גם כשחיים בחו״ל, הצורך לדבר ולהתייעץ בעברית, עם מטפלת שמכירה ומבינה את התרבות והמציאות הישראלית, נשאר משמעותי. אני מלווה ישראלים המתגוררים ברחבי העולם באמצעות מפגשים אונליין בעברית.
+              </p>
+              <p style={{ fontSize: 18.5, lineHeight: 1.72, margin: "0 0 16px", color: "var(--color-text)" }}>
+                הפנייה יכולה להיות סביב קשיים ומשברים בזוגיות, משבר אישי, התמודדות רגשית, אתגרים בהורות או מערכות יחסים מורכבות עם בני המשפחה וההורים החיים בישראל. כמו כן, אני מלווה בהתמודדויות ובקשיים הקשורים לרילוקיישן.
+              </p>
+              <p style={{ fontSize: 18.5, lineHeight: 1.72, margin: "0 0 26px", color: "var(--color-text)" }}>
+                הטיפול בעברית מאפשר לדבר על הדברים העמוקים והרגישים ביותר בשפה הטבעית והמוכרת, בלי צורך להסביר את הקודים התרבותיים והמשפחתיים שמלווים אותנו. המפגשים מתקיימים באופן דיסקרטי וגמיש, ובהתאמה לאזורי זמן שונים ברחבי העולם.
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "center" }}>
+                <a
+                  href={WHATSAPP}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackWhatsappClick("home_online_cta")}
+                  className="pill"
+                  data-magnet
+                  style={{ display: "inline-block", background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 17, padding: "14px 30px", borderRadius: 999, boxShadow: "var(--shadow-md)" }}
+                >
+                  לתיאום מפגש אונליין ←
+                </a>
+                <Link to="/faq" className="tap-link" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
+                  שאלות נפוצות על טיפול אונליין
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -541,6 +617,15 @@ function HomePage() {
                   <p style={{ margin: "0 0 22px", fontSize: 19, lineHeight: 1.62, display: "-webkit-box", WebkitLineClamp: 12, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                     {(t.excerpt ?? t.feedback).trim()}
                   </p>
+                  {isLongVoice(t) && (
+                    <button
+                      type="button"
+                      onClick={() => setReadVoice(t)}
+                      style={{ alignSelf: "flex-start", margin: "-8px 0 18px", padding: "8px 18px", borderRadius: 999, border: "1.5px solid color-mix(in srgb,#fff 45%,transparent)", background: "transparent", color: "inherit", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 15, cursor: "pointer", flex: "none" }}
+                    >
+                      לקריאת ההמלצה המלאה
+                    </button>
+                  )}
                   {/* mt:auto — the name is pinned to the bottom of the card */}
                   <footer style={{ display: "flex", alignItems: "center", gap: 12, marginTop: "auto", flex: "none" }}>
                     <div aria-hidden="true" style={{ width: 46, height: 46, borderRadius: "50%", background: "color-mix(in srgb,#fff 20%,transparent)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, flex: "none" }}>
@@ -667,6 +752,32 @@ function HomePage() {
           </div>
         </div>
       </section>
+      {readVoice && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`ההמלצה של ${readVoice.name.trim()}`}
+          onClick={() => setReadVoice(null)}
+          style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(39,46,27,.62)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ position: "relative", width: "100%", maxWidth: 680, maxHeight: "86vh", overflowY: "auto", background: "var(--color-bg)", color: "var(--color-text)", borderRadius: 28, padding: "40px 34px 32px", boxShadow: "var(--shadow-md)" }}
+          >
+            <button
+              type="button"
+              autoFocus
+              onClick={() => setReadVoice(null)}
+              aria-label="סגירה"
+              style={{ position: "absolute", top: 14, insetInlineEnd: 14, width: 44, height: 44, borderRadius: "50%", border: "none", background: "color-mix(in srgb,var(--color-accent-2) 16%,transparent)", color: "var(--color-accent-2-800)", fontSize: 22, cursor: "pointer" }}
+            >
+              ✕
+            </button>
+            <p style={{ margin: "0 0 22px", fontSize: 18.5, lineHeight: 1.75, whiteSpace: "pre-line" }}>{readVoice.feedback.trim()}</p>
+            <div style={{ fontWeight: 700, fontSize: 16.5, color: "var(--color-accent-2-800)" }}>{readVoice.name.trim()}</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

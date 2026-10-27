@@ -2,11 +2,9 @@
 // component and by scripts/generate-seo.mjs so the emitted HTML, the sitemap and
 // llms.txt never drift apart.
 //
-// NOTE: the `description` field inside articles.js is NOT used — in the existing
-// data it is duplicated across articles (#1/#4 and #5/#6 share one string) and
-// two of them describe a different topic than the article. The first paragraph of
-// the article itself is the only truthful, per-article summary available, so it is
-// what we trim here. Nothing is invented.
+// Each article's `summary` is Sharona's own abstract — shown above the article
+// and trimmed here for the meta description. An article without one falls back
+// to its first paragraph. Nothing is invented.
 
 const BRAND = "שרונה קדושאי בר-נס";
 const MAX_DESC = 155;
@@ -27,7 +25,7 @@ export function trimToWord(text, max = MAX_DESC) {
 }
 
 export function articleDescription(article) {
-  const first = normalize(article.content?.[0]?.sectionFirstText || "");
+  const first = normalize(article.summary || article.content?.[0]?.sectionFirstText || "");
   return first ? trimToWord(first) : `מאמר מאת ${BRAND} בנושא ${normalize(article.title)}.`;
 }
 

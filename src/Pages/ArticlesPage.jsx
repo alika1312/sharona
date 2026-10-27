@@ -8,7 +8,7 @@ import { SITE } from "../information/contact";
 
 // Cut on a word boundary (a bare slice split Hebrew words in half), with the
 // ellipsis only when something was actually cut.
-const preview = (article) => trimToWord(article.content?.[0]?.sectionFirstText || "", 150);
+const preview = (article) => trimToWord(article.summary || article.content?.[0]?.sectionFirstText || "", 150);
 
 export const ArticlesPage = () => {
   const rootRef = useReveal();
