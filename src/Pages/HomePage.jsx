@@ -318,7 +318,7 @@ function HomePage() {
               </div>
               <div data-ab-stats data-m="stats" style={{ display: "flex", gap: 44, flexWrap: "wrap", paddingTop: 18, borderTop: "1.5px solid color-mix(in srgb,var(--color-text) 12%,transparent)" }}>
                 <Stat value={<span data-count="20" data-suffix="+">20+</span>} label="שנות ניסיון" />
-                <Stat value="יחידים · זוגות · משפחות · קבוצות" label="ליווי מותאם אישית" small />
+                <Stat value="יחידים · זוגות · משפחות" label="ליווי מותאם אישית" small />
                 <Stat value="עברית" label="אפשרי גם בשילוב אנגלית" small />
               </div>
             </div>

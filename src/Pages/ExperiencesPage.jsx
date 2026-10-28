@@ -55,15 +55,16 @@ export const ExperiencesPage = () => {
               <div
                 key={exp.id}
                 id={exp.slug}
-                className="org-about"
+                className="org-about exp-row"
                 style={{ display: "flex", gap: 52, alignItems: "center", flexDirection: flip ? "row-reverse" : "row", scrollMarginTop: 110 }}
               >
-                <div style={{ flex: 0.82, display: "flex", justifyContent: "center" }}>
-                  <div data-reveal data-parallax={flip ? "0.05" : "0.08"} className="gitem" style={{ width: "100%", maxWidth: 360, aspectRatio: "1/1", borderRadius: index % 3 === 0 ? "48% 52% 55% 45%/56% 46% 54% 44%" : 30, overflow: "hidden", boxShadow: "var(--shadow-md)" }}>
+                {/* kept small so the image accompanies the text rather than leading it */}
+                <div style={{ flex: 0.6, display: "flex", justifyContent: "center" }}>
+                  <div data-reveal data-parallax={flip ? "0.05" : "0.08"} className="gitem exp-img" style={{ width: "100%", maxWidth: 260, aspectRatio: "1/1", borderRadius: index % 3 === 0 ? "48% 52% 55% 45%/56% 46% 54% 44%" : 30, overflow: "hidden", boxShadow: "var(--shadow-md)" }}>
                     <img src={exp.image} alt={exp.title.trim()} loading="lazy" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   </div>
                 </div>
-                <div style={{ flex: 1.18 }}>
+                <div style={{ flex: 1.4 }}>
                   <div data-reveal style={{ display: "inline-block", fontFamily: "var(--font-heading)", fontSize: 22, color: "var(--color-accent-2-300)", marginBottom: 6 }}>
                     {String(index + 1).padStart(2, "0")}
                   </div>

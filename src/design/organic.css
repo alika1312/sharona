@@ -442,7 +442,7 @@ select:focus-visible,
   .organic-v2 #about p,
   .organic-v2 #contact p:not([data-cf]) { font-size: 17.5px !important; max-width: 34ch !important; margin-inline: auto !important; }
   .organic-v2 [data-m="stats"] { gap: 20px !important; justify-content: center !important; padding-top: 22px !important; }
-  /* two columns, with the long "יחידים · זוגות · משפחות · קבוצות" on its own row
+  /* two columns, with the long "יחידים · זוגות · משפחות" on its own row
      so it reads on one line instead of stacking word by word */
   .organic-v2 [data-m="stats"] {
     display: grid !important;
@@ -885,6 +885,12 @@ select:focus-visible,
     margin: 24px auto 30px !important;
     text-wrap: pretty;
   }
+}
+
+/* ---- /experiences on a phone: modest images above each area ---- */
+@media (max-width: 900px) {
+  .exp-img { max-width: 200px !important; }
+  .exp-row { gap: 20px !important; }
 }
 
 /* ---- about: one portrait on a phone ----
