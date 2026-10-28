@@ -15,16 +15,15 @@ import { EMAIL, PHONE_LABEL, SITE, TEL, WHATSAPP } from "../information/contact"
 
 const HEAD = "var(--font-heading)";
 
-// The main areas of work, a selection of /experiences (which also covers
-// management coaching and Israelis abroad — an audience, not a topic, so it
-// isn't a card here). Workshops live on /workshops.
+// The six treatment areas, in Sharona's order and wording. Each card opens
+// its full write-up on /experiences. Online therapy has its own section.
 const services = [
-  { icon: "❤", title: "משבר, מתח ולחץ נפשי", to: "/experiences", bg: "var(--color-accent-2-200)", text: "תמיכה בהתמודדות היומיומית, חזרה לאיזון וכלים מעשיים לצמיחה מתוך המשבר." },
-  { icon: "◐", title: "ייעוץ וטיפול זוגי", to: "/experiences", bg: "var(--color-accent-200)", text: "מרחב לשיפור התקשורת, לחיזוק הקרבה והאינטימיות ולצליחת משברים בזוגיות." },
-  { icon: "✦", title: "הדרכת הורים", to: "/experiences", bg: "var(--color-accent-2-300)", text: "כלים, ליווי רגשי והכוונה להורות מיטיבה ולהתמודדות עם הקשיים של ילדיכם." },
-  { icon: "☾", title: "טיפול בטראומה", to: "/experiences", bg: "var(--color-accent-300)", text: "עיבוד ממוקד ורגיש של אירועים קשים, לחיזוק החוסן והחזרה לתפקוד." },
-  { icon: "❋", title: "גירושין בכבוד הדדי", to: "/experiences", bg: "var(--color-accent-2-200)", text: "ליווי בתהליך פרידה מתוך כבוד, שמפחית מתחים ומאפשר הורות מיטיבה משותפת." },
-  { icon: "◇", title: "כיוון תעסוקתי וקריירה", to: "/experiences", bg: "var(--color-accent-200)", text: "מיפוי נטיות וכישורים, שחרור תחושת תקיעות וליווי עד התפקיד הרצוי." },
+  { title: "טיפול רגשי", to: "/experiences#emotional", text: "ליווי בהתמודדות עם משברי חיים, חרדה, מתח ולחץ נפשי, בתקופות של קושי ושינוי." },
+  { title: "ייעוץ וטיפול זוגי", to: "/experiences#couples", text: "מרחב לשיפור התקשורת, לחיזוק הקרבה והאינטימיות ולצליחת משברים בזוגיות." },
+  { title: "טיפול בטראומה", to: "/experiences#trauma", text: "עיבוד ממוקד ורגיש של אירועים קשים, לחיזוק החוסן והחזרה לתפקוד." },
+  { title: "הדרכת הורים", to: "/experiences#parents", text: "כלים, ליווי רגשי והכוונה להורות מיטיבה ולהתמודדות עם הקשיים של ילדיכם." },
+  { title: "גירושין בכבוד הדדי", to: "/experiences#divorce", text: "ליווי בתהליך הפרידה לשם הפחתת קונפליקטים, הגעה להסכמות משותפות, קידום תקשורת חיובית ושמירה על טובת הילדים." },
+  { title: "ייעוץ והכוונה בצמתי קריירה ולימודים", to: "/experiences#career", text: "ליווי בהתלבטויות מקצועיות, סיוע בבחירת מסלול לימודים, שחרור תחושת תקיעות וליווי עד לתפקיד הרצוי." },
 ];
 
 // What Israelis abroad come for — Sharona's own list for the online section.
@@ -237,9 +236,10 @@ function HomePage() {
 
         <div data-m="stack" style={{ position: "relative", maxWidth: 1200, margin: "0 auto", width: "100%", display: "flex", alignItems: "center", gap: 56 }}>
           <div style={{ flex: 1.08 }}>
-            <h1 data-reveal data-reveal-delay="0" style={{ position: "relative", fontFamily: HEAD, fontWeight: 400, fontSize: "clamp(40px,4.5vw,66px)", lineHeight: 1.1, letterSpacing: "-.015em", margin: 0 }}>
-              <span style={{ display: "block", paddingBottom: ".09em" }}>מרחב לנשום, להתפתח</span>
-              <span style={{ display: "block", paddingBottom: ".09em", color: "var(--color-accent-2-700)" }}>ולהתחיל מחדש</span>
+            {/* one colour for the whole headline — the olive Sharona liked */}
+            <h1 data-reveal data-reveal-delay="0" style={{ position: "relative", fontFamily: HEAD, fontWeight: 400, fontSize: "clamp(40px,4.5vw,66px)", lineHeight: 1.1, letterSpacing: "-.015em", margin: 0, color: "var(--color-accent-2-700)" }}>
+              <span style={{ display: "block", paddingBottom: ".09em" }}>מרחב לנשום,</span>
+              <span style={{ display: "block", paddingBottom: ".09em" }}>להבין ולצמוח</span>
             </h1>
             {/* who and what, straight under the headline — each area stays on
                 one line, so on a phone they wrap whole rather than mid-phrase */}
@@ -259,11 +259,8 @@ function HomePage() {
                 לישראלים בארץ ובחו״ל — בקליניקה ובאונליין
               </div>
             </div>
-            <p style={{ fontSize: 19.5, lineHeight: 1.65, maxWidth: "46ch", margin: "26px 0 14px", color: "var(--color-text)" }}>
-              לפעמים כל מה שצריך הוא מקום של שקט, אמון וביטחון.
-            </p>
-            <p style={{ fontSize: 19.5, lineHeight: 1.65, maxWidth: "46ch", margin: "0 0 34px", color: "var(--color-text)" }}>
-              מקום שבו אפשר לעצור לרגע, לעשות סדר במחשבות וברגשות, להבין איך חוויות העבר משפיעות עלינו היום, למצוא דרך להתמודד עם מה שכואב ולקבל כלים מעשיים לשינוי.
+            <p className="hero-lead" style={{ fontSize: 19.5, lineHeight: 1.65, maxWidth: "46ch", margin: "26px 0 34px", color: "var(--color-text)" }}>
+              לפעמים כל מה שצריך הוא מקום של שקט, אמון וביטחון. מקום שבו אפשר לעצור לרגע, לעשות סדר במחשבות וברגשות, להבין איך חוויות העבר משפיעות עלינו היום, למצוא דרך להתמודד עם מה שכואב ולקבל כלים מעשיים לשינוי.
             </p>
             <div style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
               <a href="#contact" className="pill" data-magnet style={{ background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 18, padding: "17px 36px", borderRadius: 999, boxShadow: "var(--shadow-md)" }}>
@@ -437,8 +434,7 @@ function HomePage() {
         <div data-pin-inner style={pinInner}>
           <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%" }}>
             <div style={{ marginBottom: 40, maxWidth: "34ch" }}>
-              <Kicker>תחומי הטיפול</Kicker>
-              <h2 style={h2Style}>איך אני יכולה ללוות אתכם</h2>
+              <h2 style={{ ...h2Style, color: "var(--color-accent-2-800)" }}>תחומי הטיפול</h2>
             </div>
             {/* cards start piled in the middle, get dealt into the grid, then
                 tilt under the pointer */}
@@ -451,11 +447,9 @@ function HomePage() {
                   data-tilt
                   style={{ display: "block", color: "var(--color-text)", borderRadius: 26, padding: 24, transformStyle: "preserve-3d" }}
                 >
-                  <div style={{ width: 50, height: 50, borderRadius: "50%", background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 15, fontSize: 22 }}>
-                    {s.icon}
-                  </div>
                   <div style={{ fontFamily: HEAD, fontSize: 21, lineHeight: 1.24, marginBottom: 9 }}>{s.title}</div>
                   <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: "var(--color-text)" }}>{s.text}</p>
+                  <div className="deck-more" style={{ marginTop: 12, fontSize: 14.5, fontWeight: 700, color: "var(--color-accent-2-800)" }}>לקריאה בהרחבה ←</div>
                 </Link>
               ))}
             </div>

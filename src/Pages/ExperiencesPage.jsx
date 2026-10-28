@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { Head } from "vite-react-ssg";
-import { experiences } from "../information/experiences";
+import { experiences, onlineTherapy } from "../information/experiences";
 import { useReveal } from "../hooks/useReveal";
-import { kicker, h2, muted } from "../design/ui";
+import { h2, muted } from "../design/ui";
 import { SITE } from "../information/contact";
 
 export const ExperiencesPage = () => {
@@ -12,40 +12,37 @@ export const ExperiencesPage = () => {
     <div ref={rootRef} className="organic" style={{ overflowX: "hidden", position: "relative" }}>
       <Head>
         <html lang="he" dir="rtl" />
-        <title>תחומי המומחיות שלי – טיפול רגשי, זוגי, טראומה והדרכת הורים</title>
+        <title>תחומי הטיפול – טיפול רגשי, זוגי, טראומה והדרכת הורים | שרונה קדושאי בר-נס</title>
         <meta
           name="description"
-          content="תחומי המומחיות של שרונה קדושאי בר-נס: טיפול במצבי משבר ולחץ, ייעוץ וטיפול זוגי, הדרכת הורים, גירושין בכבוד הדדי, טיפול בטראומה, ייעוץ תעסוקתי, ליווי מנהלים וייעוץ אונליין לישראלים בחו״ל."
+          content="תחומי הטיפול של שרונה קדושאי בר-נס: טיפול רגשי, ייעוץ וטיפול זוגי, טיפול בטראומה, הדרכת הורים, גירושין בכבוד הדדי וייעוץ והכוונה בצמתי קריירה ולימודים – בקליניקה ואונליין לישראלים בארץ ובחו״ל."
         />
         <link rel="canonical" href={`${SITE}/experiences/`} />
-        <meta property="og:title" content="תחומי המומחיות שלי – שרונה קדושאי בר-נס" />
+        <meta property="og:title" content="תחומי הטיפול – שרונה קדושאי בר-נס" />
         <meta
           property="og:description"
-          content="טיפול רגשי, זוגי, טראומה, הדרכת הורים, ייעוץ תעסוקתי, ליווי מנהלים וייעוץ אונליין לישראלים בחו״ל."
+          content="טיפול רגשי, זוגי, טראומה, הדרכת הורים, גירושין בכבוד הדדי וצמתי קריירה ולימודים – גם אונליין לישראלים בארץ ובחו״ל."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`${SITE}/experiences/`} />
       </Head>
 
       {/* ============ HEADER ============ */}
+      {/* one heading only — Sharona asked for no kicker or subtitle */}
       <section
         className="org-section"
         style={{
           position: "relative",
-          padding: "84px 54px 70px",
+          padding: "84px 54px 60px",
           background: "linear-gradient(155deg,#f5ecdb 0%,#eef0e0 55%,#f1ecdc 100%)",
           textAlign: "center",
           overflow: "hidden",
         }}
       >
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
-          <div data-reveal style={{ ...kicker, marginInline: "auto" }}>תחומי הטיפול</div>
-          <h1 data-reveal data-reveal-delay="120" className="org-h1" style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 58, lineHeight: 1.12, margin: "0 0 20px" }}>
-            תחומי המומחיות שלי
+          <h1 data-reveal className="org-h1" style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 58, lineHeight: 1.12, margin: 0, color: "var(--color-accent-2-800)" }}>
+            תחומי הטיפול
           </h1>
-          <p data-reveal data-reveal-delay="220" style={{ fontSize: 19, lineHeight: 1.7, margin: 0, color: muted(74) }}>
-            טיפול המותאם אישית לצרכים שלכם — מתוך ראייה הוליסטית, רגישות רבה וגישה מעשית.
-          </p>
         </div>
       </section>
 
@@ -57,8 +54,9 @@ export const ExperiencesPage = () => {
             return (
               <div
                 key={exp.id}
+                id={exp.slug}
                 className="org-about"
-                style={{ display: "flex", gap: 52, alignItems: "center", flexDirection: flip ? "row-reverse" : "row" }}
+                style={{ display: "flex", gap: 52, alignItems: "center", flexDirection: flip ? "row-reverse" : "row", scrollMarginTop: 110 }}
               >
                 <div style={{ flex: 0.82, display: "flex", justifyContent: "center" }}>
                   <div data-reveal data-parallax={flip ? "0.05" : "0.08"} className="gitem" style={{ width: "100%", maxWidth: 360, aspectRatio: "1/1", borderRadius: index % 3 === 0 ? "48% 52% 55% 45%/56% 46% 54% 44%" : 30, overflow: "hidden", boxShadow: "var(--shadow-md)" }}>
@@ -79,6 +77,25 @@ export const ExperiencesPage = () => {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* ============ ONLINE ============ */}
+      {/* a way of meeting rather than another area, so it stands apart */}
+      <section id={onlineTherapy.slug} className="org-section" style={{ padding: "90px 54px", background: "linear-gradient(160deg,#eef0e0,#f5ecdb)", scrollMarginTop: 80 }}>
+        <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
+          <h2 data-reveal className="org-h2" style={{ ...h2, fontSize: 40, margin: "0 0 24px", color: "var(--color-accent-2-800)" }}>
+            {onlineTherapy.title}
+          </h2>
+          {onlineTherapy.description
+            .split("\n")
+            .map((l) => l.trim())
+            .filter(Boolean)
+            .map((l, i) => (
+              <p key={i} data-reveal data-reveal-delay={80 + i * 50} style={{ fontSize: 17.5, lineHeight: 1.75, margin: "0 0 14px", color: muted(80) }}>
+                {l}
+              </p>
+            ))}
         </div>
       </section>
 

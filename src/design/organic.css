@@ -516,8 +516,7 @@ select:focus-visible,
     position: relative;
     width: 86% !important;
     max-width: 322px;
-    /* the icon disc hangs 44px into the card, so the title starts below it */
-    padding: 56px 24px 26px !important;
+    padding: 26px 24px 24px !important;
     border-radius: 36px !important;
     box-shadow: var(--shadow-sm) !important;
     text-align: start !important;
@@ -534,18 +533,7 @@ select:focus-visible,
     border-end-end-radius: 12px !important;
     background-color: color-mix(in srgb, var(--color-accent-2-100) 60%, #fff) !important;
   }
-  .organic-v2 [data-deck] > div:first-child {
-    position: absolute;
-    top: -20px;
-    width: 64px !important;
-    height: 64px !important;
-    font-size: 29px !important;
-    margin: 0 !important;
-    box-shadow: 0 0 0 7px var(--color-bg) !important;
-  }
-  .organic-v2 [data-deck]:nth-child(odd) > div:first-child { inset-inline-end: 20px; }
-  .organic-v2 [data-deck]:nth-child(even) > div:first-child { inset-inline-start: 20px; }
-  .organic-v2 [data-deck] > div:nth-child(2) { font-size: 22px !important; margin-bottom: 8px !important; }
+  .organic-v2 [data-deck] > div:first-child { font-size: 22px !important; margin-bottom: 8px !important; }
   .organic-v2 [data-deck] p { font-size: 16.5px !important; margin: 0 !important; }
 
   /* gallery — the collage flattens into a vertical organic mosaic, copy
@@ -884,6 +872,18 @@ select:focus-visible,
     border-radius: 999px;
     background: color-mix(in srgb, var(--color-accent-2) 14%, transparent);
     font-size: 16px;
+  }
+}
+
+/* ---- hero: the opening paragraph on a phone ----
+   One centred block with even, airy line spacing. */
+@media (max-width: 900px) {
+  .organic-v2 #top p.hero-lead {
+    text-align: center !important;
+    line-height: 1.8 !important;
+    max-width: 34ch !important;
+    margin: 24px auto 30px !important;
+    text-wrap: pretty;
   }
 }
 
