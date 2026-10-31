@@ -94,6 +94,9 @@ export const workshops = [
   {
     title: "חזון אישי ובניית תמונת עתיד מיטבית",
     image: "/vision.webp",
+    // Too tall to show whole — fill the frame instead, centred on the
+    // compass, which fits inside it entirely.
+    imageCrop: "50% 51.5%",
     ctaLabel: "לפרטים ותיאום סדנה",
     description: `סדנה חווייתית לבניית חזון אישי / זוגי / ארגוני
 
