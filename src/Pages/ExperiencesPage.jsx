@@ -71,9 +71,24 @@ export const ExperiencesPage = () => {
                   <h2 data-reveal data-reveal-delay="80" style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 30, lineHeight: 1.25, margin: "0 0 18px", color: "var(--color-accent-2-800)" }}>
                     {exp.title.trim()}
                   </h2>
-                  <p data-reveal data-reveal-delay="160" style={{ fontSize: 17, lineHeight: 1.75, margin: 0, whiteSpace: "pre-line", color: muted(78) }}>
-                    {exp.description.trim()}
-                  </p>
+                  {/* one paragraph per line; "## " lines are small subheadings */}
+                  <div data-reveal data-reveal-delay="160">
+                    {exp.description
+                      .split("\n")
+                      .map((l) => l.trim())
+                      .filter(Boolean)
+                      .map((l, i) =>
+                        l.startsWith("## ") ? (
+                          <h3 key={i} style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 22, lineHeight: 1.3, margin: "22px 0 10px", color: "var(--color-accent-2-800)" }}>
+                            {l.slice(3)}
+                          </h3>
+                        ) : (
+                          <p key={i} style={{ fontSize: 17, lineHeight: 1.75, margin: "0 0 14px", color: muted(78) }}>
+                            {l}
+                          </p>
+                        ),
+                      )}
+                  </div>
                 </div>
               </div>
             );

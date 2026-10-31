@@ -5,15 +5,33 @@ import { useReveal } from "../hooks/useReveal";
 import { h2, muted } from "../design/ui";
 import { SITE } from "../information/contact";
 
-const education = [
-  "בעלת תואר שני בייעוץ חינוכי, אוניברסיטת בר אילן",
-  "בעלת תואר שני נוסף במנהל עסקים MBA, אוניברסיטת בר אילן",
-  "בוגרת בית הספר למנהיגות חינוכית של קרן מנדל ישראל",
-  "בוגרת קורס דירקטורים, המכללה למנהל",
+// Three groups, so the therapeutic trainings get their own clear place.
+const credentialGroups = [
+  {
+    title: "השכלה אקדמית",
+    items: [
+      "בעלת תואר שני בייעוץ חינוכי, אוניברסיטת בר אילן",
+      "בעלת תואר שני נוסף במנהל עסקים MBA, אוניברסיטת בר אילן",
+    ],
+  },
+  {
+    title: "הכשרות טיפוליות מקצועיות",
+    items: [
+      "היפנותרפיה בדגש על טיפול בטראומה",
+      "טיפול בטראומה בדינמיקה זוגית",
+      "דמיון מודרך ככלי טיפולי",
+      "ריפוי הילד הפנימי, זיכרונות ילדות",
+      "אקסס בארס",
+    ],
+  },
+  {
+    title: "הכשרות בניהול ובמנהיגות",
+    items: [
+      "בוגרת בית הספר למנהיגות חינוכית של קרן מנדל ישראל",
+      "בוגרת קורס דירקטורים, המכללה למנהל",
+    ],
+  },
 ];
-
-const trainings =
-  "דמיון מודרך ככלי טיפולי, אקסס בארס, 'היפנותרפיה - בדגש על טיפול בטראומה', 'טיפול בטראומה בדינמיקה זוגית', ריפוי הילד הפנימי, זיכרונות ילדות";
 
 const details = [
   ["שעות פעילות", "בוקר / צהריים / ערב — בתיאום מראש"],
@@ -109,20 +127,25 @@ function AboutPage() {
           <div className="org-services-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 26, alignItems: "start" }}>
             {/* education card */}
             <div data-reveal style={{ background: "var(--color-surface)", borderRadius: 28, padding: 38, boxShadow: "var(--shadow-sm)" }}>
-              <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 26, margin: "0 0 22px", color: "var(--color-accent-2-800)" }}>
-                השכלה אקדמית והכשרות
-              </h3>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 14 }}>
-                {education.map((e) => (
-                  <li key={e} style={{ display: "flex", gap: 12, fontSize: 17.5, lineHeight: 1.6, color: muted(82) }}>
-                    <span style={{ color: "var(--color-accent)", flex: "none" }}>✦</span>
-                    <span>{e}</span>
-                  </li>
+              <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+                {credentialGroups.map((g, i) => (
+                  <div
+                    key={g.title}
+                    style={i ? { paddingTop: 24, borderTop: "1.5px solid color-mix(in srgb,var(--color-text) 12%,transparent)" } : undefined}
+                  >
+                    <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 24, margin: "0 0 16px", color: "var(--color-accent-2-800)" }}>
+                      {g.title}
+                    </h3>
+                    <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+                      {g.items.map((e) => (
+                        <li key={e} style={{ display: "flex", gap: 12, fontSize: 17.5, lineHeight: 1.6, color: muted(82) }}>
+                          <span style={{ color: "var(--color-accent)", flex: "none" }}>✦</span>
+                          <span>{e}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ))}
-              </ul>
-              <div style={{ marginTop: 24, paddingTop: 20, borderTop: "1.5px solid color-mix(in srgb,var(--color-text) 12%,transparent)" }}>
-                <div style={{ fontWeight: 700, color: "var(--color-accent-2-800)", marginBottom: 8 }}>הכשרות נוספות:</div>
-                <p style={{ margin: 0, fontSize: 17, lineHeight: 1.66, color: muted(74) }}>{trainings}</p>
               </div>
             </div>
             {/* details card */}

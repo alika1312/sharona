@@ -85,7 +85,7 @@ function FaqItem({ q, a, todo, headingLevel = 3 }) {
             panel's content but not its own padding, which left a strip of
             empty space under every closed question. */}
         <div style={{ padding: "0 26px 24px" }}>
-          <p style={{ margin: 0 }}>{a}</p>
+          <p style={{ margin: 0, whiteSpace: "pre-line" }}>{a}</p>
           {todo && (
             <p
               style={{

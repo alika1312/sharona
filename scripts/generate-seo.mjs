@@ -17,6 +17,13 @@ const { articleDescription, normalize } = await import(
   pathToFileURL(resolve(root, "src/information/articleMeta.js")).href
 );
 
+// The FAQ goes into llms.txt in full, so AI crawlers read every answer as
+// plain text even though the page shows them collapsed. Placeholders
+// (todo) stay out, as they do in the FAQPage schema.
+const { faqs } = await import(
+  pathToFileURL(resolve(root, "src/information/faq.js")).href
+);
+
 // Canonical page list (mirrors the <Head> titles/descriptions in src/Pages/*).
 const staticPages = [
   {
@@ -96,6 +103,12 @@ ${staticPages
 ${articlePages
   .map((p) => `- [${p.title}](${BASE}${p.path}): ${p.desc}`)
   .join("\n")}
+
+## שאלות נפוצות
+${faqs
+  .filter((f) => !f.todo)
+  .map((f) => `### ${f.q}\n${f.a}`)
+  .join("\n\n")}
 `;
 
 await Promise.all([

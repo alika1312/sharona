@@ -66,7 +66,7 @@ const contactTopics = [
   ["עוד לא יודע/ת", "עוד לא בטוח/ה מה בדיוק, אבל משהו צריך להשתנות."],
 ];
 
-// The real photographs of the space. Four large plates rather than six small
+// The real photographs of the space. Two large plates rather than six small
 // tinted ones — a photo has to be big enough to actually see.
 //
 // x/y are percentages of the stage, d is depth: 0 is closest to the viewer
@@ -74,10 +74,8 @@ const contactTopics = [
 // says once it's the one you're pointing at. Depths are kept shallow (≤0.42)
 // so no photograph ever sits too far back to read.
 const plates = [
-  { x: -1, y: 4,  w: 430, h: 320, d: 0.12, r: "44% 56% 52% 48%/48% 44% 56% 52%", src: "/clinic-1.jpeg", label: "הפרגולה" },
-  { x: 60, y: 0,  w: 450, h: 330, d: 0.34, r: 28, src: "/clinic-2.jpeg", label: "הגינה" },
-  { x: 2,  y: 51, w: 420, h: 310, d: 0.42, r: 26, src: "/clinic-3.jpeg", label: "פינת הישיבה" },
-  { x: 57, y: 46, w: 470, h: 345, d: 0.04, r: "52% 48% 46% 54%/44% 52% 48% 56%", src: "/clinic-4.jpeg", label: "המרחב הטיפולי" },
+  { x: 56, y: 3,  w: 520, h: 400, d: 0.04, r: "52% 48% 46% 54%/44% 52% 48% 56%", src: "/clinic-3.jpeg", label: "המרחב הטיפולי" },
+  { x: 0,  y: 36, w: 500, h: 380, d: 0.3,  r: 28, src: "/clinic-1.jpeg", label: "הפרגולה" },
 ];
 
 const railSections = [
@@ -86,9 +84,9 @@ const railSections = [
   ["approach", "הגישה"],
   ["services", "תחומי הטיפול"],
   ["online", "אונליין"],
-  ["gallery", "המרחב"],
   ["voices", "המלצות"],
   ["faq", "שאלות נפוצות"],
+  ["gallery", "המרחב"],
   ["contact", "צרו קשר"],
 ];
 
@@ -110,12 +108,12 @@ const voices = [
 ];
 
 // The full set (and the FAQPage schema) lives on /faq; the homepage stack
-// holds five — grounded answers only, the same count as the design.
+// holds the first six — Sharona's pick, grounded answers only.
 // A card shows about 12 lines; anything longer (or cut to an `excerpt`) gets a
 // "read the full review" button that opens the whole text.
 const isLongVoice = (t) => Boolean(t.excerpt) || t.feedback.trim().length > 450;
 
-const homeFaqs = faqs.filter((f) => !f.todo).slice(0, 5);
+const homeFaqs = faqs.filter((f) => !f.todo).slice(0, 6);
 
 // The full text lives on /about; the homepage shows Sharona's opening.
 const aboutLines = aboutIntro;
@@ -505,73 +503,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ============================== GALLERY ============================== */}
-      {/* A room you're standing inside rather than a reel you scroll past.
-          Scroll assembles the plates out of depth; the pointer decides which
-          one you're looking at, and the rest step back for it. */}
-      <section id="gallery" data-collage data-pin-sec style={{ position: "relative", height: "300vh", background: "var(--color-surface)" }}>
-        <div data-pin-inner style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 54px" }}>
-          <div data-stage style={{ position: "relative", width: "100%", maxWidth: 1180, height: "min(660px,76vh)" }}>
-            {plates.map((g, i) => (
-              <div
-                key={i}
-                data-plate
-                data-depth={g.d}
-                style={{
-                  position: "absolute",
-                  left: `${g.x}%`,
-                  top: `${g.y}%`,
-                  // Sized against the stage (1180×660 at full size), not the
-                  // viewport: x% + width% then stays inside the stage at any
-                  // width, so a plate can't run off the edge on a laptop.
-                  width: `min(${g.w}px,${(g.w / 11.8).toFixed(1)}%)`,
-                  height: `min(${g.h}px,${(g.h / 6.6).toFixed(1)}%)`,
-                  borderRadius: g.r,
-                  overflow: "hidden",
-                  boxShadow: "var(--shadow-md)",
-                  willChange: "transform,opacity,filter",
-                  display: "flex",
-                  alignItems: "flex-end",
-                  justifyContent: "center",
-                  padding: 18,
-                  boxSizing: "border-box",
-                }}
-              >
-                <img
-                  src={g.src}
-                  alt={`המרחב הטיפולי — ${g.label}`}
-                  loading="lazy"
-                  decoding="async"
-                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
-                />
-                <span
-                  data-plabel
-                  aria-hidden="true"
-                  style={{ position: "relative", opacity: 0, fontSize: 13.5, fontWeight: 700, letterSpacing: ".04em", color: "var(--color-accent-2-800)", background: "color-mix(in srgb,var(--color-bg) 88%,#fff)", borderRadius: 999, padding: "6px 14px", whiteSpace: "nowrap", transition: "opacity .35s ease" }}
-                >
-                  {g.label}
-                </span>
-              </div>
-            ))}
-            {/* the still centre of it — plain, static text */}
-            {/* Now that the plates carry photographs, the centre copy needs a
-                soft ground of its own to stay readable over them. */}
-            <div data-stagetext style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", zIndex: 4, pointerEvents: "none" }}>
-              <div style={{ background: "color-mix(in srgb,var(--color-surface) 82%,#fff)", backdropFilter: "blur(7px)", WebkitBackdropFilter: "blur(7px)", borderRadius: 34, padding: "34px 42px", boxShadow: "var(--shadow-md)", display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <Kicker>המרחב הטיפולי</Kicker>
-              <h2 style={{ ...h2Style, maxWidth: "18ch" }}>מקום שנעים לחזור אליו</h2>
-              <p style={{ fontSize: 18.5, lineHeight: 1.66, maxWidth: "32ch", margin: "18px 0 26px", color: "var(--color-text)" }}>
-                חדר שקט ומוכר, שאפשר להיכנס אליו כמו שאתם ולצאת ממנו קצת יותר קלים.
-              </p>
-              <a href="#contact" className="pill" data-magnet style={{ pointerEvents: "auto", background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 17, padding: "15px 30px", borderRadius: 999, boxShadow: "var(--shadow-md)", whiteSpace: "nowrap" }}>
-                לתאם פגישה ←
-              </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ============================== VOICES ============================== */}
       {/* Cards sweep in one at a time from alternating sides, then gather into
           a running carousel you can drag or step through. */}
@@ -663,10 +594,10 @@ function HomePage() {
             <div style={{ flex: "0 0 32%", paddingTop: 4 }}>
               <Kicker>שאלות נפוצות</Kicker>
               <h2 style={{ ...h2Style, fontSize: 44, margin: "0 0 20px", maxWidth: "14ch" }}>
-                מה ששואלים לפני השיחה הראשונה.
+                שאלות שעולות לפני שמתחילים טיפול
               </h2>
               <p style={{ fontSize: 17, lineHeight: 1.7, margin: "0 0 16px", maxWidth: "26ch", color: "var(--color-text)" }}>
-                לא מצאתם תשובה? כתבו לי ואשמח לענות.
+                לא מצאתם תשובה? כתבו לי ואשמח לענות
               </p>
               <div>
                 <Link to="/faq" className="tap-link" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
@@ -676,6 +607,73 @@ function HomePage() {
             </div>
 
             <KineticFaq items={homeFaqs} motionRef={motionRef} />
+          </div>
+        </div>
+      </section>
+
+      {/* ============================== GALLERY ============================== */}
+      {/* A room you're standing inside rather than a reel you scroll past.
+          Scroll assembles the plates out of depth; the pointer decides which
+          one you're looking at, and the rest step back for it. */}
+      <section id="gallery" data-collage data-pin-sec style={{ position: "relative", height: "300vh", background: "var(--color-surface)" }}>
+        <div data-pin-inner style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 54px" }}>
+          <div data-stage style={{ position: "relative", width: "100%", maxWidth: 1180, height: "min(660px,76vh)" }}>
+            {plates.map((g, i) => (
+              <div
+                key={i}
+                data-plate
+                data-depth={g.d}
+                style={{
+                  position: "absolute",
+                  left: `${g.x}%`,
+                  top: `${g.y}%`,
+                  // Sized against the stage (1180×660 at full size), not the
+                  // viewport: x% + width% then stays inside the stage at any
+                  // width, so a plate can't run off the edge on a laptop.
+                  width: `min(${g.w}px,${(g.w / 11.8).toFixed(1)}%)`,
+                  height: `min(${g.h}px,${(g.h / 6.6).toFixed(1)}%)`,
+                  borderRadius: g.r,
+                  overflow: "hidden",
+                  boxShadow: "var(--shadow-md)",
+                  willChange: "transform,opacity,filter",
+                  display: "flex",
+                  alignItems: "flex-end",
+                  justifyContent: "center",
+                  padding: 18,
+                  boxSizing: "border-box",
+                }}
+              >
+                <img
+                  src={g.src}
+                  alt={`המרחב הטיפולי — ${g.label}`}
+                  loading="lazy"
+                  decoding="async"
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                />
+                <span
+                  data-plabel
+                  aria-hidden="true"
+                  style={{ position: "relative", opacity: 0, fontSize: 13.5, fontWeight: 700, letterSpacing: ".04em", color: "var(--color-accent-2-800)", background: "color-mix(in srgb,var(--color-bg) 88%,#fff)", borderRadius: 999, padding: "6px 14px", whiteSpace: "nowrap", transition: "opacity .35s ease" }}
+                >
+                  {g.label}
+                </span>
+              </div>
+            ))}
+            {/* the still centre of it — plain, static text */}
+            {/* Now that the plates carry photographs, the centre copy needs a
+                soft ground of its own to stay readable over them. */}
+            <div data-stagetext style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", zIndex: 4, pointerEvents: "none" }}>
+              <div style={{ background: "color-mix(in srgb,var(--color-surface) 82%,#fff)", backdropFilter: "blur(7px)", WebkitBackdropFilter: "blur(7px)", borderRadius: 34, padding: "34px 42px", boxShadow: "var(--shadow-md)", display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <Kicker>המרחב הטיפולי</Kicker>
+              <h2 style={{ ...h2Style, maxWidth: "18ch" }}>מרחב להרגיש בנוח, להיות אתם עצמכם</h2>
+              <p style={{ fontSize: 18.5, lineHeight: 1.66, maxWidth: "38ch", margin: "18px 0 26px", color: "var(--color-text)" }}>
+                מרחב מרווח, שקט ונעים, שבו אפשר להגיע כמו שאתם, לדבר בפתיחות ולהרגיש שיש מקום לכל מה שאתם מביאים איתכם.
+              </p>
+              <a href="#contact" className="pill" data-magnet style={{ pointerEvents: "auto", background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 17, padding: "15px 30px", borderRadius: 999, boxShadow: "var(--shadow-md)", whiteSpace: "nowrap" }}>
+                לתיאום פגישה ←
+              </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -942,14 +940,14 @@ function KineticFaq({ items, motionRef }) {
               role="region"
               aria-labelledby={btnId}
               style={{
-                maxHeight: isOpen ? 420 : 0,
+                maxHeight: isOpen ? 900 : 0,
                 opacity: isOpen ? 1 : 0,
                 overflow: "hidden",
                 transition:
                   "max-height .5s cubic-bezier(.2,.7,.2,1), opacity .4s ease",
               }}
             >
-              <p style={{ margin: 0, padding: "0 22px 20px", fontSize: 16.5, lineHeight: 1.66, color: "var(--color-text)" }}>
+              <p style={{ margin: 0, padding: "0 22px 20px", fontSize: 16.5, lineHeight: 1.66, whiteSpace: "pre-line", color: "var(--color-text)" }}>
                 {f.a}
               </p>
             </div>

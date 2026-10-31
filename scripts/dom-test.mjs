@@ -87,8 +87,8 @@ for (const [label, file] of contentPages) {
 {
   const d = await dom("index.html");
   const faqBtns = d.querySelectorAll("#faq button[aria-expanded]");
-  // The kinetic FAQ column holds five rows; the full list lives on /faq.
-  check(faqBtns.length === 5, `home: expected 5 FAQ teaser toggles, found ${faqBtns.length}`);
+  // The kinetic FAQ column holds six rows (Sharona's pick); the full list lives on /faq.
+  check(faqBtns.length === 6, `home: expected 6 FAQ teaser toggles, found ${faqBtns.length}`);
   const fullFaq = (await dom("faq/index.html")).querySelectorAll(
     "button[aria-expanded]"
   ).length;
