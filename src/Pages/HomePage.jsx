@@ -687,9 +687,9 @@ function HomePage() {
 
           <div data-m="stack" style={{ position: "relative", maxWidth: 1100, margin: "0 auto", display: "flex", gap: 64, alignItems: "center" }}>
             <div style={{ flex: 1 }}>
-              <Kicker>בואו נתחיל</Kicker>
+              <div style={{ ...kicker, fontSize: 19 }}>בואו נתחיל</div>
               <h2 style={{ ...h2Style, fontSize: 50, lineHeight: 1.16, margin: "0 0 20px", maxWidth: "16ch" }}>
-                הצעד הראשון מתחיל בשיחה.
+                הצעד הראשון הוא פשוט וקל
               </h2>
               <p style={{ fontSize: 19, lineHeight: 1.68, margin: "0 0 28px", maxWidth: "40ch", color: "var(--color-text)" }}>
                 אין צורך לדעת מראש מה להגיד. השאירו פרטים ואחזור אליכם לשיחת

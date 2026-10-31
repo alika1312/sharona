@@ -661,6 +661,13 @@ select:focus-visible,
   .org-fabs {
     bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important;
     inset-inline-end: 14px !important;
+    transition: opacity .3s ease, transform .3s ease;
+  }
+  /* over the send button or the footer: step aside (see ContactInfo) */
+  .org-fabs[data-away="1"] {
+    opacity: 0;
+    transform: translateY(24px) scale(.85);
+    pointer-events: none;
   }
 
   /* footer: centred, and its bottom padding clears the fixed action bar */

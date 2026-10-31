@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { trackWhatsappClick, trackClickToCall } from "../lib/analytics";
 import { TEL, whatsappWith } from "../information/contact";
 
@@ -5,9 +7,29 @@ import { TEL, whatsappWith } from "../information/contact";
 const WHATSAPP = whatsappWith("היי שרונה, הגעתי דרך האתר ואשמח לתאם שיחה 🙂");
 
 export const ContactInfo = () => {
+  // On a phone the button sat on top of the form's send button and the
+  // footer links. While either is on screen it steps aside (CSS, mobile
+  // only) — the contact section carries its own WhatsApp button anyway.
+  const [away, setAway] = useState(false);
+  const { pathname } = useLocation();
+  useEffect(() => {
+    setAway(false);
+    if (!("IntersectionObserver" in window)) return;
+    const targets = document.querySelectorAll('form button[type="submit"], footer');
+    if (!targets.length) return;
+    const on = new Set();
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => (e.isIntersecting ? on.add(e.target) : on.delete(e.target)));
+      setAway(on.size > 0);
+    });
+    targets.forEach((t) => io.observe(t));
+    return () => io.disconnect();
+  }, [pathname]);
+
   return (
     <div
       className="org-fabs"
+      data-away={away ? "1" : undefined}
       style={{
         position: "fixed",
         bottom: 22,
