@@ -16,8 +16,12 @@ const OrgWorkshopCard = ({ workshop, delay }) => {
       style={{ background: "var(--color-surface)", borderRadius: 28, overflow: "hidden", boxShadow: "var(--shadow-sm)", display: "flex", flexDirection: "column", textAlign: "right" }}
     >
       {workshop.image && (
-        <div style={{ height: 200, overflow: "hidden" }}>
-          <img src={workshop.image} alt={workshop.title.trim()} loading="lazy" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        // The images range from tall (the compass) to wide, and some carry
+        // their own text — so the whole image is shown, never cropped. A
+        // blurred copy of it fills whatever the frame has left over.
+        <div style={{ position: "relative", aspectRatio: "4 / 3", overflow: "hidden", background: "var(--color-bg)" }}>
+          <div aria-hidden="true" style={{ position: "absolute", inset: 0, backgroundImage: `url(${workshop.image})`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(22px) saturate(.9)", transform: "scale(1.2)", opacity: 0.55 }} />
+          <img src={workshop.image} alt={workshop.title.trim()} loading="lazy" decoding="async" className="washed" style={{ position: "relative", width: "100%", height: "100%", objectFit: "contain" }} />
         </div>
       )}
       <div style={{ padding: 30, display: "flex", flexDirection: "column", flex: 1 }}>
