@@ -29,21 +29,22 @@ const OrgWorkshopCard = ({ workshop, delay }) => {
         <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 23, lineHeight: 1.3, margin: "0 0 14px", color: "var(--color-accent-2-800)" }}>
           {workshop.title.trim()}
         </h3>
-        <p
-          style={{
-            margin: "0 0 20px",
-            fontSize: 16.5,
-            lineHeight: 1.68,
-            whiteSpace: "pre-line",
-            color: muted(74),
-            flex: 1,
-            ...(open
-              ? {}
-              : { display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical", overflow: "hidden" }),
-          }}
-        >
-          {workshop.description.trim()}
-        </p>
+        {/* Closed: Sharona's short summary and the who / how-long line.
+            Open: the full write-up — which stays in the HTML while closed
+            (just hidden), so search engines still read it. */}
+        <div style={{ flex: 1, margin: "0 0 20px" }}>
+          <p hidden={open} style={{ margin: 0, fontSize: 16.5, lineHeight: 1.68, color: muted(74) }}>
+            {workshop.summary}
+          </p>
+          {workshop.meta && (
+            <p hidden={open} style={{ margin: "14px 0 0", fontSize: 15, fontWeight: 700, lineHeight: 1.5, color: "var(--color-accent-2-700)" }}>
+              {workshop.meta}
+            </p>
+          )}
+          <p hidden={!open} style={{ margin: 0, fontSize: 16.5, lineHeight: 1.68, whiteSpace: "pre-line", color: muted(74) }}>
+            {workshop.description.trim()}
+          </p>
+        </div>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
           <button
             onClick={() => setOpen((v) => !v)}
@@ -78,7 +79,7 @@ const WorkshopsPage = () => {
         <title>סדנאות ומפגשים חווייתיים – זוגיות, אמא שבתוכי, הילדה הפנימית ועוד | שרונה קדושאי בר-נס</title>
         <meta
           name="description"
-          content="סדנאות ומפגשים חווייתיים בהנחיית שרונה קדושאי בר-נס: לדבר בשפת האהבה (חמש שפות האהבה), לדבר, להקשיב, להתקרב – תקשורת זוגית, אמא שבתוכי, הילדה הפנימית, חזון אישי ופרשת השבוע – הרצאות וסדנאות לזוגות ולקבוצות."
+          content="סדנאות ומפגשים חווייתיים בהנחיית שרונה קדושאי בר-נס: בשפת אהבה נדבר (חמש שפות האהבה), לדבר, להקשיב, להתקרב – תקשורת זוגית, אמא שבתוכי, הילדה הפנימית, חזון אישי ופרשת השבוע – הרצאות וסדנאות לזוגות ולקבוצות."
         />
         <link rel="canonical" href={`${SITE}/workshops/`} />
         <meta property="og:title" content="סדנאות – שרונה קדושאי בר-נס" />

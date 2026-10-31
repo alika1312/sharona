@@ -46,12 +46,14 @@ function FaqPage() {
         }}
       >
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
-          <div data-reveal style={{ ...kicker, marginInline: "auto" }}>שאלות נפוצות</div>
+          {/* one even scale: label 17 → headline 46 → category 30 → question 20
+              (Sharona found the old 14 / 52 / 34 jumps out of proportion) */}
+          <div data-reveal style={{ ...kicker, fontSize: 17, marginInline: "auto" }}>שאלות נפוצות</div>
           <h1
             data-reveal
             data-reveal-delay="120"
-            className="org-h1"
-            style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 52, lineHeight: 1.14, margin: 0 }}
+            className="faq-h1"
+            style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 46, lineHeight: 1.18, margin: 0 }}
           >
             כל מה שרציתם לדעת לפני שמתחילים
           </h1>
@@ -60,21 +62,21 @@ function FaqPage() {
             data-reveal-delay="220"
             style={{ fontSize: 19, lineHeight: 1.7, margin: "26px auto 0", maxWidth: "46ch", color: muted(74) }}
           >
-            ריכזתי כאן את השאלות שאני נשאלת הכי הרבה. לא מצאתם תשובה? אני מוזמנת אתכם לפנות
-            אליי — בטלפון, בוואטסאפ או בטופס, ואשמח לענות.
+            ריכזתי כאן את השאלות שנוהגים לשאול אותי לפני תחילת טיפול. לא מצאתם תשובה? מוזמנים
+            לפנות אליי בטלפון, בוואטסאפ או בטופס, אשמח לענות 🙏
           </p>
         </div>
       </section>
 
       {/* ============ QUESTIONS ============ */}
-      <section className="org-section" style={{ padding: "80px 54px 40px", background: "var(--color-bg)" }}>
+      <section className="org-section faq-page" style={{ padding: "80px 54px 40px", background: "var(--color-bg)" }}>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>
           {/* One block per subject: the category is the h2, its questions the h3s. */}
           {faqsByCategory.map((group, i) => (
             <div key={group.name} style={{ marginTop: i === 0 ? 0 : 56 }}>
               <h2
                 data-reveal
-                className="org-h2"
+                className="faq-cat"
                 style={{ ...h2, fontSize: 30, margin: "0 0 20px" }}
               >
                 {group.name}

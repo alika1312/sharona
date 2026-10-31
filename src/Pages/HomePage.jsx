@@ -236,15 +236,13 @@ function HomePage() {
           <div style={{ flex: 1.08 }}>
             {/* one colour for the whole headline — the olive Sharona liked */}
             <h1 data-reveal data-reveal-delay="0" style={{ position: "relative", fontFamily: HEAD, fontWeight: 400, fontSize: "clamp(40px,4.5vw,66px)", lineHeight: 1.1, letterSpacing: "-.015em", margin: 0, color: "var(--color-accent-2-700)" }}>
-              <span style={{ display: "block", paddingBottom: ".09em" }}>מרחב לנשום,</span>
-              <span style={{ display: "block", paddingBottom: ".09em" }}>להבין ולצמוח</span>
+              <span style={{ display: "block", paddingBottom: ".09em" }}>מרחב לנשום</span>
+              <span style={{ display: "block", paddingBottom: ".09em" }}>ולצמוח</span>
             </h1>
-            {/* who and what, straight under the headline — each area stays on
-                one line, so on a phone they wrap whole rather than mid-phrase */}
+            {/* what, straight under the headline — each area stays on one line,
+                so on a phone they wrap whole rather than mid-phrase. Her name
+                is in the header already; it heads "קצת עליי" instead. */}
             <div className="hero-id" style={{ margin: "26px 0 0", paddingInlineStart: 18, borderInlineStart: "3px solid var(--color-accent)" }}>
-              <div style={{ fontFamily: HEAD, fontSize: "clamp(24px,2.6vw,32px)", lineHeight: 1.25, color: "var(--color-accent-2-800)", marginBottom: 8 }}>
-                שרונה קדושאי בר-נס
-              </div>
               <div className="hero-areas" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px 10px", fontSize: "clamp(16.5px,1.5vw,19px)", fontWeight: 700, lineHeight: 1.5, color: "var(--color-text)" }}>
                 {heroAreas.map((a, i) => (
                   <span key={a} className="hero-area" style={{ display: "inline-flex", alignItems: "center", gap: 10, whiteSpace: "nowrap" }}>
@@ -258,15 +256,12 @@ function HomePage() {
               </div>
             </div>
             <p className="hero-lead" style={{ fontSize: 19.5, lineHeight: 1.65, maxWidth: "46ch", margin: "26px 0 34px", color: "var(--color-text)" }}>
-              לפעמים כל מה שצריך הוא מקום של שקט, אמון וביטחון. מקום שבו אפשר לעצור לרגע, לעשות סדר במחשבות וברגשות, להבין איך חוויות העבר משפיעות עלינו היום, למצוא דרך להתמודד עם מה שכואב ולקבל כלים מעשיים לשינוי.
+              לפעמים כל מה שצריך הוא מקום של שקט, אמון וביטחון. לעצור לרגע, לעשות סדר במחשבות וברגשות, להבין איך חוויות העבר משפיעות עלינו היום, ולמצוא את הדרך להתמודד, להתחזק ולצמוח.
             </p>
             <div style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
               <a href="#contact" className="pill" data-magnet style={{ background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 18, padding: "17px 36px", borderRadius: 999, boxShadow: "var(--shadow-md)" }}>
                 בואו נדבר ←
               </a>
-              <Link to="/about" style={{ fontWeight: 700, fontSize: 18, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
-                קצת עליי
-              </Link>
             </div>
           </div>
 
@@ -295,15 +290,17 @@ function HomePage() {
             <div className="ab-photo" style={{ flex: 0.92, position: "relative", display: "flex", justifyContent: "center" }}>
               <div data-parallax="0.07">
                 <div data-ab-portrait data-m="portrait" style={{ width: 420, height: "min(500px,54vh)", borderRadius: "48% 52% 55% 45%/56% 46% 54% 44%", overflow: "hidden", boxShadow: "var(--shadow-lg)" }}>
-                  <img src="/sharona-portrait.webp" alt="שרונה קדושאי בר-נס" width="554" height="597" loading="lazy" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img src="/sharona-tree.webp" alt="שרונה קדושאי בר-נס" width="734" height="1100" loading="lazy" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 22%" }} />
                 </div>
               </div>
               <div aria-hidden="true" style={{ position: "absolute", bottom: 10, insetInlineEnd: 0, width: 52, height: 52, borderRadius: "50%", background: "var(--color-accent)", animation: "floaty2 7s ease-in-out infinite" }} />
             </div>
 
             <div style={{ flex: 1.08 }}>
-              {/* a real heading, sat right on the text it introduces */}
-              <h2 style={{ ...h2Style, fontSize: 42, color: "var(--color-accent-2-800)", margin: "0 0 16px" }}>קצת עליי</h2>
+              {/* her name heads the section (moved here from the hero), with
+                  "קצת עליי" under it, sat right on the text it introduces */}
+              <h2 style={{ ...h2Style, fontSize: 42, color: "var(--color-accent-2-800)", margin: "0 0 6px" }}>שרונה קדושאי בר-נס</h2>
+              <div className="ab-sub" style={{ fontFamily: HEAD, fontSize: 25, lineHeight: 1.3, color: "var(--color-accent-2-700)", margin: "0 0 18px" }}>קצת עליי</div>
               {aboutLines.map((line, i) => (
                 <p key={i} style={{ fontSize: 19, lineHeight: 1.7, margin: i === aboutLines.length - 1 ? "0 0 26px" : "0 0 20px", color: "var(--color-text)" }}>
                   {line}

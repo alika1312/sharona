@@ -648,12 +648,6 @@ select:focus-visible,
   .organic-v2 #contact [data-cactions] { justify-content: center !important; }
   .organic-v2 #contact [data-crows] { align-items: center !important; }
   .organic-v2 #contact [data-ctopics] { justify-content: center !important; }
-  .organic-v2 #top > div [data-reveal] a[href="/about"] {
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    padding-bottom: 0 !important;
-  }
 
   /* the action bar carries the call CTA, so the FAB stack keeps only
      WhatsApp — lifted clear of the bar */
@@ -900,15 +894,24 @@ select:focus-visible,
   .exp-row { gap: 20px !important; }
 }
 
-/* ---- about: one portrait on a phone ----
-   The hero photo ends right where this one would start, and two portraits
-   back to back read as a mistake. */
+/* ---- about: the second portrait comes after the text on a phone ----
+   The hero photo ends right where this one would start; two portraits
+   back to back read as a mistake, so this one follows the about text. */
 @media (max-width: 900px) {
-  .organic-v2 .ab-photo { display: none !important; }
+  .organic-v2 .ab-photo { order: 2; }
 }
 
 /* ---- /about on a phone: credentials follow the about text closely ---- */
 @media (max-width: 900px) {
   .about-intro { padding-bottom: 40px !important; }
   .about-cred { padding-top: 36px !important; }
+}
+
+/* ---- /faq on a phone: one even heading scale ----
+   label 17 -> headline ~36 -> category 25 -> question 18, instead of the
+   global 52px h1 next to a 14px label. */
+@media (max-width: 900px) {
+  .faq-h1 { font-size: clamp(30px, 8.6vw, 38px) !important; }
+  .faq-cat { font-size: 25px !important; }
+  .faq-page [aria-expanded] { font-size: 18px !important; }
 }
