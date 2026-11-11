@@ -37,7 +37,7 @@ const details = [
   ["שעות פעילות", "בוקר / צהריים / ערב — בתיאום מראש"],
   [
     "אזור הטיפול",
-    "אזור ירושלים / הרי ירושלים / מבשרת ציון / צור הדסה / בית שמש / גוש עציון",
+    "אזור ירושלים | מבשרת ציון | צור הדסה | בית שמש | גוש עציון | פתח תקווה",
   ],
   ["זום / מפגש דיגיטלי", "ניסיון רב בטיפולים בזום ואונליין מרחבי הארץ ומחוץ לישראל"],
   ["כתובת הקליניקה", "צור הדסה (אפשרי לשלב עם מפגשים אונליין / בזום)"],
@@ -89,7 +89,8 @@ function AboutPage() {
         >
           <div style={{ flex: 0.9, display: "flex", justifyContent: "center" }}>
             <div data-reveal className="org-portrait" style={{ width: 400, height: 480, borderRadius: "52% 48% 46% 54%/58% 56% 44% 42%", overflow: "hidden", boxShadow: "var(--shadow-lg)", animation: "floaty 10s ease-in-out infinite" }}>
-              <img src="/sharona.jpeg" alt="שרונה קדושאי בר-נס, יועצת ומטפלת רגשית" width="400" height="480" fetchpriority="high" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              {/* the photo by the tree (Sharona's pick for this page) */}
+              <img src="/sharona-tree.webp" alt="שרונה קדושאי בר-נס, יועצת ומטפלת רגשית וזוגית" width="734" height="1100" fetchpriority="high" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 22%" }} />
             </div>
           </div>
           <div style={{ flex: 1.1 }}>
@@ -100,7 +101,7 @@ function AboutPage() {
             </h1>
             <div data-reveal data-reveal-delay="80" style={{ margin: "0 0 22px", lineHeight: 1.45 }}>
               <div style={{ fontSize: 19, fontWeight: 700, color: "var(--color-text)" }}>שרונה קדושאי בר-נס</div>
-              <div style={{ fontSize: 17, color: muted(70) }}>יועצת ומטפלת רגשית</div>
+              <div style={{ fontSize: 17, color: muted(70) }}>יועצת ומטפלת רגשית וזוגית</div>
             </div>
             {aboutParas.map((p, i) => (
               <p key={i} data-reveal data-reveal-delay={160 + i * 60} style={{ fontSize: 18.5, lineHeight: 1.72, margin: "0 0 18px", color: muted(80) }}>

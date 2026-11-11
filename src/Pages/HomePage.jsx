@@ -9,9 +9,8 @@ import { kicker } from "../design/ui";
 import {
   trackContactFormSubmit,
   trackWhatsappClick,
-  trackClickToCall,
 } from "../lib/analytics";
-import { EMAIL, PHONE_LABEL, SITE, TEL, WHATSAPP } from "../information/contact";
+import { EMAIL, SITE, WHATSAPP } from "../information/contact";
 
 const HEAD = "var(--font-heading)";
 
@@ -50,10 +49,11 @@ const STEP_PATH =
 
 // The contact section's three beats: what happens after you press send. Not
 // knowing is most of what stops people from writing in the first place.
+// No numbers and no long dashes (Sharona's note) — a small hyphen only.
 const contactBeats = [
-  ["1", "כותבים", "כמה מילים, לא יותר. גם ״לא יודע/ת מאיפה להתחיל״ זו התחלה."],
-  ["2", "מדברים", "אחזור אליכם לשיחה קצרה להיכרות — ללא עלות."],
-  ["3", "קובעים", "אם זה מרגיש נכון, נמצא יחד מועד שמתאים לכם."],
+  ["כותבים", "כמה מילים, לא יותר. גם ״לא יודע/ת מאיפה להתחיל״ זו התחלה."],
+  ["מדברים", "אחזור אליכם לשיחה קצרה להיכרות, ללא עלות."],
+  ["קובעים", "אם זה מרגיש נכון, נמצא יחד מועד שמתאים לכם."],
 ];
 
 // One-tap openers for the form's message field. Choosing a topic is a smaller
@@ -63,6 +63,7 @@ const contactTopics = [
   ["משבר או חרדה", "אני מרגיש/ה בתקופה קשה ורוצה לדבר על זה."],
   ["הורות", "אשמח להדרכה בהתמודדות עם הילדים שלי."],
   ["טראומה", "יש משהו מהעבר שאני רוצה לעבד."],
+  ["סדנה", "אשמח לשמוע עוד על הסדנאות."],
   ["עוד לא יודע/ת", "עוד לא בטוח/ה מה בדיוק, אבל משהו צריך להשתנות."],
 ];
 
@@ -252,11 +253,11 @@ function HomePage() {
                 ))}
               </div>
               <div style={{ fontSize: 15, fontWeight: 600, color: "var(--color-accent-2-700)", marginTop: 8 }}>
-                לישראלים בארץ ובחו״ל — בקליניקה ובאונליין
+                לישראלים בארץ ובחו״ל, בקליניקה ובאונליין
               </div>
             </div>
             <p className="hero-lead" style={{ fontSize: 19.5, lineHeight: 1.65, maxWidth: "46ch", margin: "26px 0 34px", color: "var(--color-text)" }}>
-              לפעמים כל מה שצריך הוא מקום של שקט, אמון וביטחון. לעצור לרגע, לעשות סדר במחשבות וברגשות, להבין איך חוויות העבר משפיעות עלינו היום, ולמצוא את הדרך להתמודד, להתחזק ולצמוח.
+              לפעמים כל מה שצריך הוא מקום של שקט, אמון וביטחון. מקום לעצור לרגע, לעשות סדר במחשבות וברגשות, להבין איך חוויות העבר משפיעות עלינו היום, לגלות שאפשר ליצור שינוי ולהרגיש טוב יותר
             </p>
             <div style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
               <a href="#contact" className="pill" data-magnet style={{ background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 18, padding: "17px 36px", borderRadius: 999, boxShadow: "var(--shadow-md)" }}>
@@ -270,8 +271,8 @@ function HomePage() {
               <div data-m="portrait" style={{ width: 400, height: "min(470px,56vh)", borderRadius: "52% 48% 46% 54%/58% 56% 44% 42%", overflow: "hidden", boxShadow: "var(--shadow-lg)", animation: "floaty 11s ease-in-out infinite" }}>
                 <img src="/sharona.jpeg" alt="שרונה קדושאי בר-נס, יועצת ומטפלת רגשית" width="400" height="470" fetchpriority="high" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </div>
-              <div aria-hidden="true" style={{ position: "absolute", top: -14, insetInlineEnd: 26, width: 58, height: 58, borderRadius: "50%", background: "var(--color-accent)", animation: "floaty2 7s ease-in-out infinite", boxShadow: "var(--shadow-sm)" }} />
-              <div aria-hidden="true" style={{ position: "absolute", bottom: 24, insetInlineStart: -22, width: 40, height: 40, borderRadius: "50%", background: "var(--color-accent-2)", animation: "floaty 6s ease-in-out infinite" }} />
+              {/* the terracotta and olive dots that floated over the portrait
+                  are gone — Sharona found them distracting */}
               <div aria-hidden="true" style={{ position: "absolute", top: "38%", insetInlineStart: -40, width: 96, height: 96, border: "2px dashed color-mix(in srgb,var(--color-accent-2) 50%,transparent)", borderRadius: "50%", animation: "spinSlow 30s linear infinite" }} />
             </div>
           </div>
@@ -293,7 +294,6 @@ function HomePage() {
                   <img src="/sharona-tree.webp" alt="שרונה קדושאי בר-נס" width="734" height="1100" loading="lazy" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 22%" }} />
                 </div>
               </div>
-              <div aria-hidden="true" style={{ position: "absolute", bottom: 10, insetInlineEnd: 0, width: 52, height: 52, borderRadius: "50%", background: "var(--color-accent)", animation: "floaty2 7s ease-in-out infinite" }} />
             </div>
 
             <div style={{ flex: 1.08 }}>
@@ -491,7 +491,7 @@ function HomePage() {
                 >
                   לתיאום מפגש אונליין ←
                 </a>
-                <Link to="/faq" className="tap-link" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
+                <Link to="/faq#online" className="tap-link" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
                   שאלות נפוצות על טיפול אונליין
                 </Link>
               </div>
@@ -690,20 +690,18 @@ function HomePage() {
               </h2>
               <p style={{ fontSize: 19, lineHeight: 1.68, margin: "0 0 28px", maxWidth: "40ch", color: "var(--color-text)" }}>
                 אין צורך לדעת מראש מה להגיד. השאירו פרטים ואחזור אליכם לשיחת
-                היכרות קצרה — בלי עלות ובלי התחייבות.
+                היכרות קצרה, בלי עלות ובלי התחייבות.
               </p>
 
               {/* What actually happens after you press send — the unknown is
                   most of what stops people from writing. */}
               <ol data-cbeats style={{ listStyle: "none", margin: "0 0 28px", padding: 0, display: "flex", flexDirection: "column", gap: 13 }}>
-                {contactBeats.map(([n, title, text]) => (
-                  <li key={n} style={{ display: "flex", alignItems: "flex-start", gap: 13 }}>
-                    <span aria-hidden="true" style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--color-accent-2)", color: "var(--color-bg)", fontFamily: HEAD, fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center", flex: "none", marginTop: 1 }}>
-                      {n}
-                    </span>
+                {contactBeats.map(([title, text]) => (
+                  <li key={title} style={{ display: "flex", alignItems: "flex-start", gap: 13 }}>
+                    <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--color-accent-2)", flex: "none", marginTop: 10 }} />
                     <span style={{ fontSize: 16.5, lineHeight: 1.5 }}>
                       <strong style={{ fontWeight: 700 }}>{title}</strong>
-                      <span style={{ color: "color-mix(in srgb,var(--color-text) 76%,transparent)" }}> — {text}</span>
+                      <span style={{ color: "color-mix(in srgb,var(--color-text) 76%,transparent)" }}> - {text}</span>
                     </span>
                   </li>
                 ))}
@@ -724,21 +722,13 @@ function HomePage() {
                   </svg>
                   הודעה בוואטסאפ
                 </a>
-                <a
-                  href={TEL}
-                  onClick={() => trackClickToCall("home_contact_cta")}
-                  className="pill"
-                  data-magnet
-                  style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "color-mix(in srgb,var(--color-bg) 70%,#fff)", color: "var(--color-accent-2-800)", border: "1.5px solid color-mix(in srgb,var(--color-accent-2) 34%,transparent)", fontWeight: 700, fontSize: 16.5, padding: "13px 24px", borderRadius: 999 }}
-                >
-                  <span aria-hidden="true">✆</span>
-                  {PHONE_LABEL}
-                </a>
               </div>
 
+              {/* No phone-number pill: Sharona felt it was redundant next to
+                  the call button, WhatsApp and email. */}
               <div data-crows style={{ display: "flex", flexDirection: "column", gap: 11, fontSize: 16 }}>
                 <ContactRow icon="✉" href={`mailto:${EMAIL}`}>{EMAIL}</ContactRow>
-                <ContactRow icon="⌂">מבשרת ציון · צור הדסה · אונליין מכל הארץ</ContactRow>
+                <ContactRow icon="⌂">צור הדסה | מבשרת ציון | אונליין לישראלים בארץ ובחו״ל</ContactRow>
               </div>
             </div>
 
@@ -1065,7 +1055,7 @@ function ContactForm({ motionRef }) {
         </svg>
         <div style={{ fontFamily: HEAD, fontSize: 30 }}>תודה שפניתם</div>
         <div style={{ fontSize: 17, maxWidth: "26ch", color: "var(--color-bg)" }}>
-          אחזור אליכם בהקדם. עד אז — קחו נשימה אחת עמוקה.
+          אחזור אליכם בהקדם. עד אז, קחו נשימה אחת עמוקה.
         </div>
       </div>
     </div>

@@ -23,6 +23,18 @@ export default function ShareLinks({
     return () => clearTimeout(timer.current);
   }, []);
 
+  // What actually gets shared or copied: the same path on whatever site this
+  // page is open on. `url` is the canonical production address, which (until
+  // the new site goes live on the domain) still serves the *old* site — so
+  // copying a link from the preview used to land people on the old article.
+  const liveUrl = () => {
+    try {
+      return window.location.origin + new URL(url).pathname;
+    } catch {
+      return url;
+    }
+  };
+
   const say = (msg) => {
     setStatus(msg);
     clearTimeout(timer.current);
@@ -31,7 +43,7 @@ export default function ShareLinks({
 
   const nativeShare = async () => {
     try {
-      await navigator.share({ title, url });
+      await navigator.share({ title, url: liveUrl() });
       trackShare("web_share", url);
     } catch {
       /* user dismissed the share sheet — nothing to report */
@@ -41,11 +53,11 @@ export default function ShareLinks({
   const copyLink = async () => {
     try {
       if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(url);
+        await navigator.clipboard.writeText(liveUrl());
       } else {
         // Older Safari / non-secure contexts.
         const ta = document.createElement("textarea");
-        ta.value = url;
+        ta.value = liveUrl();
         ta.setAttribute("readonly", "");
         ta.style.position = "fixed";
         ta.style.opacity = "0";
@@ -89,7 +101,12 @@ export default function ShareLinks({
         href={whatsappHref}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={() => trackShare("whatsapp", url)}
+        onClick={(e) => {
+          // swap in the live address at click time (the prerendered href
+          // keeps the canonical one for no-JS)
+          e.currentTarget.href = "https://wa.me/?text=" + encodeURIComponent(`${title}\n${liveUrl()}`);
+          trackShare("whatsapp", url);
+        }}
         className="share-btn"
         aria-label="שיתוף העמוד בוואטסאפ"
       >

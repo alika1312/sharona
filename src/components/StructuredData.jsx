@@ -33,12 +33,13 @@ const person = {
 };
 
 const areaServed = [
+  // kept in step with the "אזור הטיפול" line on /about
   "ירושלים",
-  "הרי ירושלים",
   "מבשרת ציון",
   "צור הדסה",
   "בית שמש",
   "גוש עציון",
+  "פתח תקווה",
 ].map((name) => ({ "@type": "Place", name }));
 
 // Israelis abroad are served online only, so that service carries the

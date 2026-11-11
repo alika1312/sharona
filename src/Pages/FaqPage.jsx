@@ -71,9 +71,34 @@ function FaqPage() {
       {/* ============ QUESTIONS ============ */}
       <section className="org-section faq-page" style={{ padding: "80px 54px 40px", background: "var(--color-bg)" }}>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>
+          {/* Clickable contents: jump straight to your subject instead of
+              reading every question on the way. */}
+          <nav aria-label="נושאי השאלות" data-reveal style={{ marginBottom: 52 }}>
+            <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 14, color: "var(--color-accent-2-800)" }}>
+              דלגו לנושא:
+            </div>
+            <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexWrap: "wrap", gap: 10 }}>
+              {faqsByCategory.map((group) => (
+                <li key={group.id}>
+                  <a
+                    href={`#${group.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById(group.id)?.scrollIntoView({ behavior: "smooth" });
+                      history.replaceState(null, "", `#${group.id}`);
+                    }}
+                    style={{ display: "inline-block", padding: "9px 18px", borderRadius: 999, background: "color-mix(in srgb,var(--color-accent-2) 12%,transparent)", border: "1.5px solid color-mix(in srgb,var(--color-accent-2) 28%,transparent)", color: "var(--color-accent-2-800)", fontWeight: 700, fontSize: 15.5 }}
+                  >
+                    {group.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
           {/* One block per subject: the category is the h2, its questions the h3s. */}
           {faqsByCategory.map((group, i) => (
-            <div key={group.name} style={{ marginTop: i === 0 ? 0 : 56 }}>
+            <div key={group.name} id={group.id} style={{ marginTop: i === 0 ? 0 : 56, scrollMarginTop: 90 }}>
               <h2
                 data-reveal
                 className="faq-cat"

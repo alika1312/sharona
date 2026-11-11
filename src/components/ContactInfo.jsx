@@ -4,7 +4,8 @@ import { trackWhatsappClick, trackClickToCall } from "../lib/analytics";
 import { TEL, whatsappWith } from "../information/contact";
 
 // Always-visible floating quick-contact: WhatsApp (primary) + one-tap call.
-const WHATSAPP = whatsappWith("היי שרונה, הגעתי דרך האתר ואשמח לתאם שיחה 🙂");
+// Sharona's wording, no emoji.
+const WHATSAPP = whatsappWith("היי שרונה, הגעתי דרך האתר ואשמח לתאם שיחת היכרות ולקבל מידע נוסף");
 
 export const ContactInfo = () => {
   // On a phone the button sat on top of the form's send button and the

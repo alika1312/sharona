@@ -8,7 +8,10 @@ import { SITE } from "../information/contact";
 
 // Cut on a word boundary (a bare slice split Hebrew words in half), with the
 // ellipsis only when something was actually cut.
-const preview = (article) => trimToWord(article.summary || article.content?.[0]?.sectionFirstText || "", 150);
+// Sharona's own short `excerpt` comes first, shown whole, so a card never
+// stops mid-sentence; the trimmed summary is only a fallback.
+const preview = (article) =>
+  article.excerpt || trimToWord(article.summary || article.content?.[0]?.sectionFirstText || "", 150);
 
 export const ArticlesPage = () => {
   const rootRef = useReveal();
@@ -37,7 +40,9 @@ export const ArticlesPage = () => {
         className="org-section"
         style={{
           position: "relative",
-          padding: "84px 54px 70px",
+          // tighter than the other page headers, so the first article shows
+          // sooner on a phone (Sharona's note)
+          padding: "72px 54px 40px",
           background: "linear-gradient(155deg,#f5ecdb 0%,#eef0e0 55%,#f1ecdc 100%)",
           textAlign: "center",
           overflow: "hidden",
@@ -45,17 +50,20 @@ export const ArticlesPage = () => {
       >
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
           <div data-reveal style={{ ...kicker, marginInline: "auto" }}>קריאה והשראה</div>
-          <h1 data-reveal data-reveal-delay="120" className="org-h1" style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 58, lineHeight: 1.12, margin: "0 0 20px" }}>
+          {/* no .org-h1: its 52px phone size is what made this too big */}
+          <h1 data-reveal data-reveal-delay="120" style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: "clamp(36px,5vw,48px)", lineHeight: 1.12, margin: "0 0 16px" }}>
             המאמרים שלי
           </h1>
-          <p data-reveal data-reveal-delay="220" style={{ fontSize: 19, lineHeight: 1.7, margin: 0, color: muted(74) }}>
-            מחשבות וכלים מעשיים על התמודדות, זוגיות, צמיחה ומשמעות — מתוך העבודה הטיפולית.
+          <p data-reveal data-reveal-delay="220" style={{ fontSize: 19, lineHeight: 1.7, margin: "0 auto", maxWidth: "40ch", textAlign: "center", color: muted(74) }}>
+            מחשבות וכלים מעשיים על התמודדות, זוגיות, צמיחה ומשמעות
+            <br />
+            מתוך הניסיון והעבודה הטיפולית
           </p>
         </div>
       </section>
 
       {/* ============ GRID ============ */}
-      <section className="org-section" style={{ padding: "96px 54px", background: "var(--color-bg)" }}>
+      <section className="org-section" style={{ padding: "44px 54px 96px", background: "var(--color-bg)" }}>
         <div style={{ maxWidth: 1140, margin: "0 auto" }}>
           <div className="org-services-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 28 }}>
             {articles.map((article, i) => (

@@ -890,7 +890,8 @@ select:focus-visible,
 
 /* ---- /experiences on a phone: modest images above each area ---- */
 @media (max-width: 900px) {
-  .exp-img { max-width: 200px !important; }
+  .exp-img-wrap { flex: none !important; width: 100%; }
+  .exp-img { width: 200px !important; height: 200px !important; }
   .exp-row { gap: 20px !important; }
 }
 

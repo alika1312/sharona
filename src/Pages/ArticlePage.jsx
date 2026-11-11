@@ -65,7 +65,8 @@ export const ArticlePage = () => {
                   🕒 {article.readTime}
                 </div>
               )}
-              <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 1.2, margin: 0, color: "#fff" }}>
+              {/* smaller, so the title doesn't cover most of the picture */}
+              <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: "clamp(24px,3.6vw,32px)", lineHeight: 1.25, margin: 0, color: "#fff" }}>
                 {title}
               </h1>
               <div style={{ marginTop: 12, fontSize: 16, fontWeight: 600, color: "color-mix(in srgb,#fff 82%,transparent)" }}>
@@ -79,26 +80,28 @@ export const ArticlePage = () => {
       {/* ============ BODY ============ */}
       <section className="org-section" style={{ padding: "70px 54px 100px", background: "var(--color-bg)" }}>
         <article style={{ maxWidth: 760, margin: "0 auto" }}>
-          {/* Sharona's abstract, set above the body as a lead */}
+          {/* Sharona's abstract, set above the body as a lead: ~20px, medium
+              weight, the site's dark green, with a soft sage rule */}
           {article.summary && (
-            <p data-reveal style={{ fontSize: 20.5, lineHeight: 1.75, margin: "0 0 48px", paddingInlineStart: 22, borderInlineStart: "3px solid var(--color-accent)", color: "var(--color-accent-2-800)", fontWeight: 500 }}>
+            <p data-reveal style={{ fontSize: 20, lineHeight: 1.7, margin: "0 0 30px", paddingInlineStart: 20, borderInlineStart: "3px solid var(--color-accent-2-300)", color: "var(--color-accent-2-800)", fontWeight: 500 }}>
               {article.summary}
             </p>
           )}
+          {/* one type scale for every article: body 17.5px, subheadings 22px */}
           {content.map((section, index) => (
-            <div key={index} data-reveal data-reveal-delay={Math.min(index, 3) * 90} style={{ marginBottom: 40 }}>
+            <div key={index} data-reveal data-reveal-delay={Math.min(index, 3) * 90} style={{ marginBottom: 34 }}>
               {section.sectionTitle && (
-                <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 27, lineHeight: 1.3, margin: "0 0 16px", color: "var(--color-accent-2-800)" }}>
+                <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 22, lineHeight: 1.35, margin: "0 0 12px", color: "var(--color-accent-2-800)" }}>
                   {section.sectionTitle}
                 </h2>
               )}
               {section.sectionFirstText && (
-                <p style={{ fontSize: 18, lineHeight: 1.8, margin: "0 0 16px", whiteSpace: "pre-line", color: muted(84) }}>
+                <p style={{ fontSize: 17.5, lineHeight: 1.8, margin: "0 0 16px", whiteSpace: "pre-line", color: muted(84) }}>
                   {section.sectionFirstText}
                 </p>
               )}
               {section.sectionSecondText && (
-                <p style={{ fontSize: 18, lineHeight: 1.8, margin: 0, whiteSpace: "pre-line", color: muted(84) }}>
+                <p style={{ fontSize: 17.5, lineHeight: 1.8, margin: 0, whiteSpace: "pre-line", color: muted(84) }}>
                   {section.sectionSecondText}
                 </p>
               )}

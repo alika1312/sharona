@@ -3,13 +3,20 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { trackClickToCall } from "../lib/analytics";
 import { PHONE_LABEL, TEL } from "../information/contact";
 
+// Sharona's menu, in her order. `hash` items are sections of the homepage;
+// `desktop: false` keeps them to the drawer, where there's room — the desktop
+// bar can't fit all eight next to the wordmark and the CTA.
 const links = [
-  { label: "אודות", to: "/about" },
+  { label: "קצת על עצמי", to: "/about" },
   { label: "תחומי הטיפול", to: "/experiences" },
+  { label: "תהליך הטיפול", hash: "approach", desktop: false },
+  { label: "חוות דעת והמלצות", hash: "voices", desktop: false },
   { label: "סדנאות", to: "/workshops" },
   { label: "מאמרים", to: "/articles" },
   { label: "שאלות נפוצות", to: "/faq" },
+  { label: "יצירת קשר", hash: "contact", desktop: false },
 ];
+const desktopLinks = links.filter((l) => l.desktop !== false);
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -121,22 +128,23 @@ export const Header = () => {
   // Route changes close the drawer.
   useEffect(() => setMenuOpen(false), [location.pathname]);
 
-  // "צרו קשר" — scroll to the contact section on the homepage.
-  const handleContact = () => {
+  // Scroll to a homepage section ("צרו קשר", "תהליך הטיפול", ...).
+  const goToSection = (id) => {
     setMenuOpen(false);
     if (location.pathname === "/") {
       // one tick, so the drawer's scroll lock is released first — scrolling a
       // locked document is a no-op
       setTimeout(
-        () => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }),
+        () => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }),
         0
       );
     } else {
       // <ScrollRestoration> (Layout) scrolls to the hash once the homepage has
       // rendered, so there's no delay to guess.
-      navigate("/#contact");
+      navigate(`/#${id}`);
     }
   };
+  const handleContact = () => goToSection("contact");
 
   return (
     <>
@@ -213,7 +221,7 @@ export const Header = () => {
             className="org-desktop-nav"
             style={{ display: "flex", gap: 30, alignItems: "center" }}
           >
-            {links.map((l) => (
+            {desktopLinks.map((l) => (
               <Link key={l.to} to={l.to} className="navlink">
                 {l.label}
               </Link>
@@ -324,14 +332,20 @@ export const Header = () => {
           <div style={{ display: "flex", flexDirection: "column" }}>
             {links.map((l, i) => (
               <Link
-                key={l.to}
-                to={l.to}
-                onClick={() => setMenuOpen(false)}
+                key={l.label}
+                to={l.to ?? `/#${l.hash}`}
+                onClick={(e) => {
+                  if (l.hash) {
+                    e.preventDefault();
+                    goToSection(l.hash);
+                  } else setMenuOpen(false);
+                }}
                 style={{
                   fontFamily: "var(--font-heading)",
-                  fontSize: 25,
+                  // eight items now, so a notch smaller to fit a phone screen
+                  fontSize: 22,
                   color: "var(--color-text)",
-                  padding: "13px 0",
+                  padding: "10px 0",
                   borderBottom:
                     i < links.length - 1
                       ? "1px solid color-mix(in srgb,var(--color-text) 10%,transparent)"

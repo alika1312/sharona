@@ -59,8 +59,11 @@ export const ExperiencesPage = () => {
                 style={{ display: "flex", gap: 52, alignItems: "center", flexDirection: flip ? "row-reverse" : "row", scrollMarginTop: 110 }}
               >
                 {/* kept small so the image accompanies the text rather than leading it */}
-                <div style={{ flex: 0.6, display: "flex", justifyContent: "center" }}>
-                  <div data-reveal data-parallax={flip ? "0.05" : "0.08"} className="gitem exp-img" style={{ width: "100%", maxWidth: 260, aspectRatio: "1/1", borderRadius: index % 3 === 0 ? "48% 52% 55% 45%/56% 46% 54% 44%" : 30, overflow: "hidden", boxShadow: "var(--shadow-md)" }}>
+                {/* Fixed square size rather than width:100% + aspect-ratio:
+                    inside this stretched flex row Safari on iPhone collapsed
+                    the box to zero height and the images never showed. */}
+                <div className="exp-img-wrap" style={{ flex: 0.6, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <div data-reveal data-parallax={flip ? "0.05" : "0.08"} className="gitem exp-img" style={{ flex: "none", width: 260, height: 260, maxWidth: "100%", borderRadius: index % 3 === 0 ? "48% 52% 55% 45%/56% 46% 54% 44%" : 30, overflow: "hidden", boxShadow: "var(--shadow-md)" }}>
                     <img src={exp.image} alt={exp.title.trim()} loading="lazy" decoding="async" className="washed" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   </div>
                 </div>
