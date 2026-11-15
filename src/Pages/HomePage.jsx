@@ -10,7 +10,7 @@ import {
   trackContactFormSubmit,
   trackWhatsappClick,
 } from "../lib/analytics";
-import { EMAIL, SITE, WHATSAPP } from "../information/contact";
+import { EMAIL, SITE, WHATSAPP_HELLO as WHATSAPP } from "../information/contact";
 
 const HEAD = "var(--font-heading)";
 
@@ -175,7 +175,8 @@ function HomePage() {
     if (!rootRef.current) return;
     const m = createHomeMotion(rootRef.current, {
       motion: "full",
-      snapSections: true,
+      // No seam latching: it made the page feel stuck between sections.
+      snapSections: false,
       showIntro: true,
       cursorDot: true,
     });
@@ -281,7 +282,7 @@ function HomePage() {
       </section>
 
       {/* =============================== ABOUT =============================== */}
-      <section id="about" data-pin-sec style={{ position: "relative", height: "250vh", background: "var(--color-bg)" }}>
+      <section id="about" data-pin-sec data-flow style={{ position: "relative", background: "var(--color-bg)" }}>
         <div data-pin-inner style={pinInner}>
           <div data-parallax="0.1" aria-hidden="true" style={{ position: "absolute", top: 80, insetInlineEnd: -80, width: 240, height: 240, pointerEvents: "none" }}>
             <div style={{ width: "100%", height: "100%", borderRadius: "50%", background: "color-mix(in srgb,var(--color-accent-2) 14%,transparent)", animation: "drift 22s ease-in-out infinite" }} />
@@ -322,7 +323,7 @@ function HomePage() {
       </section>
 
       {/* ============================= APPROACH ============================= */}
-      <section id="approach" data-pin-sec style={{ position: "relative", height: "460vh", background: "var(--color-surface)" }}>
+      <section id="approach" data-pin-sec style={{ position: "relative", height: "280vh", background: "var(--color-surface)" }}>
         <div data-pin-inner style={pinInner}>
           {/* huge ghost numeral behind the active step */}
           <div data-ghost aria-hidden="true" style={{ position: "absolute", insetInlineStart: "50%", top: "50%", transform: "translate(50%,-50%)", fontFamily: HEAD, fontSize: "min(64vh,520px)", lineHeight: 0.78, color: "color-mix(in srgb,var(--color-accent-2) 12%,transparent)", pointerEvents: "none", userSelect: "none", opacity: 0 }} />
@@ -413,7 +414,7 @@ function HomePage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackWhatsappClick("home_steps_cta")}
-                className="pill"
+                className="pill steps-cta"
                 data-magnet
                 style={{ display: "inline-block", background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 17, padding: "15px 32px", borderRadius: 999, boxShadow: "var(--shadow-md)" }}
               >
@@ -425,7 +426,7 @@ function HomePage() {
       </section>
 
       {/* ============================= SERVICES ============================= */}
-      <section id="services" data-pin-sec style={{ position: "relative", height: "420vh", background: "var(--color-bg)" }}>
+      <section id="services" data-pin-sec style={{ position: "relative", height: "220vh", background: "var(--color-bg)" }}>
         <div data-pin-inner style={pinInner}>
           <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%" }}>
             <div style={{ marginBottom: 40, maxWidth: "34ch" }}>
@@ -453,7 +454,7 @@ function HomePage() {
       </section>
 
       {/* ============================== ONLINE ============================== */}
-      <section id="online" data-pin-sec style={{ position: "relative", height: "180vh", background: "linear-gradient(160deg,#eef0e0,#f5ecdb)" }}>
+      <section id="online" data-pin-sec data-flow style={{ position: "relative", background: "linear-gradient(160deg,#eef0e0,#f5ecdb)" }}>
         <div data-pin-inner style={pinInner}>
           <div data-m="stack" style={{ position: "relative", maxWidth: 1100, margin: "0 auto", width: "100%", display: "flex", gap: 64, alignItems: "center" }}>
             <div style={{ flex: "0 0 40%" }}>
@@ -461,7 +462,7 @@ function HomePage() {
               <h2 style={{ ...h2Style, fontSize: 44, margin: "0 0 22px", maxWidth: "16ch" }}>
                 ייעוץ וטיפול אונליין לישראלים בחו״ל
               </h2>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+              <div className="online-chips" style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
                 {onlineAreas.map((a) => (
                   <span key={a} style={{ padding: "8px 16px", borderRadius: 999, background: "color-mix(in srgb,var(--color-accent-2) 14%,transparent)", color: "var(--color-accent-2-800)", fontWeight: 700, fontSize: 15 }}>
                     {a}
@@ -479,7 +480,7 @@ function HomePage() {
               <p style={{ fontSize: 18.5, lineHeight: 1.72, margin: "0 0 26px", color: "var(--color-text)" }}>
                 הטיפול בעברית מאפשר לדבר על הדברים העמוקים והרגישים ביותר בשפה הטבעית והמוכרת, בלי צורך להסביר את הקודים התרבותיים והמשפחתיים שמלווים אותנו. המפגשים מתקיימים באופן דיסקרטי וגמיש, ובהתאמה לאזורי זמן שונים ברחבי העולם.
               </p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "center" }}>
+              <div className="online-ctas" style={{ display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center" }}>
                 <a
                   href={WHATSAPP}
                   target="_blank"
@@ -491,7 +492,7 @@ function HomePage() {
                 >
                   לתיאום מפגש אונליין ←
                 </a>
-                <Link to="/faq#online" className="tap-link" style={{ fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)", borderBottom: "2px solid color-mix(in srgb,var(--color-accent-2) 45%,transparent)", paddingBottom: 3 }}>
+                <Link to="/faq#online" className="pill" style={{ display: "inline-block", fontWeight: 700, fontSize: 17, color: "var(--color-accent-2-800)", border: "1.5px solid color-mix(in srgb,var(--color-accent-2) 55%,transparent)", padding: "12.5px 26px", borderRadius: 999 }}>
                   שאלות נפוצות על טיפול אונליין
                 </Link>
               </div>
@@ -501,13 +502,13 @@ function HomePage() {
       </section>
 
       {/* ============================== VOICES ============================== */}
-      {/* Cards sweep in one at a time from alternating sides, then gather into
-          a running carousel you can drag or step through. */}
-      <section id="voices" data-pin-sec style={{ position: "relative", height: "520vh", background: "var(--color-accent-2-800)", color: "var(--color-bg)" }}>
-        <div data-pin-inner style={pinInner}>
+      {/* A running carousel you can drag or step through. It used to be a
+          pinned one-at-a-time sweep (five screens of scrolling, with the
+          see-through cards' text bleeding into each other on desktop). */}
+      <section id="voices" data-carousel style={{ position: "relative", background: "var(--color-accent-2-800)", color: "var(--color-bg)" }}>
+        <div data-pin-inner style={{ ...pinInner, position: "relative", height: "auto", minHeight: "100vh", padding: "96px 54px" }}>
           <div aria-hidden="true" style={{ position: "absolute", top: -90, insetInlineStart: -60, width: 320, height: 320, borderRadius: "50%", background: "color-mix(in srgb,#fff 7%,transparent)", filter: "blur(10px)", animation: "drift 26s ease-in-out infinite" }} />
           <div aria-hidden="true" style={{ position: "absolute", bottom: -110, insetInlineEnd: -70, width: 260, height: 260, borderRadius: "50%", background: "color-mix(in srgb,var(--color-accent) 22%,transparent)", filter: "blur(14px)", animation: "drift2 30s ease-in-out infinite" }} />
-          <div aria-hidden="true" style={{ position: "absolute", bottom: "8%", insetInlineStart: "12%", width: 180, height: 180, borderRadius: "50%", border: "2px dashed color-mix(in srgb,#fff 20%,transparent)", animation: "spinSlow 44s linear infinite" }} />
 
           <div style={{ position: "relative", maxWidth: 1100, margin: "0 auto", width: "100%" }}>
             <div data-vhead style={{ textAlign: "center", marginBottom: 40 }}>
@@ -516,11 +517,8 @@ function HomePage() {
                 מילים של מטופלים ומטופלות
               </h2>
               <div style={{ position: "relative", height: 24 }}>
-                <div data-vhint style={{ position: "absolute", inset: 0, fontSize: 15, color: "var(--color-accent-300)" }}>
-                  גללו — כל המלצה מפנה מקום לבאה
-                </div>
-                <div data-vhint2 style={{ position: "absolute", inset: 0, opacity: 0, fontSize: 15, color: "var(--color-accent-300)" }}>
-                  {`כל ${voices.length} ההמלצות — גררו לצדדים, או בחצים ובמקלדת`}
+                <div data-vhint2 style={{ position: "absolute", inset: 0, fontSize: 15, color: "var(--color-accent-300)" }}>
+                  {`${voices.length} המלצות, גררו לצדדים או עברו בחצים`}
                 </div>
                 {/* mobile has no pin, so the deck is a swipeable rail instead */}
                 <div data-mhint style={{ position: "absolute", inset: 0, fontSize: 15, color: "var(--color-accent-300)" }}>
@@ -536,7 +534,7 @@ function HomePage() {
                 whatever the length. */}
             <div data-stack style={{ position: "relative", height: 560, maxWidth: 640, margin: "0 auto" }}>
               {voices.map((t, i) => (
-                <blockquote key={t.id ?? i} data-card {...(t.sweep ? {} : { "data-extra": "" })} style={{ position: "absolute", inset: 0, margin: 0, display: "flex", flexDirection: "column", background: "color-mix(in srgb,#fff 12%,transparent)", border: "1px solid color-mix(in srgb,#fff 16%,transparent)", borderRadius: 30, padding: 36, boxSizing: "border-box", willChange: "transform" }}>
+                <blockquote key={t.id ?? i} data-card {...(t.sweep ? {} : { "data-extra": "" })} style={{ position: "absolute", inset: 0, margin: 0, display: "flex", flexDirection: "column", background: "color-mix(in srgb,#fff 12%,var(--color-accent-2-800))", border: "1px solid color-mix(in srgb,#fff 16%,var(--color-accent-2-800))", borderRadius: 30, padding: 36, boxSizing: "border-box", willChange: "transform" }}>
                   <div aria-hidden="true" style={{ fontFamily: HEAD, fontSize: 52, lineHeight: 0.6, color: "var(--color-accent-300)", marginBottom: 18, flex: "none" }}>״</div>
                   {/* `excerpt` is the card-length cut of a long review — the
                       full text still lives in `feedback`. The clamp is the
@@ -581,7 +579,7 @@ function HomePage() {
 
       {/* =============================== FAQ =============================== */}
       {/* Teaser only — the full set and the FAQPage schema live on /faq. */}
-      <section id="faq" data-pin-sec style={{ position: "relative", height: "250vh", background: "var(--color-bg)" }}>
+      <section id="faq" data-pin-sec data-flow style={{ position: "relative", background: "var(--color-bg)" }}>
         <div data-pin-inner style={{ ...pinInner, alignItems: "center" }}>
           <div data-parallax="0.08" aria-hidden="true" style={{ position: "absolute", bottom: -130, insetInlineStart: -100, width: 340, height: 340, pointerEvents: "none" }}>
             <div style={{ width: "100%", height: "100%", borderRadius: "48% 52% 56% 44%/52% 46% 54% 48%", background: "color-mix(in srgb,var(--color-accent) 15%,transparent)", filter: "blur(4px)", animation: "drift2 24s ease-in-out infinite" }} />
@@ -612,7 +610,7 @@ function HomePage() {
       {/* A room you're standing inside rather than a reel you scroll past.
           Scroll assembles the plates out of depth; the pointer decides which
           one you're looking at, and the rest step back for it. */}
-      <section id="gallery" data-collage data-pin-sec style={{ position: "relative", height: "300vh", background: "var(--color-surface)" }}>
+      <section id="gallery" data-collage data-pin-sec style={{ position: "relative", height: "170vh", background: "var(--color-surface)" }}>
         <div data-pin-inner style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 54px" }}>
           <div data-stage style={{ position: "relative", width: "100%", maxWidth: 1180, height: "min(660px,76vh)" }}>
             {plates.map((g, i) => (
@@ -676,7 +674,7 @@ function HomePage() {
       </section>
 
       {/* ============================== CONTACT ============================== */}
-      <section id="contact" data-pin-sec style={{ position: "relative", height: "260vh", background: "linear-gradient(160deg,#f1ece0,#eaefe0)" }}>
+      <section id="contact" data-pin-sec data-flow style={{ position: "relative", background: "linear-gradient(160deg,#f1ece0,#eaefe0)" }}>
         <div data-pin-inner style={pinInner}>
           <div data-parallax="0.1" aria-hidden="true" style={{ position: "absolute", top: -70, insetInlineEnd: -60, width: 320, height: 320, pointerEvents: "none" }}>
             <div style={{ width: "100%", height: "100%", borderRadius: "52% 48% 44% 56%/48% 52% 48% 52%", background: "color-mix(in srgb,var(--color-accent-2) 22%,transparent)", filter: "blur(3px)", animation: "drift 20s ease-in-out infinite" }} />
@@ -722,12 +720,22 @@ function HomePage() {
                   </svg>
                   הודעה בוואטסאפ
                 </a>
+                <a
+                  href={`mailto:${EMAIL}`}
+                  className="pill"
+                  style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "transparent", color: "var(--color-accent-2-800)", border: "1.5px solid color-mix(in srgb,var(--color-accent-2) 55%,transparent)", fontWeight: 700, fontSize: 16.5, padding: "11.5px 22px", borderRadius: 999 }}
+                >
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                    <path d="m3 7 9 6 9-6" />
+                  </svg>
+                  שליחת מייל
+                </a>
               </div>
 
               {/* No phone-number pill: Sharona felt it was redundant next to
                   the call button, WhatsApp and email. */}
               <div data-crows style={{ display: "flex", flexDirection: "column", gap: 11, fontSize: 16 }}>
-                <ContactRow icon="✉" href={`mailto:${EMAIL}`}>{EMAIL}</ContactRow>
                 <ContactRow icon="⌂">צור הדסה | מבשרת ציון | אונליין לישראלים בארץ ובחו״ל</ContactRow>
               </div>
             </div>
@@ -1032,8 +1040,9 @@ function ContactForm({ motionRef }) {
           {status === "sending" ? "שולח..." : "שליחה ←"}
         </button>
         <p data-cf style={{ margin: 0, fontSize: 13.5, lineHeight: 1.5, textAlign: "center", color: "color-mix(in srgb,var(--color-text) 62%,transparent)" }}>
-          הפרטים מגיעים אליי בלבד ונשמרים בדיסקרטיות מלאה. בדרך כלל אחזור
-          אליכם באותו יום.
+          הפרטים מגיעים אליי בלבד ונשמרים בדיסקרטיות מלאה, ומשמשים רק כדי
+          לחזור אליכם. בדרך כלל אחזור אליכם באותו יום.{" "}
+          <Link to="/privacy" style={{ color: "inherit", textDecoration: "underline" }}>מדיניות הפרטיות</Link>
         </p>
         <div role="status" aria-live="polite">
           {status === "err" && (

@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { trackWhatsappClick, trackClickToCall } from "../lib/analytics";
-import { TEL, whatsappWith } from "../information/contact";
+import { TEL, WHATSAPP_HELLO as WHATSAPP } from "../information/contact";
 
 // Always-visible floating quick-contact: WhatsApp (primary) + one-tap call.
-// Sharona's wording, no emoji.
-const WHATSAPP = whatsappWith("היי שרונה, הגעתי דרך האתר ואשמח לתאם שיחת היכרות ולקבל מידע נוסף");
 
 export const ContactInfo = () => {
   // On a phone the button sat on top of the form's send button and the
@@ -58,7 +56,6 @@ export const ContactInfo = () => {
         href={TEL}
         onClick={() => trackClickToCall("floating_fab")}
         aria-label="חיוג לשרונה"
-        // the mobile action bar already carries a call button
         className="pill-cta org-fab-call"
         style={{ ...fab, background: "var(--color-accent-2)" }}
       >

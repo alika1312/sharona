@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { trackClickToCall } from "../lib/analytics";
-import { PHONE_LABEL, TEL } from "../information/contact";
+import { PHONE_LABEL } from "../information/contact";
 
 // Sharona's menu, in her order. `hash` items are sections of the homepage;
 // `desktop: false` keeps them to the drawer, where there's room — the desktop
@@ -9,6 +8,7 @@ import { PHONE_LABEL, TEL } from "../information/contact";
 const links = [
   { label: "קצת על עצמי", to: "/about" },
   { label: "תחומי הטיפול", to: "/experiences" },
+  { label: "טיפול וייעוץ אונליין", hash: "online", desktop: false },
   { label: "תהליך הטיפול", hash: "approach", desktop: false },
   { label: "חוות דעת והמלצות", hash: "voices", desktop: false },
   { label: "סדנאות", to: "/workshops" },
@@ -22,7 +22,6 @@ export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const [atContact, setAtContact] = useState(false);
   // Written straight to the DOM: as state it re-rendered the whole header
   // (nav, drawer, action bar) on every scroll event.
   const progressRef = useRef(null);
@@ -68,20 +67,6 @@ export const Header = () => {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  // The action bar's "קביעת פגישה" is pointless once the contact form is on
-  // screen, so the bar steps out of the way there.
-  useEffect(() => {
-    setAtContact(false);
-    const target = document.getElementById("contact");
-    if (!target || !("IntersectionObserver" in window)) return;
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => setAtContact(e.isIntersecting)),
-      { rootMargin: "0px 0px -55% 0px" }
-    );
-    io.observe(target);
-    return () => io.disconnect();
-  }, [location.pathname]);
 
   // The drawer owns the page scroll while it's open.
   useEffect(() => {
@@ -342,10 +327,10 @@ export const Header = () => {
                 }}
                 style={{
                   fontFamily: "var(--font-heading)",
-                  // eight items now, so a notch smaller to fit a phone screen
-                  fontSize: 22,
+                  // nine items, so smaller (Sharona: "כתב יותר קטן")
+                  fontSize: 18.5,
                   color: "var(--color-text)",
-                  padding: "10px 0",
+                  padding: "9px 0",
                   borderBottom:
                     i < links.length - 1
                       ? "1px solid color-mix(in srgb,var(--color-text) 10%,transparent)"
@@ -386,64 +371,6 @@ export const Header = () => {
         </nav>
       </div>
 
-      {/* ================= mobile bottom action bar ================= */}
-      <div
-        data-mobar
-        style={{
-          position: "fixed",
-          bottom: 0,
-          insetInline: 0,
-          zIndex: 88,
-          gridTemplateColumns: "1.35fr 1fr",
-          gap: 10,
-          padding: "10px 16px calc(10px + env(safe-area-inset-bottom,0px))",
-          background: "color-mix(in srgb,var(--color-bg) 86%,#fff)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
-          borderTop: "1px solid color-mix(in srgb,var(--color-text) 9%,transparent)",
-          transform: hidden || atContact || menuOpen ? "translateY(160%)" : "none",
-          transition: "transform .45s cubic-bezier(.2,.7,.2,1)",
-        }}
-      >
-        <button
-          onClick={handleContact}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: 52,
-            border: "none",
-            borderRadius: 999,
-            background: "var(--color-accent-2)",
-            color: "var(--color-bg)",
-            fontFamily: "var(--font-body)",
-            fontWeight: 700,
-            fontSize: 17,
-            boxShadow: "var(--shadow-sm)",
-            cursor: "pointer",
-          }}
-        >
-          קביעת פגישה
-        </button>
-        <a
-          href={TEL}
-          onClick={() => trackClickToCall("mobile_action_bar")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
-            minHeight: 52,
-            borderRadius: 999,
-            border: "1.5px solid color-mix(in srgb,var(--color-accent-2) 40%,transparent)",
-            color: "var(--color-accent-2-800)",
-            fontWeight: 700,
-            fontSize: 17,
-          }}
-        >
-          <span aria-hidden="true">✆</span> חיוג
-        </a>
-      </div>
     </>
   );
 };

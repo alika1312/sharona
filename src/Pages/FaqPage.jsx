@@ -6,12 +6,12 @@ import ShareLinks from "../components/ShareLinks";
 import { useReveal } from "../hooks/useReveal";
 import { kicker, h2, muted } from "../design/ui";
 import { trackWhatsappClick, trackClickToCall } from "../lib/analytics";
-import { PHONE_LABEL, SITE, TEL, WHATSAPP } from "../information/contact";
+import { PHONE_LABEL, SITE, TEL, WHATSAPP_HELLO as WHATSAPP } from "../information/contact";
 
 const PAGE_URL = `${SITE}/faq/`;
 const TITLE = "שאלות נפוצות | טיפול רגשי, ייעוץ זוגי והדרכת הורים – שרונה קדושאי בר-נס";
 const DESC =
-  "תשובות לשאלות הנפוצות לפני שמתחילים: טיפול וייעוץ זוגי, טיפול רגשי אישי, חרדה וטראומה, הדרכת הורים, ליווי אונליין לישראלים בחו״ל, תהליך הטיפול ופרטים מעשיים — קליניקה בצור הדסה ואונליין.";
+  "תשובות לשאלות הנפוצות לפני שמתחילים: טיפול וייעוץ זוגי, טיפול רגשי אישי, חרדה וטראומה, הדרכת הורים, ליווי אונליין לישראלים בחו״ל, ותהליך הטיפול, קליניקה בצור הדסה ואונליין.";
 
 function FaqPage() {
   const rootRef = useReveal();
@@ -26,7 +26,7 @@ function FaqPage() {
         <meta property="og:title" content={TITLE} />
         <meta
           property="og:description"
-          content="תשובות לשאלות הנפוצות: טיפול זוגי, טיפול רגשי, חרדה וטראומה, הדרכת הורים, ליווי אונליין לישראלים בחו״ל ופרטים מעשיים."
+          content="תשובות לשאלות הנפוצות: טיפול זוגי, טיפול רגשי, חרדה וטראומה, הדרכת הורים, וליווי אונליין לישראלים בחו״ל."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={PAGE_URL} />
@@ -39,7 +39,7 @@ function FaqPage() {
         className="org-section"
         style={{
           position: "relative",
-          padding: "84px 54px 60px",
+          padding: "84px 54px 40px",
           background: "linear-gradient(155deg,#f5ecdb 0%,#eef0e0 55%,#f1ecdc 100%)",
           textAlign: "center",
           overflow: "hidden",
@@ -69,7 +69,7 @@ function FaqPage() {
       </section>
 
       {/* ============ QUESTIONS ============ */}
-      <section className="org-section faq-page" style={{ padding: "80px 54px 40px", background: "var(--color-bg)" }}>
+      <section className="org-section faq-page" style={{ padding: "44px 54px 40px", background: "var(--color-bg)" }}>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>
           {/* Clickable contents: jump straight to your subject instead of
               reading every question on the way. */}
@@ -123,7 +123,9 @@ function FaqPage() {
       >
         <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
           <h2 data-reveal className="org-h2" style={{ ...h2, fontSize: 40, margin: "0 0 18px" }}>
-            נשארה שאלה? בואו נדבר.
+            נשארה שאלה?
+            <br />
+            בואו נדבר
           </h2>
           <p data-reveal data-reveal-delay="120" style={{ fontSize: 18, lineHeight: 1.7, margin: "0 auto 30px", maxWidth: "42ch", color: muted(74) }}>
             שיחת היכרות קצרה, ללא התחייבות, כדי לראות יחד אם הדרך מתאימה לכם.

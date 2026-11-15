@@ -184,7 +184,7 @@ function AboutPage() {
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <h2 data-reveal className="org-h2" style={{ ...h2, fontSize: 40, marginBottom: 18 }}>מרגישים שזה הזמן להתחיל?</h2>
           <p data-reveal data-reveal-delay="120" style={{ fontSize: 18.5, lineHeight: 1.7, margin: "0 0 30px", color: "color-mix(in srgb,#fff 78%,transparent)" }}>
-            אשמח להכיר, לשמוע מה מביא אתכם, ולראות יחד אם הדרך מתאימה — ללא התחייבות.
+            אשמח להכיר, לשמוע מה מביא אתכם, ולראות יחד אם הדרך מתאימה, ללא התחייבות
           </p>
           <Link to="/#contact" data-reveal data-reveal-delay="220" className="pill-cta" style={{ background: "var(--color-accent)", color: "#fff", fontWeight: 700, fontSize: 18, padding: "16px 38px", borderRadius: 999, boxShadow: "var(--shadow-md)", display: "inline-block" }}>
             לתיאום פגישת היכרות ←

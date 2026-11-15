@@ -83,7 +83,7 @@ export const ArticlePage = () => {
           {/* Sharona's abstract, set above the body as a lead: ~20px, medium
               weight, the site's dark green, with a soft sage rule */}
           {article.summary && (
-            <p data-reveal style={{ fontSize: 20, lineHeight: 1.7, margin: "0 0 30px", paddingInlineStart: 20, borderInlineStart: "3px solid var(--color-accent-2-300)", color: "var(--color-accent-2-800)", fontWeight: 500 }}>
+            <p data-reveal style={{ fontSize: 20, lineHeight: 1.7, margin: "0 0 30px", paddingInlineStart: 20, borderInlineStart: "3px solid var(--color-accent-2-300)", color: "var(--color-accent-2-800)", fontWeight: 500, whiteSpace: "pre-line" }}>
               {article.summary}
             </p>
           )}

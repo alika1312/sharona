@@ -8,6 +8,7 @@ import { ArticlePage } from "./Pages/ArticlePage";
 import WorkshopsPage from "./Pages/WorkshopsPage";
 import FaqPage from "./Pages/FaqPage";
 import AccessibilityPage from "./Pages/AccessibilityPage";
+import PrivacyPage from "./Pages/PrivacyPage";
 import NotFoundPage from "./Pages/NotFoundPage";
 import { articles } from "./information/articles";
 
@@ -26,6 +27,7 @@ export const routes = [
       { path: "articles", element: <ArticlesPage /> },
       { path: "faq", element: <FaqPage /> },
       { path: "accessibility", element: <AccessibilityPage /> },
+      { path: "privacy", element: <PrivacyPage /> },
       {
         path: "article/:id",
         element: <ArticlePage />,

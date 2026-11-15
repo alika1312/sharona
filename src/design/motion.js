@@ -83,7 +83,9 @@ class HomeMotion {
   /* ============================ lifecycle ============================ */
 
   mount() {
-    this.reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    this.reduce =
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      document.documentElement.classList.contains("a11y-still");
     this.fine = window.matchMedia("(hover: hover)").matches;
     this.amp = this.reduce ? 0 : (this.props.motion || "full") === "calm" ? 0.45 : 1;
 
@@ -196,6 +198,15 @@ class HomeMotion {
       const vh = window.innerHeight;
 
       this.tick = (this.tick || 0) + 1;
+      // The accessibility menu's "stop animations" switched on mid-visit:
+      // drop to the reduced-motion layout (everything unpinned and still).
+      if (!this.reduce && document.documentElement.classList.contains("a11y-still")) {
+        this.reduce = true;
+        this.amp = 0;
+        this.pinsM = null;
+        if (this.dotEl) this.dotEl.style.display = "none";
+        this.root.classList.remove("cursor-dot-on");
+      }
       const y0 = window.scrollY;
       this.velS += (y0 - this.sy - this.velS) * 0.2;
       this.sy = y0;
@@ -426,7 +437,9 @@ class HomeMotion {
     pins.forEach((el) => {
       el._fit = 1;
       const fit = el._need ? this.cl((vh - 36) / el._need, 0, 1) : 1;
-      if (narrow || this.reduce || fit < 0.6) {
+      // `data-flow` sections never pin: they only animate their entrance,
+      // and holding the screen for them is what made the page feel long.
+      if (narrow || this.reduce || fit < 0.6 || el.hasAttribute("data-flow")) {
         el.dataset.unpin = "1";
         return;
       }
@@ -1342,11 +1355,18 @@ class HomeMotion {
 
   stackStep(vh, dt) {
     if (this.reduce) return;
-    if (!this.cards.length || !this.voices || !this.voices._vis) return;
+    if (!this.cards.length || !this.voices) return;
+    // `data-carousel`: the section isn't pinned, so it skips the one-at-a-time
+    // sweep and is the running carousel from the moment it's on screen.
+    const carOnly = this.voices.hasAttribute("data-carousel");
+    if (carOnly) {
+      const r = this.voices.getBoundingClientRect();
+      if (r.bottom < -200 || r.top > vh + 200) return;
+    } else if (!this.voices._vis) return;
     const n = this.cards.length;
-    const p = this.voices._p;
+    const p = carOnly ? 1 : this.voices._p;
     const vw = window.innerWidth;
-    const fit = this.voices._fit || 1;
+    const fit = carOnly ? 1 : this.voices._fit || 1;
     const cw = (this.cards[0] && this.cards[0].offsetWidth) || 620;
     const out = (vw * 0.55) / fit + cw * 0.62;
 
@@ -1356,7 +1376,7 @@ class HomeMotion {
     const s = this.seg(p, 0.04, 0.56) * (ns - 1 + 0.34);
     // then all of them gather into a running carousel — which gets the back
     // third of the pin, because reading them is the point of the section
-    const cB = this.es(this.seg(p, 0.6, 0.84));
+    const cB = carOnly ? 1 : this.es(this.seg(p, 0.6, 0.84));
     this.carOn = cB;
 
     // 0.72 left the reviews as thumbnails at the exact moment they were
@@ -1434,7 +1454,7 @@ class HomeMotion {
     if (this.hint1) this.hint1.style.opacity = (1 - cB).toFixed(3);
     if (this.hint2) this.hint2.style.opacity = cB.toFixed(3);
     // The heading shrinks back so the reviews have the viewport to themselves.
-    if (this.vhead) {
+    if (this.vhead && !carOnly) {
       this.vhead.style.transform = `translateY(${(-cB * 26).toFixed(1)}px) scale(${(1 - cB * 0.12).toFixed(3)})`;
       this.vhead.style.opacity = (1 - cB * 0.42).toFixed(3);
     }

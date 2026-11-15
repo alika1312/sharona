@@ -28,6 +28,7 @@ const contentPages = [
   ["/article/1/", "article/1/index.html"],
   ["/faq/", "faq/index.html"],
   ["/accessibility/", "accessibility/index.html"],
+  ["/privacy/", "privacy/index.html"],
 ];
 
 for (const [label, file] of contentPages) {
@@ -156,7 +157,9 @@ const grounded = faqs.filter((f) => !f.todo);
     !(faqLd?.mainEntity || []).some((q) => faqs.some((f) => f.todo && f.q === q.name)),
     "faq: a TODO question leaked into FAQPage schema"
   );
-  check(/להשלמה על ידי שרונה/.test(text), "faq: TODO flag not visible on page");
+  // only while some answer is still a placeholder
+  if (faqs.some((f) => f.todo))
+    check(/להשלמה על ידי שרונה/.test(text), "faq: TODO flag not visible on page");
 
   // share control
   check(d.querySelectorAll(".share-btn").length >= 2, "faq: share control missing");

@@ -15,6 +15,10 @@ import {
 const bootstrap = [
   "window.dataLayer=window.dataLayer||[];",
   "function gtag(){dataLayer.push(arguments);}",
+  // Consent Mode: nothing is stored on the device until the visitor agrees
+  // (CookieConsent). A choice made on an earlier visit is applied up front.
+  "var c='denied';try{if(localStorage.getItem('sharona-consent')==='granted')c='granted'}catch(e){}",
+  "gtag('consent','default',{analytics_storage:c,ad_storage:c,ad_user_data:c,ad_personalization:c});",
   "gtag('js',new Date());",
   // GA4. send_page_view covers the initial load; SPA navigations are sent below.
   GA_ID ? `gtag('config','${GA_ID}',{send_page_view:true});` : "",

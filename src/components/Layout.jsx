@@ -4,6 +4,8 @@ import { Header } from "./Header";
 import { Footer } from "./Footer";
 import StructuredData from "./StructuredData";
 import Analytics from "./Analytics";
+import AccessibilityMenu from "./AccessibilityMenu";
+import CookieConsent from "./CookieConsent";
 import { SITE } from "../information/contact";
 
 // Shared shell for every route: site-wide head defaults, header, page, footer.
@@ -36,11 +38,13 @@ export default function Layout() {
       <StructuredData />
       <Analytics />
       <a href="#main" className="skip-link">דילוג לתוכן הראשי</a>
+      <AccessibilityMenu />
       <Header />
       <main id="main">
         <Outlet />
       </main>
       <Footer />
+      <CookieConsent />
       {/* Without this a client-side navigation keeps the previous page's
           scroll position (a footer link opened the next page at its bottom),
           and links like /#contact never scrolled to their target. It also

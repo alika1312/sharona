@@ -228,7 +228,6 @@ select:focus-visible,
    as is the "swipe for more" hint on the reviews rail */
 [data-navtoggle],
 [data-drawer],
-[data-mobar],
 [data-mhint] { display: none; }
 
 /* ---- responsive ---- */
@@ -243,7 +242,6 @@ select:focus-visible,
   [data-navlinks] { display: none !important; }
   [data-navtoggle] { display: flex !important; }
   [data-drawer] { display: block !important; }
-  [data-mobar] { display: grid !important; }
   .org-header { background: color-mix(in srgb, var(--color-bg) 84%, #fff) !important; }
   .org-nav-inner { padding: 11px 16px !important; }
   .org-wordmark {
@@ -649,12 +647,11 @@ select:focus-visible,
   .organic-v2 #contact [data-crows] { align-items: center !important; }
   .organic-v2 #contact [data-ctopics] { justify-content: center !important; }
 
-  /* the action bar carries the call CTA, so the FAB stack keeps only
-     WhatsApp — lifted clear of the bar */
-  .org-fab-call { display: none !important; }
+  /* the same WhatsApp + call pair as desktop, a little smaller */
   .org-fabs {
-    bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
     inset-inline-end: 14px !important;
+    gap: 12px !important;
     transition: opacity .3s ease, transform .3s ease;
   }
   /* over the send button or the footer: step aside (see ContactInfo) */
@@ -664,9 +661,11 @@ select:focus-visible,
     pointer-events: none;
   }
 
-  /* footer: centred, and its bottom padding clears the fixed action bar */
+  .org-fabs > a { width: 52px !important; height: 52px !important; }
+
+  /* footer: centred */
   footer {
-    padding: 30px 20px calc(100px + env(safe-area-inset-bottom, 0px)) !important;
+    padding: 30px 20px calc(30px + env(safe-area-inset-bottom, 0px)) !important;
     text-align: center !important;
   }
   footer > div:first-of-type {
@@ -915,4 +914,182 @@ select:focus-visible,
   .faq-h1 { font-size: clamp(30px, 8.6vw, 38px) !important; }
   .faq-cat { font-size: 25px !important; }
   .faq-page [aria-expanded] { font-size: 18px !important; }
+}
+
+/* ---- Sharona's November notes (mobile) ---- */
+@media (max-width: 900px) {
+  /* "רוצים להתחיל?" stays inside the column and wraps as one centred block */
+  .organic-v2 .steps-cta {
+    max-width: 100%;
+    box-sizing: border-box;
+    font-size: 16px !important;
+    padding: 14px 22px !important;
+    line-height: 1.45;
+    text-wrap: balance;
+  }
+  /* online section: the topics sit centred, like the rest of the column */
+  .organic-v2 .online-chips,
+  .organic-v2 .online-ctas { justify-content: center; }
+  /* homepage FAQ: the + sits at the edge instead of reserving a matching
+     spacer, so a question like "האם אפשר לקבל טיפול אונליין?" keeps to
+     one line */
+  .organic-v2 [data-faq-q] {
+    position: relative;
+    padding: 17px 48px !important;
+    font-size: 17px !important;
+  }
+  .organic-v2 [data-faq-q]::before { content: none !important; }
+  .organic-v2 [data-faq-q] [data-faq-i] {
+    position: absolute;
+    inset-inline-end: 12px;
+    top: 50%;
+    margin-top: -15px;
+  }
+}
+
+/* =====================================================================
+   Accessibility menu (AccessibilityMenu.jsx) and the cookie notice
+   ===================================================================== */
+.a11y-menu {
+  position: fixed;
+  bottom: 22px;
+  inset-inline-start: 22px;
+  z-index: 95;
+  font-family: var(--font-body);
+}
+.a11y-toggle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-accent-2-800);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+}
+.a11y-panel {
+  position: absolute;
+  bottom: 58px;
+  inset-inline-start: 0;
+  width: 250px;
+  padding: 16px;
+  border-radius: 20px;
+  background: #fff;
+  color: #1a1a1a;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.a11y-title { font-weight: 700; font-size: 17px; margin-bottom: 4px; }
+.a11y-row,
+.a11y-opt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 42px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid #d8d8d8;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  font-size: 15.5px;
+  cursor: pointer;
+  text-align: start;
+}
+.a11y-opt[aria-pressed="true"] { border-color: var(--color-accent-2-700); background: var(--color-accent-2-100); font-weight: 700; }
+.a11y-check { color: var(--color-accent-2-700); font-weight: 700; }
+.a11y-steps { display: flex; gap: 6px; }
+.a11y-steps button {
+  min-width: 40px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #c8c8c8;
+  background: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.a11y-steps button:disabled { opacity: .4; cursor: default; }
+.a11y-reset {
+  margin-top: 4px;
+  min-height: 40px;
+  border: none;
+  border-radius: 12px;
+  background: #eee;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+.a11y-link { text-align: center; font-size: 14.5px; color: var(--color-accent-2-800); text-decoration: underline; padding: 6px 0 0; }
+@media (max-width: 900px) {
+  .a11y-menu { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); inset-inline-start: 14px; }
+  .a11y-toggle { width: 44px; height: 44px; }
+}
+
+/* the options themselves */
+html.a11y-zoom body { zoom: var(--a11y-zoom, 1); }
+html.a11y-links a { text-decoration: underline !important; text-underline-offset: 3px; }
+html.a11y-font body,
+html.a11y-font body * { font-family: Arial, "Heebo", sans-serif !important; letter-spacing: .01em; }
+html.a11y-contrast {
+  --color-bg: #ffffff;
+  --color-surface: #f2f2f2;
+  --color-text: #000000;
+  --color-accent-2: #3a4a22;
+  --color-accent-2-700: #24300f;
+  --color-accent-2-800: #1c260b;
+  --color-accent: #8a3d0c;
+}
+html.a11y-contrast body * { text-shadow: none !important; }
+html.a11y-contrast .washed { filter: none !important; }
+html.a11y-still *,
+html.a11y-still *::before,
+html.a11y-still *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+/* cookie notice */
+.cookie-bar {
+  position: fixed;
+  z-index: 97;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(720px, calc(100% - 32px));
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 20px;
+  background: var(--color-accent-2-900, #272e1b);
+  color: #fff;
+  box-shadow: var(--shadow-lg);
+  font-family: var(--font-body);
+}
+.cookie-bar p { margin: 0; font-size: 14.5px; line-height: 1.55; }
+.cookie-bar a { color: #fff; text-decoration: underline; }
+.cookie-actions { display: flex; gap: 8px; flex: none; }
+.cookie-actions button {
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+.cookie-yes { background: #fff; color: var(--color-accent-2-800); border: none; }
+.cookie-no { background: transparent; color: #fff; border: 1.5px solid color-mix(in srgb, #fff 60%, transparent); }
+@media (max-width: 640px) {
+  .cookie-bar { flex-direction: column; align-items: stretch; text-align: center; bottom: 80px; }
+  .cookie-actions { justify-content: center; }
 }

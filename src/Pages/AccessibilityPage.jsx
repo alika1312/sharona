@@ -1,7 +1,7 @@
 import { Head } from "vite-react-ssg";
 import { useReveal } from "../hooks/useReveal";
 import { kicker, muted } from "../design/ui";
-import { EMAIL, PHONE_LABEL, SITE, TEL, WHATSAPP } from "../information/contact";
+import { EMAIL, PHONE_LABEL, SITE, TEL, WHATSAPP_HELLO as WHATSAPP } from "../information/contact";
 
 const measures = [
   "מבנה סמנטי ותקין (כותרות, אזורי תוכן וניווט) המותאם לקוראי מסך",
@@ -12,6 +12,8 @@ const measures = [
   "התאמה למגוון גדלי מסך ומכשירים (עיצוב רספונסיבי)",
   "כיבוד העדפת המשתמש להפחתת אנימציות (prefers-reduced-motion)",
   "שפת ממשק וכיווניות מותאמות לעברית (RTL)",
+  "תפריט נגישות בכל עמוד (הכפתור העגול בפינת המסך): הגדלת טקסט, ניגודיות גבוהה, הדגשת קישורים, גופן קריא ועצירת אנימציות",
+  "כפתורים ושדות טופס עם תוויות ברורות, והודעות טופס שמוקראות לקוראי מסך",
 ];
 
 function Section({ title, children, delay = 0 }) {
@@ -90,10 +92,18 @@ function AccessibilityPage() {
             </p>
           </Section>
 
+          <Section title="נגישות השירות והקליניקה" delay={150}>
+            <p style={{ margin: 0 }}>
+              המפגשים מתקיימים בקליניקה בצור הדסה ואונליין. מי שזקוק להתאמה כלשהי, כמו
+              מפגש אונליין במקום הגעה פיזית, תיאום מראש של הגעה ונגישות למקום או אמצעי
+              תקשורת חלופי, מוזמן לפנות אליי מראש ואמצא את הפתרון המתאים.
+            </p>
+          </Section>
+
           <Section title="פנייה בנושאי נגישות" delay={180}>
             <p style={{ margin: "0 0 16px" }}>
-              אם נתקלתם בבעיה או שיש לכם הצעה לשיפור הנגישות, נשמח שתפנו אלינו — ונעשה כמיטב
-              יכולתנו לתת מענה:
+              רכזת הנגישות היא שרונה קדושאי בר-נס. אם נתקלתם בבעיה או שיש לכם הצעה לשיפור
+              הנגישות, אשמח שתפנו אליי, ואעשה כמיטב יכולתי לתת מענה מהיר:
             </p>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
               <li>
@@ -112,7 +122,7 @@ function AccessibilityPage() {
           </Section>
 
           <p data-reveal data-reveal-delay="220" style={{ margin: "40px 0 0", fontSize: 15, color: muted(60) }}>
-            הצהרת הנגישות עודכנה לאחרונה באוגוסט 2026.
+            הצהרת הנגישות עודכנה לאחרונה בנובמבר 2026.
           </p>
         </div>
       </section>

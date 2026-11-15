@@ -68,3 +68,24 @@ export const trackClickToCall = (linkLocation) =>
 
 export const trackShare = (method, contentUrl) =>
   gtagEvent(EVENTS.shareLink, { method, content_url: contentUrl });
+
+// ---- consent (see CookieConsent.jsx) ----
+
+export const CONSENT_KEY = "sharona-consent";
+
+/** Record the visitor's cookie choice and pass it on to gtag's Consent Mode. */
+export function setAnalyticsConsent(granted) {
+  try {
+    localStorage.setItem(CONSENT_KEY, granted ? "granted" : "denied");
+  } catch {
+    /* not remembered, but still applied for this visit */
+  }
+  if (typeof window === "undefined" || typeof window.gtag !== "function") return;
+  const v = granted ? "granted" : "denied";
+  window.gtag("consent", "update", {
+    analytics_storage: v,
+    ad_storage: v,
+    ad_user_data: v,
+    ad_personalization: v,
+  });
+}

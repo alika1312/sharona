@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { ContactInfo } from "./ContactInfo";
+import { GTAG_IDS } from "../lib/analytics";
+import { OPEN_EVENT } from "./CookieConsent";
 
 // One flat row of links rather than two stacked columns — the footer is a
 // sitemap, not a section, and it shouldn't cost a screenful.
@@ -11,6 +13,7 @@ const links = [
   { label: "שאלות נפוצות", to: "/faq" },
   { label: "צרו קשר", to: "/#contact" },
   { label: "הצהרת נגישות", to: "/accessibility" },
+  { label: "מדיניות פרטיות", to: "/privacy" },
 ];
 
 export const Footer = () => {
@@ -83,6 +86,15 @@ export const Footer = () => {
                 {l.label}
               </Link>
             ))}
+            {GTAG_IDS.length > 0 && (
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new Event(OPEN_EVENT))}
+                style={{ background: "none", border: "none", padding: 0, cursor: "pointer", font: "inherit", color: "color-mix(in srgb, #fff 72%, transparent)" }}
+              >
+                הגדרות עוגיות
+              </button>
+            )}
           </nav>
         </div>
         <div
