@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { muted } from "../design/ui";
+import AnswerText from "./AnswerText";
 
 // Accessible disclosure item: <button aria-expanded aria-controls> + labelled panel.
 // The panel stays in the DOM (hidden) so its text is present in the prerendered
@@ -85,7 +86,7 @@ function FaqItem({ q, a, todo, headingLevel = 3 }) {
             panel's content but not its own padding, which left a strip of
             empty space under every closed question. */}
         <div style={{ padding: "0 26px 24px" }}>
-          <p style={{ margin: 0, whiteSpace: "pre-line" }}>{a}</p>
+          <AnswerText text={a} />
           {todo && (
             <p
               style={{

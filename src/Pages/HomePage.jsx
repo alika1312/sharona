@@ -6,6 +6,7 @@ import { aboutIntro, testimonials } from "../information/information";
 import { faqs } from "../information/faq";
 import { createHomeMotion } from "../design/motion";
 import { kicker } from "../design/ui";
+import AnswerText from "../components/AnswerText";
 import {
   trackContactFormSubmit,
   trackWhatsappClick,
@@ -28,8 +29,13 @@ const services = [
 // What Israelis abroad come for — Sharona's own list for the online section.
 const onlineAreas = ["טיפול וייעוץ זוגי", "טיפול רגשי אישי", "הדרכת הורים", "רילוקיישן"];
 
-// The professional line under the hero headline, in Sharona's order.
-const heroAreas = ["טיפול רגשי", "ייעוץ וטיפול זוגי", "טיפול בטראומה", "הדרכת הורים"];
+// The four round tags under the hero headline, in Sharona's order.
+const heroAreas = [
+  { label: "טיפול רגשי", to: "/experiences#emotional" },
+  { label: "ייעוץ וטיפול זוגי", to: "/experiences#couples" },
+  { label: "טיפול בטראומה", to: "/experiences#trauma" },
+  { label: "הדרכת הורים", to: "/experiences#parents" },
+];
 
 const steps = [
   ["1", "פנייה ראשונית", "שולחים לי הודעת WhatsApp או מייל קצר עם כמה מילים על סיבת הפנייה.", "var(--color-accent-2)"],
@@ -235,32 +241,33 @@ function HomePage() {
         </div>
 
         <div data-m="stack" style={{ position: "relative", maxWidth: 1200, margin: "0 auto", width: "100%", display: "flex", alignItems: "center", gap: 56 }}>
-          <div style={{ flex: 1.08 }}>
+          <div className="hero-text" style={{ flex: 1.08, textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
             {/* one colour for the whole headline — the olive Sharona liked */}
             <h1 data-reveal data-reveal-delay="0" style={{ position: "relative", fontFamily: HEAD, fontWeight: 400, fontSize: "clamp(40px,4.5vw,66px)", lineHeight: 1.1, letterSpacing: "-.015em", margin: 0, color: "var(--color-accent-2-700)" }}>
               <span style={{ display: "block", paddingBottom: ".09em" }}>מרחב לנשום</span>
               <span style={{ display: "block", paddingBottom: ".09em" }}>ולצמוח</span>
             </h1>
-            {/* what, straight under the headline — each area stays on one line,
-                so on a phone they wrap whole rather than mid-phrase. Her name
-                is in the header already; it heads "קצת עליי" instead. */}
-            <div className="hero-id" style={{ margin: "26px 0 0", paddingInlineStart: 18, borderInlineStart: "3px solid var(--color-accent)" }}>
-              <div className="hero-areas" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px 10px", fontSize: "clamp(16.5px,1.5vw,19px)", fontWeight: 700, lineHeight: 1.5, color: "var(--color-text)" }}>
-                {heroAreas.map((a, i) => (
-                  <span key={a} className="hero-area" style={{ display: "inline-flex", alignItems: "center", gap: 10, whiteSpace: "nowrap" }}>
-                    {i > 0 && <span aria-hidden="true" className="hero-sep" style={{ color: "var(--color-accent)", fontWeight: 400 }}>|</span>}
-                    {a}
-                  </span>
-                ))}
-              </div>
-              <div style={{ fontSize: 15, fontWeight: 600, color: "var(--color-accent-2-700)", marginTop: 8 }}>
-                לישראלים בארץ ובחו״ל, בקליניקה ובאונליין
-              </div>
-            </div>
-            <p className="hero-lead" style={{ fontSize: 19.5, lineHeight: 1.65, maxWidth: "46ch", margin: "26px 0 34px", color: "var(--color-text)" }}>
-              לפעמים כל מה שצריך הוא מקום של שקט, אמון וביטחון. מקום לעצור לרגע, לעשות סדר במחשבות וברגשות, להבין איך חוויות העבר משפיעות עלינו היום, לגלות שאפשר ליצור שינוי ולהרגיש טוב יותר
+            {/* the line that sets her apart, right under the headline */}
+            <p className="hero-tagline" style={{ fontSize: "clamp(18px,1.7vw,22px)", lineHeight: 1.55, maxWidth: "36ch", margin: "20px 0 0", color: "var(--color-text)" }}>
+              טיפול ממוקד, המשלב עבודה רגשית מעמיקה עם כלים מעשיים לשינוי בחיי היומיום.
             </p>
-            <div style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
+            {/* the four areas as round tags — plain HTML text, each a link to
+                its write-up on /experiences */}
+            <ul className="hero-areas" aria-label="תחומי הטיפול" style={{ listStyle: "none", padding: 0, margin: "26px 0 0", display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 10, maxWidth: 560 }}>
+              {heroAreas.map((a) => (
+                <li key={a.to}>
+                  <Link to={a.to} className="hero-area" style={{ display: "inline-block", padding: "8px 18px", borderRadius: 999, background: "color-mix(in srgb,var(--color-accent-2) 14%,transparent)", color: "var(--color-accent-2-800)", fontWeight: 700, fontSize: "clamp(16px,1.4vw,18px)", whiteSpace: "nowrap" }}>
+                    {a.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <div className="hero-place" style={{ fontSize: 15.5, fontWeight: 600, color: "var(--color-accent-2-700)", margin: "18px 0 34px" }}>
+              <span className="hero-place-part">קליניקה בצור הדסה</span>
+              <span className="hero-place-sep" aria-hidden="true"> | </span>
+              <span className="hero-place-part">טיפול אונליין לישראלים בארץ ובחו״ל</span>
+            </div>
+            <div style={{ display: "flex", gap: 18, alignItems: "center", justifyContent: "center", flexWrap: "wrap" }}>
               <a href="#contact" className="pill" data-magnet style={{ background: "var(--color-accent-2)", color: "var(--color-bg)", fontWeight: 700, fontSize: 18, padding: "17px 36px", borderRadius: 999, boxShadow: "var(--shadow-md)" }}>
                 בואו נדבר ←
               </a>
@@ -736,7 +743,7 @@ function HomePage() {
               {/* No phone-number pill: Sharona felt it was redundant next to
                   the call button, WhatsApp and email. */}
               <div data-crows style={{ display: "flex", flexDirection: "column", gap: 11, fontSize: 16 }}>
-                <ContactRow icon="⌂">צור הדסה | מבשרת ציון | אונליין לישראלים בארץ ובחו״ל</ContactRow>
+                <ContactRow icon="⌂">קליניקה בצור הדסה | טיפול אונליין לישראלים בארץ ובחו״ל</ContactRow>
               </div>
             </div>
 
@@ -942,9 +949,7 @@ function KineticFaq({ items, motionRef }) {
                   "max-height .5s cubic-bezier(.2,.7,.2,1), opacity .4s ease",
               }}
             >
-              <p style={{ margin: 0, padding: "0 22px 20px", fontSize: 16.5, lineHeight: 1.66, whiteSpace: "pre-line", color: "var(--color-text)" }}>
-                {f.a}
-              </p>
+              <AnswerText text={f.a} style={{ padding: "0 22px 20px", fontSize: 16.5, lineHeight: 1.66, color: "var(--color-text)" }} />
             </div>
           </div>
         );

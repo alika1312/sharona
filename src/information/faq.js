@@ -212,6 +212,7 @@ export const faqSchema = {
     .map((f) => ({
       "@type": "Question",
       name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: f.a },
+      // "- " list markers are drawn as bullets on the page, not as text
+      acceptedAnswer: { "@type": "Answer", text: f.a.replace(/^- /gm, "") },
     })),
 };

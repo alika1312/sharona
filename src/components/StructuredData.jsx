@@ -33,7 +33,8 @@ const person = {
 };
 
 const areaServed = [
-  // kept in step with the "אזור הטיפול" line on /about
+  // where clients come from: the clinic in צור הדסה, meetings by arrangement
+  // in מבשרת ציון / פתח תקווה (see /about and the FAQ)
   "ירושלים",
   "מבשרת ציון",
   "צור הדסה",

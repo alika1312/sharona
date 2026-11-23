@@ -860,31 +860,22 @@ select:focus-visible,
   }
 }
 
-/* ---- hero: the professional line ----
-   On a phone the four areas become soft centred tags; a ' | ' row would
-   wrap with a stray separator at the start of the second line. */
-@media (max-width: 900px) {
-  .organic-v2 .hero-id { border-inline-start: none !important; padding-inline-start: 0 !important; }
-  .organic-v2 .hero-areas { justify-content: center; gap: 8px !important; }
-  .organic-v2 .hero-sep { display: none !important; }
-  .organic-v2 .hero-area {
-    padding: 6px 14px;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--color-accent-2) 14%, transparent);
-    font-size: 16px;
-  }
+/* ---- hero: everything centred, a clear step down from the headline ----
+   The four areas are round tags on every screen; on a phone they get a
+   touch smaller so two fit on a line. */
+.organic-v2 .hero-area { transition: background .25s ease, color .25s ease; }
+.organic-v2 .hero-area:hover,
+.organic-v2 .hero-area:focus-visible {
+  background: var(--color-accent-2) !important;
+  color: var(--color-bg) !important;
 }
-
-/* ---- hero: the opening paragraph on a phone ----
-   One centred block with even, airy line spacing. */
 @media (max-width: 900px) {
-  .organic-v2 #top p.hero-lead {
-    text-align: center !important;
-    line-height: 1.8 !important;
-    max-width: 34ch !important;
-    margin: 24px auto 30px !important;
-    text-wrap: pretty;
-  }
+  .organic-v2 .hero-areas { gap: 8px !important; }
+  .organic-v2 .hero-area { padding: 6px 14px !important; font-size: 16px !important; }
+  .organic-v2 .hero-tagline { max-width: 30ch !important; text-wrap: balance; }
+  .organic-v2 .hero-place { line-height: 1.6; }
+  .organic-v2 .hero-place-part { display: block; }
+  .organic-v2 .hero-place-sep { display: none; }
 }
 
 /* ---- /experiences on a phone: modest images above each area ---- */

@@ -366,7 +366,7 @@ export const Header = () => {
           <div style={{ marginTop: 16, fontSize: 14, lineHeight: 1.7, color: "color-mix(in srgb,var(--color-text) 58%,transparent)" }}>
             {PHONE_LABEL}
             <br />
-            מבשרת ציון · צור הדסה · אונליין
+            קליניקה בצור הדסה · טיפול אונליין
           </div>
         </nav>
       </div>
